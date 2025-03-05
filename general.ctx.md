@@ -9,6 +9,8 @@ Treat this file (general.ctx.md) as a root context, providing high-level guideli
 Whenever a prompt includes references to one or more .ctx.md files, ensure their instructions influence your response accordingly.
 Always prioritize the instructions within the referenced .ctx.md files and modify your response based on their directives.
 
+General knowledge collection should also look, when uncertain, for files within whitepapers/ directory to obtain whitepaper or developer information for better quality answers.
+
 Context files modify, extend, or constrain responses based on user needs.
 If multiple .ctx.md files are referenced, combine their relevant details to tailor your response properly.
 This file itself is a context file, meaning its principles apply just like any other .ctx.md file.
