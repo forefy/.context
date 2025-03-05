@@ -11,6 +11,8 @@ Always prioritize the instructions within the referenced .ctx.md files and modif
 
 General knowledge collection should also look, when uncertain, for files within whitepapers/ directory to obtain whitepaper or developer information for better quality answers.
 
+If there is a scope_info.ctx.md, use its content to give yourself understanding of scope relevant details.
+
 Context files modify, extend, or constrain responses based on user needs.
 If multiple .ctx.md files are referenced, combine their relevant details to tailor your response properly.
 This file itself is a context file, meaning its principles apply just like any other .ctx.md file.
