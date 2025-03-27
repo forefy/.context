@@ -26,8 +26,11 @@ It lets you reference this files from within your editor, not only saving you ti
 | [finding.ctx.md](finding.ctx.md)                           | Takes converstion data or referenced code and outputs an official finding format out of it                              |
 | [general.ctx.md](general.ctx.md)                           | Global overview context, trying to emphasize the purpose that we're currently in a smart contract audit mode            |
 | [impact.ctx.md](impact.ctx.md)                             | Try to optimize or enhance finding impact information                                                                   |
-| scope_info.ctx.md                                          | Corelate specific information about the scope of the audit or specific focus areas. File needs to be created manually   |
+| `scope_info.ctx.md`                                        | Corelate specific information about the scope of the audit or specific focus areas. File needs to be created manually   |
 | [unit_test_awareness.ctx.md](unit_test_awareness.ctx.md)   | Learn from the unit tests to get a better clarity of what the code is expected to behave like                           |
+| `whitepapers/`                                             | Place docs from the customer in this directory                                                                          |
+
+
 
 ## Contributing
 Hoping for contributions for the generic layer - the one that we can all benefit, of course keep secret sauces for yourself! but everything else is highly welcomed here

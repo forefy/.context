@@ -1,3 +1,4 @@
 scope_info.ctx.md
 whitepapers/**
+!whitepapers/.gitkeep
 .DS_Store
