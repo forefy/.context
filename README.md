@@ -1,5 +1,9 @@
 # Reusable Prompts for Smart Contract Auditing
 
+<p align="center">
+<img src="https://github.com/forefy/.context/raw/main/static/context.png" alt="Reusable Prompts for Smart Contract Auditing" title="Reusable Prompts for Smart Contract Auditing" width="450"/>
+</p>
+
 ## What is this?
 Not re-using LLM prompts in your auditing methodology is a waste of a technological edge.
 
