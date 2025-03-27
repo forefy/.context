@@ -1,7 +1,7 @@
 # Reusable Prompts for Smart Contract Auditing
 
 <p align="center">
-<img src="https://github.com/forefy/.context/raw/main/static/context.png" alt="Reusable Prompts for Smart Contract Auditing" title="Reusable Prompts for Smart Contract Auditing" width="450"/>
+<img src="https://github.com/forefy/.context/raw/main/static/context.png" alt="Reusable Prompts for Smart Contract Auditing" title="Reusable Prompts for Smart Contract Auditing" width="750"/>
 </p>
 
 ## What is this?
