@@ -1,4 +1,4 @@
-# Smart Contract Auditing with AI Agent Instructions
+# LLM instructions for Smart Contract Auditing
 
 <p align="center">
 <a href="copilot-instructions.md"><strong>🔗 copilot-instructions.md</strong></a>
