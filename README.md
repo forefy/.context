@@ -1,5 +1,16 @@
 # Smart Contract Auditing with AI Agent Instructions
 
+<p align="center">
+<a href="copilot-instructions.md"><strong>🔗 copilot-instructions.md</strong></a>
+</p>
+
+<p align="center">
+<img alt="GitHub commit activity" title="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/forefy/.context">
+<img alt="GitHub last commit" title="GitHub last commit" src="https://img.shields.io/github/last-commit/forefy/.context">
+<a href="https://twitter.com/forefy"><img alt="Forefy Twitter" title="Forefy Twitter" src="https://img.shields.io/twitter/follow/forefy.svg?logo=twitter"></a>
+</p>
+
+
 ## What is this?
 
 `copilot-instructions.md` is GitHub's Copilot default instruction files, although alternatives behave the same. It's enough to have this placed on `<REPO_DIR>/.github/copilot-instructions.md` to have these rules picked up on every new agentic task or prompt.
