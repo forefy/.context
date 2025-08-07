@@ -1,8 +1,4 @@
-# LLM instructions for Smart Contract Auditing
-
-<p align="center">
-<a href="copilot-instructions.md"><strong>🔗 copilot-instructions.md</strong></a>
-</p>
+# LLM Instructions for Smart Contract Auditing
 
 <p align="center">
 <a href="https://github.com/forefy/.context/edit/main/copilot-instructions.md"><img alt="Contribute" title="Contribute to copilot-instructions.md" src="https://img.shields.io/badge/Contribute-copilot--instructions.md-blue?logo=github"></a>
@@ -13,36 +9,38 @@
 
 ## What is this?
 
-`copilot-instructions.md` is GitHub's Copilot default instruction files, although alternatives behave the same. It's enough to have this placed on `<REPO_DIR>/.github/copilot-instructions.md` to have these rules picked up on every new agentic task or prompt.
-
 Smart Contract Auditors are using agentic AI to uncover potential leads, learn the codebase faster, and even generate PoC's for exploits from time to time.
 
 This is just a side tool though, and the human is what counts. This repo aims to empower the human-to-agent interactions, by incorporating auditing methodologies and way-of-thinking, so that when these agents are used they are supercharged with community insight focusing on providing more qualitative results.
 
-## Why Share a Copilot Instructions?
 
-- **Automatic Recognition**: No need to manually reference context files - the AI loads instructions automatically
-- **Consistent Behavior**: Community-vetted principles and auditing guidelines across all conversations and sessions
-- **Streamlined Workflow**: Focus on auditing instead of prompt engineering
-- **Collaborative Improvement**: Centralized place for the community to enhance agentic AI auditing behaviors
+## Setup (Choose One)
 
-## How to use
+### GitHub Copilot
 
-1. **Clone into your audit workspace:**
+```bash
+git clone https://github.com/forefy/.context
+cp .context/copilot-instructions.md your-project/.github/copilot-instructions.md
+```
 
-   ```bash
-   git clone https://github.com/forefy/.context
-   cp .context/copilot-instructions.md <your_repo>/.github/copilot-instructions.md
-   ```
+### Claude (Solidity)
 
-2. **Automatic Activation**: Modern AI assistants will automatically detect and load the `copilot-instructions.md` file
+```bash
+git clone https://github.com/forefy/.context
+cp .context/security-review-solidity.md your-project/.claude/commands/security-review.md
+claude
+> /security-review
+```
 
-3. **Start Auditing**: The AI is now configured with:
-   - Discovery and vulnerability analysis capabilities
-   - Formal finding generation in standardized format
-   - Impact assessment and fact-checking protocols
-   - Unit test analysis for security insights
-   - More
+### Claude (Anchor/Solana)
+
+```bash
+git clone https://github.com/forefy/.context
+cp .context/security-review-anchor.md your-project/.claude/commands/security-review.md
+claude
+> /security-review
+```
+
 
 ## Contributing
 
