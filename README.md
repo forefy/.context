@@ -29,8 +29,7 @@ cp .context/copilot-instructions.md your-project/.github/copilot-instructions.md
 git clone https://github.com/forefy/.context
 cd your-project
 mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md
-claude
-> /security-review
+claude security-review
 ```
 
 ### Claude (Anchor/Solana)
@@ -39,8 +38,7 @@ claude
 git clone https://github.com/forefy/.context
 cd your-project
 mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md
-claude
-> /security-review
+claude security-review
 ```
 
 
