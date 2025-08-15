@@ -20,10 +20,11 @@ This is just a side tool though, and the human is what counts. This repo aims to
 
 ```bash
 git clone https://github.com/forefy/.context
-cp .context/copilot-instructions.md your-project/.github/copilot-instructions.md
+cd your-project
+mkdir -p .github/ && cp ../.context/copilot-instructions.md .github/copilot-instructions.md
 ```
 
-### Claude (Solidity)
+### Claude Code (Solidity)
 
 ```bash
 git clone https://github.com/forefy/.context
@@ -32,7 +33,7 @@ mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude
 claude security-review
 ```
 
-### Claude (Anchor/Solana)
+### Claude Code (Anchor/Solana)
 
 ```bash
 git clone https://github.com/forefy/.context
