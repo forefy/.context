@@ -13,29 +13,31 @@ Smart Contract Auditors are using agentic AI to uncover potential leads, learn t
 
 This is just a side tool though, and the human is what counts. This repo aims to empower the human-to-agent interactions, by incorporating auditing methodologies and way-of-thinking, so that when these agents are used they are supercharged with community insight focusing on providing more qualitative results.
 
+## Setup locally - choose the relevant command and run from the project root directory
 
-## Setup - choose the relevant command and run from the project root directory
+### <img src="https://code.visualstudio.com/favicon.ico" width="16" height="16" alt="VS Code"> VS Code
 
-### GitHub Copilot
+Open your project in VS Code and install the GitHub Copilot extension if you haven't already.
+
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot
 
 ```bash
 git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions.md .github/copilot-instructions.md && echo "\\n ✅ [ .context ] Custom copilot instructions copied to workspace."
 ```
 
-### Claude Code (Solidity)
+### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Solidity)
 
 ```bash
 git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md && echo "\\n ✅ [ .context ] Custom Solidity auditing security-review instructions copied to workspace."
 claude security-review
 ```
 
-### Claude Code (Anchor/Solana)
+### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Anchor/Solana)
 
 ```bash
 git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md && echo "\\n ✅ [ .context ] Custom Anchor/Rust auditing security-review instructions copied to workspace."
 claude security-review
 ```
-
 
 ## Contributing
 
