@@ -22,7 +22,7 @@ Open your project in VS Code and install the GitHub Copilot extension if you hav
 ### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions.md .github/copilot-instructions.md && echo "\\n ✅ [ .context ] Custom copilot instructions copied to workspace."
+git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n ✅ [ .context ] Custom copilot instructions copied to workspace."
 ```
 
 ### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Solidity)
