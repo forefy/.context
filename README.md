@@ -22,22 +22,25 @@ Open your project in VS Code and install the GitHub Copilot extension if you hav
 ### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n ✅ [ .context ] Custom copilot instructions copied to workspace."
+git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n [ .context ] Custom copilot instructions copied to workspace."
 ```
 
 ### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Solidity)
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md && echo "\\n ✅ [ .context ] Custom Solidity auditing security-review instructions copied to workspace."
+git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Solidity auditing security-review instructions copied to workspace."
 claude security-review
 ```
 
 ### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Anchor/Solana)
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md && echo "\\n ✅ [ .context ] Custom Anchor/Rust auditing security-review instructions copied to workspace."
+git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Anchor/Rust auditing security-review instructions copied to workspace."
 claude security-review
 ```
+
+## Preprompting
+Files under the `preprompts/` folder provide a quick way to ask the instructions-loaded agent to work for you in different ways. These are usually small simple requests that take in account that the major instructions are already picked up through the regular instruction files in this repo.
 
 ## Contributing
 

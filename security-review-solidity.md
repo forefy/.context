@@ -14,6 +14,13 @@ Perform a **security-focused audit** to identify **HIGH-CONFIDENCE vulnerabiliti
 
 This is NOT a general code review. Only report issues that are **concrete, exploitable, and financially impactful**.
 
+**KNOWLEDGE BASE REFERENCE:**
+When you identify potential vulnerabilities that match common Solidity patterns, check `.context/knowledgebases/solidity/` for:
+- Similar vulnerability examples (fv-sol-X classification)
+- "Bad" vs "Good" code patterns for comparison
+- Established remediation approaches from the knowledge base
+Only reference when patterns clearly match - don't force irrelevant references.
+
 ---
 
 SECURITY CATEGORIES TO EXAMINE:
