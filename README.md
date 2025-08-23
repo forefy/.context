@@ -15,9 +15,9 @@ This is just a side tool though, and the human is what counts. This repo aims to
 
 ## Setup locally - choose the relevant command and run from the project root directory
 
-### <img src="https://code.visualstudio.com/favicon.ico" width="16" height="16" alt="VS Code"> VS Code
-
 Open your project in VS Code and install the GitHub Copilot extension if you haven't already.
+
+For best results, copy `.context` to your audited workspace root, and the instructions to their expected directory, via one of the following commands:
 
 ### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot
 
