@@ -22,20 +22,20 @@ For best results, copy `.context` to your audited workspace root, and the instru
 ### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot (Generic Smart Contract Audit)
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n [ .context ] Custom copilot instructions copied to workspace."
+git clone https://github.com/forefy/.context > /dev/null 2>&1 && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n [ .context ] Custom copilot instructions copied to workspace."
 ```
 
 ### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Solidity)
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Solidity auditing security-review instructions copied to workspace."
+git clone https://github.com/forefy/.context > /dev/null 2>&1 && mkdir -p .claude/commands/ && cp ../.context/security-review-solidity.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Solidity auditing security-review instructions copied to workspace."
 claude security-review
 ```
 
 ### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code (Anchor/Solana)
 
 ```bash
-git clone https://github.com/forefy/.context && mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Anchor/Rust auditing security-review instructions copied to workspace."
+git clone https://github.com/forefy/.context > /dev/null 2>&1 && mkdir -p .claude/commands/ && cp ../.context/security-review-anchor.md .claude/commands/security-review.md && echo "\\n [ .context ] Custom Anchor/Rust auditing security-review instructions copied to workspace."
 claude security-review
 ```
 
