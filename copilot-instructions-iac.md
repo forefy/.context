@@ -3,12 +3,50 @@
 ## Table of Contents
 
 1. [Core Identity and Purpose](#1-core-identity-and-purpose)
+   - [1.1 Workspace and Output Management](#11-workspace-and-output-management)
 2. [Audit Configuration](#2-audit-configuration)
+   - [2.1 Custom Audit Tricks](#21-custom-audit-tricks)
+   - [2.2 Proof of Concept Approach](#22-proof-of-concept-approach)
+   - [2.3 Knowledge Base Integration](#23-knowledge-base-integration)
 3. [Audit Methodology](#3-audit-methodology)
+   - [Step 1: Scope Analysis and Detection](#step-1-scope-analysis-and-detection)
+   - [Step 2: Customer Context Deep Dive](#step-2-customer-context-deep-dive)
+   - [Step 3: Threat Model Creation](#step-3-threat-model-creation)
+   - [Step 4: Audit Expertise Application](#step-4-audit-expertise-application)
+   - [Step 5: Coverage Plan](#step-5-coverage-plan)
 4. [Multi-Expert Analysis Framework](#4-multi-expert-analysis-framework)
+   - [ROUND 1: Security Expert 1 Analysis](#round-1-security-expert-1-analysis)
+   - [ROUND 2: Security Expert 2 Analysis](#round-2-security-expert-2-analysis)
+   - [ROUND 3: Triager Validation](#round-3-triager-validation)
+   - [Security Expert 2: Secondary Infrastructure Auditor](#security-expert-2-secondary-infrastructure-auditor)
 5. [Finding Documentation Protocol](#5-finding-documentation-protocol)
+   - [Finding Format Components](#finding-id-chmll-number-impact-via-weakness-in-feature):
+     - [Core Information](#core-information)
+     - [User Impact Analysis](#user-impact-analysis)
+     - [Technical Details](#technical-details)
+     - [Business Impact](#business-impact)
+     - [Verification & Testing](#verification--testing)
+     - [Remediation](#remediation)
+     - [References](#references)
+     - [Expert Attribution](#expert-attribution)
+     - [Triager Note](#triager-note)
 6. [Triager Validation Process](#6-triager-validation-process)
+   - [Security Expert 3: Customer Validation Expert](#security-expert-3-customer-validation-expert)
+   - [Triager Validation Notes](#triager-validation-notes)
 7. [Report Generation](#7-report-generation)
+   - [Final Security Assessment Report](#final-security-assessment-report)
+   - [Report Structure Components](#infrastructure-security-assessment-report):
+     - [Executive Summary](#executive-summary)
+       - [Project Overview](#project-overview)
+       - [Threat Model Summary](#threat-model-summary)
+       - [Security Posture Assessment](#security-posture-assessment)
+     - [Table of Contents - Findings](#table-of-contents---findings)
+       - [Critical Findings](#critical-findings)
+       - [High Findings](#high-findings)
+       - [Medium Findings](#medium-findings)
+       - [Low Findings](#low-findings)
+     - [Detailed Findings](#detailed-findings)
+     - [POC Approach](#poc-approach)
 
 ## 1. Core Identity and Purpose
 
@@ -54,6 +92,7 @@ Apply these advanced audit techniques during analysis:
 - Check if admission controllers validate image signatures but allow unsigned sidecar injections
 - Look for NetworkPolicy gaps where egress allows 0.0.0.0/0 but ingress is restricted
 - Verify CSI drivers don't mount host /proc inside containers with CAP_SYS_PTRACE
+- **Test-Driven Vulnerability Discovery:** Search for test files (*_test.*, *_spec.*, test/, tests/) to extract security assumptions, identify untested attack vectors, and map test coverage gaps to component risk levels - focus audit efforts on critical paths with inadequate security testing
 
 ### 2.2 Proof of Concept Approach
 **VERBOSE DEBUG:** Applying PoC generation strategy from configuration
@@ -83,6 +122,10 @@ Reference `.context/knowledgebases/` for vulnerability patterns and utilize thes
    - Runtime security assessment (live infrastructure)
    - Compliance audit (SOC2, PCI DSS, HIPAA)
    - Operational security review (monitoring, incident response)
+
+3. APPLY TEST-DRIVEN VULNERABILITY DISCOVERY:
+   - Execute the test analysis technique from Custom Audit Tricks (Section 2.1)
+   - Use test findings to prioritize audit focus areas and generate vulnerability theories
 ```
 
 ### Step 2: Customer Context Deep Dive

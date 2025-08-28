@@ -19,7 +19,7 @@ Open your project in VS Code and install the GitHub Copilot extension if you hav
 
 For best results, copy `.context` to your audited workspace root, and the instructions to their expected directory, via one of the following commands:
 
-### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot (Generic Smart Contract Audit)
 
 ```bash
 git clone https://github.com/forefy/.context && mkdir -p .github/ && cp .context/copilot-instructions-smart-contracts-generic.md .github/copilot-instructions.md && echo "\\n [ .context ] Custom copilot instructions copied to workspace."
