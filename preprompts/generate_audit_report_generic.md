@@ -19,3 +19,5 @@ Only include information that is 100% correct. If something is uncertain, do not
 When referencing code, provide markdown-formatted links to the relevant parts.
 
 Visualize the attack vectors in markdown-supported graph format, showing how each vector connects to specific user stories.
+
+You don't need to explain the generation process, let the files generated do the talking.
