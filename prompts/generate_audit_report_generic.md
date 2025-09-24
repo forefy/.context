@@ -1,4 +1,4 @@
------
+```yaml
 - expected_inputs:
     Scope files, code snippets, code repos
     Documentation, links, references to understanding of the codebase
@@ -10,7 +10,7 @@
         Visual threat model in markdown graph format
         Protocol whitepaper deep dive analysis
         Comprehensive audit report with user stories
------
+```
 
 Based on scope of the audit generate graphic visual threat model, deep dive protocol whitepaper and user stories understanding, and audit report, so 3 separate .md files.
 

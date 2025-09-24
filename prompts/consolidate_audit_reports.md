@@ -1,4 +1,4 @@
------
+```yaml
 - expected_inputs:
     Multiple audit report files from .context/outputs directory
     Audit findings from various runs and tools
@@ -15,7 +15,7 @@
         Findings that appear consistently across runs
         Only confirmed valid vulnerabilities
         Maintain original audit report format structure
------
+```
 
 Use all audit reports from .context/outputs directory and generate them into a single consolidated report containing only findings that were agreed upon across all runs and are valid.
 
