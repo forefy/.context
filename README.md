@@ -9,15 +9,22 @@
 
 ## What is this?
 
-A collection of prompts and agent instructions to be used by security auditors.
+A collection of prompts and agent instructions to be used by security auditors, aimed to maximize context window efficiency to the needs of a security audit, when using a general purpose coding agent like copilot.
 
 <p align="center">
-<img src="static/example-1.png" alt="Before: Security Assessment Setup" width="600">
+<img src="static/example-1.png" alt="Before: .context reop setup" width="600">
 <br><br>
 <span style="font-size: 24px;">↓</span>
 <br><br>
-<img src="static/example-2.png" alt="After: Generated Security Analysis" width="300">
+<img src="static/example-2.png" alt="After: Starting security analysis" width="300">
 </p>
+
+Benefits of this approach over a vertical auditing agent:
+* Faster way to incorporate your audit methodologies within an AI agent (text instead of code)
+* Ability to turn a top-tier benchmarked coding agent (like copilot) to your vertical auditing agent
+* Ability to share prompts across audit team members that prefer different agents
+* If you use github copilot, a pricing model of monthly payments, instead of API pay-per-usage billing
+
 
 ## How to use?
 
@@ -55,9 +62,11 @@ claude security-review
 ```
 
 ## Prompts
+
 Files under the `prompts/` folder provide a quick way to ask the instructions-loaded agent to work for you in different ways. These are usually small simple requests that take in account that the major instructions are already picked up through the regular instruction files in this repo.
 
 ### Prompt Structure
+
 Each prompt follows a structured YAML format:
 
 ```yaml
