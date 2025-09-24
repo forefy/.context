@@ -11,11 +11,18 @@
 
 A collection of prompts and agent instructions to be used by security auditors.
 
+<p align="center">
+<img src="static/example-1.png" alt="Before: Security Assessment Setup" width="600">
+<br><br>
+<span style="font-size: 24px;">↓</span>
+<br><br>
+<img src="static/example-2.png" alt="After: Generated Security Analysis" width="300">
+</p>
+
 ## How to use?
 
-1. You clone this repo (`.context`) to the root of the audited workspace, and get the agent of your choice to be contextually tuned.
-2. Follow relevant instruction installations from below, to generate a qualitative audit findings.
-3. On "Human in the Loop" scenarios, just chat normally or use the `prompts` folder to prompt in a way optimized to the built context.
+1. Follow one of the instruction installations from below to clone this repo (`.context`) to the root of the audited workspace, and get the agent of your choice to be contextually tuned.
+2. On "Human in the Loop" scenarios, continue chatting normally or use the `prompts` folder to prompt in a way optimized to the built context.
 
 ## Installation options
 
@@ -49,6 +56,21 @@ claude security-review
 
 ## Prompts
 Files under the `prompts/` folder provide a quick way to ask the instructions-loaded agent to work for you in different ways. These are usually small simple requests that take in account that the major instructions are already picked up through the regular instruction files in this repo.
+
+### Prompt Structure
+Each prompt follows a structured YAML format:
+
+```yaml
+- expected_inputs:
+    [List of inputs the agent should expect]
+    [File types, data sources, context requirements]
+
+- expected_actions:
+    - action_type:
+        [Specific tasks to perform]
+        [Analysis requirements]
+        [Output specifications]
+```
 
 ### Available Prompts Example
 
