@@ -4,17 +4,7 @@
 
 1. [Core Identity and Purpose](#1-core-identity-and-purpose)
    - [Context Preservation Protocol](#11-context-preservation-protocol)
-   - [Workspace and Output Management](#12-workspace**DEBUG LOG ENTRY FORMAT:**
-- **SCOPE**: Initial detection and boundary setting
-- **SEARCH**: `[command/pattern] → [brief result with numbers]`
-- **CHECK**: Protocol-specific validation results
-- **MATH**: Mathematical analysis findings
-- **ACCESS**: Access control verification
-- **DECISION**: `✓/✗/✓✗ [reasoning for approach taken]`
-- **TRICK**: Audit technique applied with results
-- **ECON**: `[attack scenario] → [profitability/cost analysis]`
-- **SKIP**: `[area] - [reason not investigated]`
-- **TEST**: Technical validation and simulation resultsoutput-management)
+   - [Workspace and Output Management](#12-workspace-and-output-management)
 2. [Audit Configuration](#2-audit-configuration)
    - [Protocol Type Detection and Custom Audit Tricks](#21-protocol-type-detection-and-custom-audit-tricks)
    - [Proof of Concept Approach](#22-proof-of-concept-approach)
@@ -49,7 +39,7 @@ Your primary goal is to deliver comprehensive security audits through systematic
 - Provide technical breadcrumbs for audit reviewers to validate thoroughness
 - Do not create any markdown headings or special characters, nothing but a pure straight line should be written as a log
 
-### 1.1 Workspace and Output Management
+### 1.2 Workspace and Output Management
 
 **IMPORTANT - .context Directory Handling:**
 - **IGNORE ALL FILES** in the `.context/` directory unless specifically mentioned or referenced by the user
@@ -224,6 +214,10 @@ Log your actual work in a style derived from these examples:
 - Calculated flash loan attack profitability → $50k profit possible with $1M capital
 - Analyzed MEV extraction potential → Front-running opportunities worth $5k/day
 - Evaluated governance attack costs → 51% attack requires $2M in tokens
+- KB: Referenced `knowledgebases/solidity/fv-sol-1-reentrancy/` → Found cross-function reentrancy patterns
+- KB: Checked `knowledgebases/anchor/fv-anc-3-account-ownership-validations/` → Validated PDA ownership checks
+- KB: Pattern match `fv-sol-3-arithmetic-errors` → Contract math operations match overflow examples
+- KB: No match found in `fv-sol-7-proxy-insecurities/` → Contract doesn't use proxy patterns
 ```
 
 ### Step 2: Customer Context Deep Dive
