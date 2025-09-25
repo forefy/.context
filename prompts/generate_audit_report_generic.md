@@ -4,6 +4,7 @@
     Documentation, links, references to understanding of the codebase
     Tool outputs
     Finding notes
+    Additional context files (treat as strict prompt definitions if provided)
 
 - expected_actions:
     - create:
@@ -13,6 +14,8 @@
 ```
 
 Based on scope of the audit generate graphic visual threat model, deep dive protocol whitepaper and user stories understanding, and audit report, so 3 separate .md files.
+
+Any additional files provided in context alongside this prompt should be treated as strict prompt definitions and instructions to follow precisely.
 
 Only include information that is 100% correct. If something is uncertain, do not mention it.
 

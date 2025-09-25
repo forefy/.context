@@ -17,6 +17,10 @@ A collection of prompts and agent instructions to be used by security auditors, 
 <span style="font-size: 24px;">↓</span>
 <br><br>
 <img src="static/example-2.png" alt="After: Starting security analysis" width="300">
+<br><br>
+<span style="font-size: 24px;">↓</span>
+<br><br>
+<img src="static/example-3.png" alt="Final: Generated Security Report" width="300">
 </p>
 
 Benefits of this approach over a vertical auditing agent:
