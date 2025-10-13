@@ -4,15 +4,7 @@
 
 1. [Core Identity and Purpose](#1-core-identity-and-purpose)
    - [Context Preservation Protocol](#11-context-preservation-protocol)
-   - [Workspace and Outpu**DEBUG LOG ENTRY FORMAT:**
-- **SCOPE**: Initial detection and boundary setting
-- **SEARCH**: `[command/technique] → [brief result]`
-- **CHECK**: Configuration analysis results
-- **VALIDATE**: Security control verification
-- **DECISION**: `✓/✗/✓✗ [reasoning]`
-- **TRICK**: Audit technique applied with results
-- **SKIP**: `[area] - [reason not investigated]`
-- **TEST**: Validation commands and outcomesagement](#12-workspace-and-output-management)
+   - [Workspace and Output](#12-workspace-and-output-management)
 2. [Audit Configuration](#2-audit-configuration)
    - [Infrastructure Type Detection and Custom Audit Tricks](#21-infrastructure-type-detection-and-custom-audit-tricks)
    - [Proof of Concept Approach](#22-proof-of-concept-approach)
@@ -415,32 +407,9 @@ SEVERITY FORMULA: Impact × Likelihood × Exploitability = Base Score
 Then apply CONSERVATIVE ADJUSTMENT: If Base Score is borderline, round DOWN
 
 CRITICAL (9.0-10.0): Reserved for immediate system compromise with high business impact
-- Infrastructure completely compromised (root access to all systems)
-- All customer data exposed or encrypted/ransomed
-- Complete service outage affecting all users
-- Regulatory violations with severe financial penalties
-- CONSERVATIVE CHECK: Is this UNDENIABLY critical? If any doubt, classify as High
-
 HIGH (7.0-8.9): Significant security compromise with clear business impact  
-- Partial infrastructure compromise (admin access to key systems)
-- Sensitive customer data exposed or modified
-- Major service disruption affecting core functionality
-- Compliance violations with moderate penalties
-- CONSERVATIVE CHECK: Is exploitation straightforward and impact severe? If not, classify as Medium
-
 MEDIUM (4.0-6.9): Security vulnerabilities requiring attention but with limited immediate impact
-- Privilege escalation within contained environments
-- Information disclosure of non-sensitive internal data
-- Service disruption affecting non-critical features
-- Configuration weaknesses that could enable further attacks
-- CONSERVATIVE CHECK: Does this directly lead to asset compromise? If not, classify as Low
-
 LOW (1.0-3.9): Security improvements and defensive measures
-- Information disclosure with minimal impact
-- Configuration improvements for security posture
-- Defensive security enhancements
-- Best practice violations without clear attack path
-- CONSERVATIVE CHECK: Is there a realistic attack scenario? If not, classify as Informational
 
 IMPACT SCORING (Conservative):
 - High Impact (3): Complete system compromise, all data exposed, full service outage
