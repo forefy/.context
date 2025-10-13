@@ -403,32 +403,9 @@ SEVERITY FORMULA: Impact × Likelihood × Exploitability = Base Score
 Then apply CONSERVATIVE ADJUSTMENT: If Base Score is borderline, round DOWN
 
 CRITICAL (9.0-10.0): Reserved for immediate protocol insolvency with high TVL impact
-- Complete protocol compromise (all funds drainable)
-- Governance takeover enabling arbitrary fund extraction
-- Oracle manipulation causing catastrophic liquidations
-- Bridge exploits draining all locked assets
-- CONSERVATIVE CHECK: Is this UNDENIABLY critical with >$1M immediate loss potential? If any doubt, classify as High
-
 HIGH (7.0-8.9): Significant fund loss with clear economic incentive for attackers
-- Partial fund drainage (>10% of TVL or >$100k)
-- Flash loan attacks with guaranteed profit
-- MEV extraction causing significant user losses
-- Liquidation logic manipulation in lending protocols
-- CONSERVATIVE CHECK: Is exploitation straightforward with clear profit motive? If not, classify as Medium
-
 MEDIUM (4.0-6.9): Financial vulnerabilities requiring specific conditions
-- Fund loss requiring specific market conditions or timing
-- Privilege escalation within protocol boundaries
-- Oracle manipulation requiring significant capital
-- Governance attacks requiring substantial voting power
-- CONSERVATIVE CHECK: Does this directly lead to fund loss? If not, classify as Low
-
 LOW (1.0-3.9): Technical issues with minimal financial impact
-- Protocol functionality disruption without fund loss
-- Gas optimization issues affecting user experience
-- Information disclosure without economic exploitation
-- Best practice violations without clear attack vectors
-- CONSERVATIVE CHECK: Is there a realistic profit motive for attackers? If not, classify as Informational
 
 IMPACT SCORING (Conservative for DeFi):
 - High Impact (3): Complete protocol compromise, TVL >$1M at risk, catastrophic user losses
