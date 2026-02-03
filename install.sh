@@ -38,6 +38,8 @@ case $choice in
     echo ""
     echo "Note: Copilot CLI doesn't support custom prompts yet."
     echo "Use built-in commands like: gh copilot explain"
+    echo ""
+    echo "To start: gh copilot"
     ;;
   2)
     echo "Installing for GitHub Copilot (VSCode/IDE)..."
@@ -106,7 +108,10 @@ case $choice in
       3) cp .context/skills/security-review-vyper/SKILL.md .claude/commands/audit.md ;;
     esac
     echo "✓ Command copied to .claude/commands/audit.md"
+    echo "✓ Skills copied to .claude/skills/"
     echo "✓ Run with: claude audit"
+    echo ""
+    echo "To start: claude"
     ;;
   *)
     echo "❌ Invalid choice"
