@@ -5,19 +5,6 @@ set -e
 echo "🔒 Security Audit Skills Installer"
 echo ""
 
-GIT_REPO=false
-if [ -d ".git" ]; then
-  GIT_REPO=true
-else
-  echo "⚠️  Warning: Not in a git repository"
-  echo "   .github/ directories will be skipped"
-  read -p "Continue? [y/N]: " continue
-  if [ "$continue" != "y" ] && [ "$continue" != "Y" ]; then
-    echo "Aborted."
-    exit 0
-  fi
-fi
-
 if [ -d ".context" ]; then
   echo "ℹ️  .context directory already exists, skipping clone"
 else
@@ -35,6 +22,11 @@ echo "2) GitHub Copilot (VSCode/IDE)"
 echo "3) Claude Code"
 echo ""
 read -p "Choice [1-3]: " choice
+
+GIT_REPO=false
+if [ -d ".git" ]; then
+  GIT_REPO=true
+fi
 
 case $choice in
   1)
@@ -83,7 +75,7 @@ case $choice in
       echo "✓ Use skills with: @security-review-solidity"
       echo "✓ Use prompts with: /generate_audit_report_generic"
     else
-      echo "⚠️  Skipping .github/ setup (not in git repository)"
+      echo "ℹ️  Not in git repository - skipping .github/ setup"
       echo "✓ Skills copied to .claude/skills/"
       echo "✓ Use skills with: @security-review-solidity"
     fi
