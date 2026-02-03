@@ -21,7 +21,7 @@ echo "1) Copilot CLI (gh copilot)"
 echo "2) GitHub Copilot (VSCode/IDE)"
 echo "3) Claude Code"
 echo ""
-read -p "Choice [1-3]: " choice
+read -p "Choice [1-3]: " choice </dev/tty
 
 GIT_REPO=false
 if [ -d ".git" ]; then
@@ -50,7 +50,7 @@ case $choice in
       
       if [ -f ".github/copilot-instructions.md" ]; then
         echo "⚠️  .github/copilot-instructions.md already exists"
-        read -p "Overwrite? [y/N]: " overwrite
+        read -p "Overwrite? [y/N]: " overwrite </dev/tty
         if [ "$overwrite" != "y" ] && [ "$overwrite" != "Y" ]; then
           echo "Skipped."
           exit 0
@@ -60,7 +60,7 @@ case $choice in
       echo "Select skill:"
       echo "1) Smart Contract Audit"
       echo "2) Infrastructure Audit"
-      read -p "Choice [1-2]: " skill
+      read -p "Choice [1-2]: " skill </dev/tty
       if [ "$skill" = "1" ]; then
         cp .context/skills/smart-contract-security-audit/SKILL.md .github/copilot-instructions.md
       else
@@ -88,7 +88,7 @@ case $choice in
     
     if [ -f ".claude/commands/audit.md" ]; then
       echo "⚠️  .claude/commands/audit.md already exists"
-      read -p "Overwrite? [y/N]: " overwrite
+      read -p "Overwrite? [y/N]: " overwrite </dev/tty
       if [ "$overwrite" != "y" ] && [ "$overwrite" != "Y" ]; then
         echo "Skipped."
         exit 0
@@ -99,7 +99,7 @@ case $choice in
     echo "1) Solidity"
     echo "2) Anchor"
     echo "3) Vyper"
-    read -p "Choice [1-3]: " lang
+    read -p "Choice [1-3]: " lang </dev/tty
     case $lang in
       1) cp .context/skills/security-review-solidity/SKILL.md .claude/commands/audit.md ;;
       2) cp .context/skills/security-review-anchor/SKILL.md .claude/commands/audit.md ;;
