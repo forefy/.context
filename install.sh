@@ -17,7 +17,7 @@ fi
 
 echo ""
 echo "Select your platform:"
-echo "1) Copilot CLI (gh copilot)"
+echo "1) Copilot CLI (copilot)"
 echo "2) GitHub Copilot (VSCode/IDE)"
 echo "3) Claude Code"
 echo ""
@@ -36,10 +36,7 @@ case $choice in
     echo "✓ Skills copied to .claude/skills/"
     echo "✓ Use with: @security-review-solidity"
     echo ""
-    echo "Note: Copilot CLI doesn't support custom prompts yet."
-    echo "Use built-in commands like: gh copilot explain"
-    echo ""
-    echo "To start: gh copilot"
+    echo "To start: copilot"
     ;;
   2)
     echo "Installing for GitHub Copilot (VSCode/IDE)..."
