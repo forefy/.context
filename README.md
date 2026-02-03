@@ -7,6 +7,14 @@
 
 </p>
 
+## Quick Start
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
+```
+
+The installer will prompt you to select your platform and automatically configure everything.
+
 ## What is this?
 
 Security audit instructions for AI agents. Turn GitHub Copilot, Claude Code, or any coding agent into a specialized security auditor.
@@ -23,19 +31,12 @@ Security audit instructions for AI agents. Turn GitHub Copilot, Claude Code, or 
 <img src="static/example-3.png" alt="Final: Generated Security Report" width="300">
 </p>
 
-## Quick Start
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
-```
-
-The installer will prompt you to select your platform and automatically configure everything.
-
 ## Usage
 
 ### Copilot CLI (`gh copilot`)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
+
 ```bash
 @security-review-solidity Review contract changes
 ```
@@ -49,11 +50,13 @@ Skills use the [Agent Skills open standard](https://github.com/agentskills/agent
 ### GitHub Copilot (VSCode/IDE)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
+
 ```
 @security-review-solidity
 ```
 
 Custom slash commands are auto-installed to `.github/prompts/`:
+
 ```
 /generate_audit_report_generic
 ```
@@ -65,11 +68,13 @@ Instructions auto-load from `.github/copilot-instructions.md`.
 ### Claude Code
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
+
 ```bash
 @security-review-solidity
 ```
 
 Or run as custom command:
+
 ```bash
 claude audit
 ```
@@ -81,10 +86,12 @@ claude audit
 Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
 
 **Comprehensive Audits:**
+
 - `smart-contract-security-audit` - Full smart contract audit framework
 - `infrastructure-security-audit` - Infrastructure security audit framework
 
 **Quick Reviews:**
+
 - `security-review-solidity` - Solidity security review
 - `security-review-anchor` - Anchor/Solana security review
 - `security-review-vyper` - Vyper security review
@@ -94,6 +101,7 @@ Each skill is a directory with a `SKILL.md` file containing YAML frontmatter and
 ## Prompts
 
 Custom slash commands for Copilot (auto-installed to `.github/prompts/`):
+
 - `/generate_audit_report_generic` - Create comprehensive audit docs
 - `/consolidate_audit_reports` - Merge multiple audit runs
 - `/triage_audit_findings_generic` - Validate and filter findings
@@ -107,6 +115,7 @@ Custom slash commands for Copilot (auto-installed to `.github/prompts/`):
 ## Output
 
 Audits generate numbered folders in `.context/outputs/`:
+
 - `audit-report.md` - Security findings
 - `audit-context.md` - Scope and assumptions
 - `audit-debug.md` - Technical analysis log
