@@ -5,9 +5,13 @@ set -e
 echo "🔒 Security Audit Skills Installer"
 echo ""
 
-if [ ! -d ".git" ]; then
+GIT_REPO=false
+if [ -d ".git" ]; then
+  GIT_REPO=true
+else
   echo "⚠️  Warning: Not in a git repository"
-  read -p "Continue anyway? [y/N]: " continue
+  echo "   .github/ directories will be skipped"
+  read -p "Continue? [y/N]: " continue
   if [ "$continue" != "y" ] && [ "$continue" != "Y" ]; then
     echo "Aborted."
     exit 0
@@ -45,36 +49,44 @@ case $choice in
     ;;
   2)
     echo "Installing for GitHub Copilot (VSCode/IDE)..."
-    mkdir -p .github/ .github/prompts/ .claude/skills/
+    mkdir -p .claude/skills/
     
     cp -r .context/skills/* .claude/skills/
     
-    if [ -f ".github/copilot-instructions.md" ]; then
-      echo "⚠️  .github/copilot-instructions.md already exists"
-      read -p "Overwrite? [y/N]: " overwrite
-      if [ "$overwrite" != "y" ] && [ "$overwrite" != "Y" ]; then
-        echo "Skipped."
-        exit 0
+    if [ "$GIT_REPO" = true ]; then
+      mkdir -p .github/ .github/prompts/
+      
+      if [ -f ".github/copilot-instructions.md" ]; then
+        echo "⚠️  .github/copilot-instructions.md already exists"
+        read -p "Overwrite? [y/N]: " overwrite
+        if [ "$overwrite" != "y" ] && [ "$overwrite" != "Y" ]; then
+          echo "Skipped."
+          exit 0
+        fi
       fi
-    fi
-    
-    echo "Select skill:"
-    echo "1) Smart Contract Audit"
-    echo "2) Infrastructure Audit"
-    read -p "Choice [1-2]: " skill
-    if [ "$skill" = "1" ]; then
-      cp .context/skills/smart-contract-security-audit/SKILL.md .github/copilot-instructions.md
+      
+      echo "Select skill:"
+      echo "1) Smart Contract Audit"
+      echo "2) Infrastructure Audit"
+      read -p "Choice [1-2]: " skill
+      if [ "$skill" = "1" ]; then
+        cp .context/skills/smart-contract-security-audit/SKILL.md .github/copilot-instructions.md
+      else
+        cp .context/skills/infrastructure-security-audit/SKILL.md .github/copilot-instructions.md
+      fi
+      
+      cp .context/prompts/*.prompt.md .github/prompts/ 2>/dev/null || true
+      
+      echo "✓ Instructions copied to .github/copilot-instructions.md"
+      echo "✓ Skills copied to .claude/skills/"
+      echo "✓ Prompts copied to .github/prompts/"
+      echo "✓ Use skills with: @security-review-solidity"
+      echo "✓ Use prompts with: /generate_audit_report_generic"
     else
-      cp .context/skills/infrastructure-security-audit/SKILL.md .github/copilot-instructions.md
+      echo "⚠️  Skipping .github/ setup (not in git repository)"
+      echo "✓ Skills copied to .claude/skills/"
+      echo "✓ Use skills with: @security-review-solidity"
     fi
-    
-    cp .context/prompts/*.prompt.md .github/prompts/ 2>/dev/null || true
-    
-    echo "✓ Instructions copied to .github/copilot-instructions.md"
-    echo "✓ Skills copied to .claude/skills/"
-    echo "✓ Prompts copied to .github/prompts/"
-    echo "✓ Use skills with: @security-review-solidity"
-    echo "✓ Use prompts with: /generate_audit_report_generic"
     ;;
   3)
     echo "Installing for Claude Code..."
