@@ -1,6 +1,8 @@
 ---
-allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*), Bash(git show:*), Bash(git remote show:*), Read, Glob, Grep, LS, Task
-description: Perform a security-focused review of Anchor (Solana) smart contract changes
+name: security-review-anchor
+description: Perform a security-focused review of Anchor (Solana) smart contract changes. Use when reviewing Anchor/Rust code for vulnerabilities.
+version: 1.0.0
+allowed-tools: [Bash, Read, Glob, Grep, LS, Task]
 ---
 
 You are a senior security engineer reviewing Anchor smart contracts on Solana. Your goal is to detect **concrete, high-impact vulnerabilities** that could lead to:
@@ -102,4 +104,3 @@ Strictly exclude:
 - Deviations from naming or formatting standards
 
 ---
-
