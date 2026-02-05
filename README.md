@@ -33,7 +33,7 @@ Security audit instructions for AI agents. Turn GitHub Copilot, Claude Code, or 
 
 ## Usage
 
-### Copilot CLI (`copilot`)
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> Copilot CLI (`copilot`)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
@@ -43,9 +43,7 @@ Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 Skills use the [Agent Skills open standard](https://github.com/agentskills/agentskills).
 
-[Learn more about Copilot CLI](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
-
-### GitHub Copilot (VSCode/IDE)
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot (VSCode/IDE)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
@@ -59,17 +57,13 @@ Custom slash commands are auto-installed to `.github/prompts/`:
 /generate_audit_report_generic
 ```
 
-[Learn more about Copilot Chat](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-questions-in-your-ide)
-
-### Claude Code
+### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 ```bash
 @smart-contract-security-audit
 ```
-
-[Learn more about Claude Code](https://docs.anthropic.com/en/docs/developer-tools)
 
 ## Available Skills
 
@@ -81,6 +75,7 @@ Skills follow the [Agent Skills open standard](https://github.com/agentskills/ag
 - `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations.
 
 Each skill is a directory with:
+
 - `SKILL.md` - Main framework and instructions
 - Language-specific reference files (loaded as needed for token efficiency)
 - `reference/` - Vulnerability patterns organized by language
@@ -93,11 +88,10 @@ Custom slash commands for Copilot (auto-installed to `.github/prompts/`):
 - `/consolidate_audit_reports` - Merge multiple audit runs
 - `/triage_audit_findings_generic` - Validate and filter findings
 
-[Learn more about custom prompts](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
-
 ## Vulnerability Patterns
 
 Vulnerability patterns are organized within each skill's `reference/` directory:
+
 - `smart-contract-security-audit/reference/solidity/` - Solidity vulnerability patterns (fv-sol-X)
 - `smart-contract-security-audit/reference/anchor/` - Anchor/Solana patterns (fv-anc-X)
 - `smart-contract-security-audit/reference/vyper/` - Vyper patterns (fv-vyp-X)
