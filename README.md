@@ -33,15 +33,13 @@ Security audit instructions for AI agents. Turn GitHub Copilot, Claude Code, or 
 
 ## Usage
 
-### Copilot CLI (`gh copilot`)
+### Copilot CLI (`copilot`)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 ```bash
-@security-review-solidity Review contract changes
+@smart-contract-security-audit Review this Solidity project
 ```
-
-Note: Copilot CLI doesn't support custom prompts (`.github/prompts/`) yet. Use built-in commands.
 
 Skills use the [Agent Skills open standard](https://github.com/agentskills/agentskills).
 
@@ -52,7 +50,7 @@ Skills use the [Agent Skills open standard](https://github.com/agentskills/agent
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 ```
-@security-review-solidity
+@smart-contract-security-audit
 ```
 
 Custom slash commands are auto-installed to `.github/prompts/`:
@@ -61,8 +59,6 @@ Custom slash commands are auto-installed to `.github/prompts/`:
 /generate_audit_report_generic
 ```
 
-Instructions auto-load from `.github/copilot-instructions.md`.
-
 [Learn more about Copilot Chat](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-questions-in-your-ide)
 
 ### Claude Code
@@ -70,13 +66,7 @@ Instructions auto-load from `.github/copilot-instructions.md`.
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 ```bash
-@security-review-solidity
-```
-
-Or run as custom command:
-
-```bash
-claude audit
+@smart-contract-security-audit
 ```
 
 [Learn more about Claude Code](https://docs.anthropic.com/en/docs/developer-tools)
@@ -87,16 +77,13 @@ Skills follow the [Agent Skills open standard](https://github.com/agentskills/ag
 
 **Comprehensive Audits:**
 
-- `smart-contract-security-audit` - Full smart contract audit framework
-- `infrastructure-security-audit` - Infrastructure security audit framework
+- `smart-contract-security-audit` - Full smart contract audit framework with multi-expert analysis for Solidity, Anchor, and Vyper. Includes language-specific checks and vulnerability pattern references.
+- `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations.
 
-**Quick Reviews:**
-
-- `security-review-solidity` - Solidity security review
-- `security-review-anchor` - Anchor/Solana security review
-- `security-review-vyper` - Vyper security review
-
-Each skill is a directory with a `SKILL.md` file containing YAML frontmatter and instructions.
+Each skill is a directory with:
+- `SKILL.md` - Main framework and instructions
+- Language-specific reference files (loaded as needed for token efficiency)
+- `reference/` - Vulnerability patterns organized by language
 
 ## Prompts
 
@@ -108,9 +95,14 @@ Custom slash commands for Copilot (auto-installed to `.github/prompts/`):
 
 [Learn more about custom prompts](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
 
-## Knowledge Bases
+## Vulnerability Patterns
 
-`knowledgebases/` contains vulnerability patterns for Solidity, Anchor, and Vyper. Skills automatically reference these during audits.
+Vulnerability patterns are organized within each skill's `reference/` directory:
+- `smart-contract-security-audit/reference/solidity/` - Solidity vulnerability patterns (fv-sol-X)
+- `smart-contract-security-audit/reference/anchor/` - Anchor/Solana patterns (fv-anc-X)
+- `smart-contract-security-audit/reference/vyper/` - Vyper patterns (fv-vyp-X)
+
+Skills automatically reference these patterns during audits using progressive disclosure for token efficiency.
 
 ## Output
 

@@ -52,7 +52,7 @@ Your primary goal is to deliver comprehensive security audits through systematic
 - **IGNORE ALL FILES** in the `.context/` directory unless specifically mentioned or referenced by the user
 - The `.context/` folder contains audit framework files and should NOT be included in your security analysis
 - Only analyze the actual project files outside of `.context/`
-- **EXCEPTION:** Only reference `.context/knowledgebases/` when looking up vulnerability patterns
+- **EXCEPTION:** Only reference `reference/` directory when looking up vulnerability patterns
 
 **Output Directory Structure:**
 When saving any audit outputs, reports, or analysis files:
@@ -95,59 +95,12 @@ When saving any audit outputs, reports, or analysis files:
 3. APPLY TYPE-SPECIFIC AUDIT TRICKS:
 ```
 
-**Ethereum/Solidity DeFi AMM/DEX Tricks:**
-- Check if external calls use .call() but don't validate return data length for contracts that might self-destruct
-- Look for reentrancy guards that protect state but allow view function calls to manipulated external contracts
-- Verify if token transfers assume 18 decimals but interact with tokens having different decimal precision
-- Search for oracle price feeds that don't validate if Chainlink aggregator rounds are stale or incomplete
-- Check if swap calculations use mulDiv but don't handle intermediate overflow in complex pricing formulas
-- Look for MEV extraction opportunities in multi-hop swaps or arbitrage paths
-- Verify if slippage protection accounts for fee-on-transfer tokens reducing received amounts
+**Apply Language-Specific Audit Tricks:**
 
-**Ethereum/Solidity Lending/Borrowing Tricks:**
-- Check if liquidation logic handles underwater positions correctly during market crashes
-- Look for interest rate calculations that can overflow with extremely high utilization rates
-- Verify if collateral valuation uses time-weighted average prices to prevent flash loan manipulation
-- Search for repayment functions that don't update borrower's debt correctly with compound interest
-- Check if flash loan callbacks don't verify the original caller owns the loan amount
-- Look for governance proposals that can execute immediately during timelock by manipulating block.timestamp
-- Verify if permit functions check deadline but don't prevent replay attacks across forks
-
-**Solana/Anchor Program Tricks:**
-- Check if PDA derivations use all required seeds and verify bump seeds are canonical
-- Look for CPI calls that don't validate the target program ID matches expected program
-- Verify if account validation checks both owner and discriminator for all account types
-- Search for instructions that don't verify signer authority for accounts being modified
-- Check if account reallocation properly handles rent exemption calculations
-- Look for missing close constraints that leave accounts with non-zero data accessible
-- Verify if program-derived addresses validate all derivation parameters
-
-**Cross-chain Bridge Tricks:**
-- Check if message verification validates merkle proofs against correct block headers
-- Look for relay systems that don't verify message ordering or prevent replay attacks
-- Verify if asset locks on source chain require corresponding unlocks/mints on destination
-- Search for validator consensus mechanisms that can be manipulated with <33% stake
-- Check if time-locked withdrawals can be front-run during dispute periods
-- Look for bridge contracts that don't handle failed transactions or stuck assets
-- Verify if cross-chain message passing validates sender authenticity
-
-**NFT/Gaming Protocol Tricks:**
-- Check if metadata URIs can be modified by unauthorized parties after minting
-- Look for random number generation using predictable sources (block.timestamp, blockhash)
-- Verify if royalty calculations handle edge cases (zero prices, maximum royalties)
-- Search for batch operations that don't validate individual item permissions
-- Check if game state transitions can be front-run or sandwich attacked
-- Look for NFT approvals that don't expire or can be exploited across marketplaces
-- Verify if play-to-earn mechanisms have anti-sybil protections
-
-**Governance/DAO Tricks:**
-- Check if voting power calculations can be manipulated through flash loans or delegate loops
-- Look for proposal execution that doesn't validate proposal state before execution
-- Verify if timelock delays can be bypassed through proposal dependencies or emergency functions
-- Search for quorum calculations that don't account for total supply changes
-- Check if delegation mechanisms prevent vote buying or circular delegation
-- Look for treasury access controls that don't require multi-signature approval
-- Verify if proposal cancellation can be abused by proposers or governance attacks
+Based on detected blockchain platform, consult the appropriate reference file:
+- **Ethereum/Solidity**: See [solidity-checks.md](solidity-checks.md) for EVM-specific tricks
+- **Solana/Anchor**: See [anchor-checks.md](anchor-checks.md) for Solana-specific tricks  
+- **Vyper**: See [vyper-checks.md](vyper-checks.md) for Vyper-specific tricks
 
 ### 2.2 Proof of Concept Approach
 
@@ -155,7 +108,12 @@ Only if the repo is already configured with a testing framework, create complete
 
 ### 2.3 Knowledge Base Integration
 
-Reference `.context/knowledgebases/` for vulnerability patterns and utilize these knowledge sources:
+Reference `reference/` directory for vulnerability patterns organized by language:
+- `reference/anchor/` - Solana/Anchor vulnerability patterns (fv-anc-X)
+- `reference/solidity/` - Ethereum/Solidity vulnerability patterns (fv-sol-X)
+- `reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
+
+External resources:
 - https://consensys.github.io/smart-contract-best-practices/
 - https://swcregistry.io/
 - https://github.com/ethereum/solidity/blob/develop/docs/security-considerations.rst
@@ -221,8 +179,8 @@ Log your actual work in a style derived from these examples:
 - Calculated flash loan attack profitability → $50k profit possible with $1M capital
 - Analyzed MEV extraction potential → Front-running opportunities worth $5k/day
 - Evaluated governance attack costs → 51% attack requires $2M in tokens
-- KB: Referenced `knowledgebases/solidity/fv-sol-1-reentrancy/` → Found cross-function reentrancy patterns
-- KB: Checked `knowledgebases/anchor/fv-anc-3-account-ownership-validations/` → Validated PDA ownership checks
+- KB: Referenced `reference/solidity/fv-sol-1-reentrancy/` → Found cross-function reentrancy patterns
+- KB: Checked `reference/anchor/fv-anc-3-account-ownership-validations/` → Validated PDA ownership checks
 - KB: Pattern match `fv-sol-3-arithmetic-errors` → Contract math operations match overflow examples
 - KB: No match found in `fv-sol-7-proxy-insecurities/` → Contract doesn't use proxy patterns
 ```
@@ -297,11 +255,12 @@ graph TD
 *Custom Audit Tricks (From Configuration):*
 
 **KNOWLEDGE BASE INTEGRATION:**
-When encountering vulnerability patterns, reference `.context/knowledgebases/` for:
-- Solidity vulnerability examples in `knowledgebases/solidity/`
-- Anchor/Solana program vulnerabilities in `knowledgebases/anchor/`
+When encountering vulnerability patterns, reference `reference/` for language-specific patterns:
+- Solidity vulnerability examples in `reference/solidity/`
+- Anchor/Solana program vulnerabilities in `reference/anchor/`
+- Vyper vulnerabilities in `reference/vyper/`
 - "Bad" vs "Good" code patterns for comparison
-- Specific vulnerability classifications (fv-sol-X or fv-anc-X naming)
+- Specific vulnerability classifications (fv-sol-X, fv-anc-X, or fv-vyp-X naming)
 
 ### Step 5: Coverage Plan
 **SYSTEMATIC SMART CONTRACT COVERAGE:**
@@ -511,10 +470,10 @@ Include:
 - Best practice implementation guidance
 - Verification steps to confirm fix]
 
-### References
+**References
 **KB/Reference:** 
 - [Relevant security standards, frameworks, or documentation]
-- [Knowledge base references if applicable: `.context/knowledgebases/...`]
+- [Knowledge base references if applicable: `reference/[language]/...`]
 
 ### Expert Attribution
 
