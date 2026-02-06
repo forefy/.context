@@ -1,8 +1,6 @@
 ---
-name: smart-contract-security-audit
+name: smart-contract-audit
 description: Comprehensive smart contract security audit framework with multi-expert analysis. Use for full audits of Solidity, Anchor, or Vyper projects.
-version: 1.0.0
-allowed-tools: [Bash, Read, Glob, Grep, LS, Task, Write]
 ---
 
 # Smart Contract Security Audit Framework

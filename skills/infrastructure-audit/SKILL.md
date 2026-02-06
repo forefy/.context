@@ -1,8 +1,6 @@
 ---
-name: infrastructure-security-audit
+name: infrastructure-audit
 description: Comprehensive infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations. Use for full infrastructure audits.
-version: 1.0.0
-allowed-tools: [Bash, Read, Glob, Grep, LS, Task, Write]
 ---
 
 # Infrastructure Security Audit Framework
