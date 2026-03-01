@@ -96,7 +96,7 @@ When saving any audit outputs, reports, or analysis files:
 **Apply Language-Specific Audit Tricks:**
 
 Based on detected blockchain platform, consult the appropriate reference file:
-- **Ethereum/Solidity**: See [solidity-checks.md](solidity-checks.md) for EVM-specific tricks
+- **Ethereum/Solidity**: See [solidity-checks.md](solidity-checks.md) for EVM-specific tricks including the protocol-type lookup table that maps detected protocol type to a protocol context file
 - **Solana/Anchor**: See [anchor-checks.md](anchor-checks.md) for Solana-specific tricks  
 - **Vyper**: See [vyper-checks.md](vyper-checks.md) for Vyper-specific tricks
 
@@ -109,7 +109,13 @@ Only if the repo is already configured with a testing framework, create complete
 Reference `reference/` directory for vulnerability patterns organized by language:
 - `reference/anchor/` - Solana/Anchor vulnerability patterns (fv-anc-X)
 - `reference/solidity/` - Ethereum/Solidity vulnerability patterns (fv-sol-X)
+- `reference/solidity/protocols/` - EVM protocol-type context files derived from 10,600+ real audit findings; each file maps bug classes to protocol-specific preconditions, detection heuristics, and historical exploit patterns; cross-referenced to fv-sol-X IDs
 - `reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
+
+Three-layer reading order for Solidity/EVM audits:
+1. Detect protocol type and load the matching `reference/solidity/protocols/[type].md` — this is the primary checklist
+2. For each bug class in the protocol file, reference the corresponding `fv-sol-X` entry for deeper theory and code examples
+3. Apply quick tricks from `solidity-checks.md` throughout
 
 External resources:
 - https://consensys.github.io/smart-contract-best-practices/
