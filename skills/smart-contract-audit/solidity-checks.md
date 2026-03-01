@@ -1,5 +1,35 @@
 # Solidity-Specific Audit Checks
 
+## Protocol Context Lookup
+
+After detecting the protocol type, load the corresponding protocol context file from `reference/solidity/protocols/`. Each file contains protocol-specific preconditions, detection heuristics, and historical exploit patterns cross-referenced to fv-sol-X IDs.
+
+| Detected Protocol Characteristics | Load File |
+|------------------------------------|-----------|
+| AMM, DEX, swap, Uniswap-style, Curve-style, order book, concentrated liquidity | [reference/solidity/protocols/dexes.md](reference/solidity/protocols/dexes.md) |
+| Lending, borrowing, collateral-backed money market, flash loan, Aave-style, Compound-style | [reference/solidity/protocols/lending.md](reference/solidity/protocols/lending.md) |
+| Bridge, cross-chain, message passing, lock-and-mint, LayerZero, Wormhole | [reference/solidity/protocols/bridges.md](reference/solidity/protocols/bridges.md) |
+| Algorithmic stablecoin, rebase token, seigniorage, endogenous collateral, Luna/UST-style | [reference/solidity/protocols/algo-stables.md](reference/solidity/protocols/algo-stables.md) |
+| Decentralized stablecoin, exogenous collateral, CDP-backed stable, DAI-style | [reference/solidity/protocols/decentralized-stablecoin.md](reference/solidity/protocols/decentralized-stablecoin.md) |
+| Reserve currency, treasury-backed token, Olympus-style, protocol-owned liquidity | [reference/solidity/protocols/reserve-currency.md](reference/solidity/protocols/reserve-currency.md) |
+| Yield farming, yield aggregator, strategy vault, auto-compounder, ERC-4626, Yearn-style | [reference/solidity/protocols/yield.md](reference/solidity/protocols/yield.md) |
+| Staking pool, liquid staking, validator pool, ETH staking, restaking | [reference/solidity/protocols/staking.md](reference/solidity/protocols/staking.md) |
+| Derivatives, perpetuals, funding rate, leveraged positions, on-chain perps, GMX-style | [reference/solidity/protocols/derivatives.md](reference/solidity/protocols/derivatives.md) |
+| Synthetics, synthetic asset issuance, debt pool, mirror asset, Synthetix-style | [reference/solidity/protocols/synthetics.md](reference/solidity/protocols/synthetics.md) |
+| NFT marketplace, order book marketplace, Seaport-style, on-chain NFT auction, NFT lending market | [reference/solidity/protocols/nft-marketplace.md](reference/solidity/protocols/nft-marketplace.md) |
+| NFT minting, gaming, play-to-earn, gamefi, NFT staking | [reference/solidity/protocols/nft-gaming.md](reference/solidity/protocols/nft-gaming.md) |
+| Liquidity manager, position manager, Arrakis-style, Gamma-style, concentrated liquidity wrapper, Uniswap v3 position vault | [reference/solidity/protocols/liquidity-manager.md](reference/solidity/protocols/liquidity-manager.md) |
+| Governance, DAO, on-chain voting, timelock, treasury management | [reference/solidity/protocols/governance.md](reference/solidity/protocols/governance.md) |
+| Token launchpad, IDO, token sale, vesting, fair launch | [reference/solidity/protocols/launchpad.md](reference/solidity/protocols/launchpad.md) |
+| On-chain insurance, coverage protocol, risk pool, parametric insurance, claims | [reference/solidity/protocols/insurance.md](reference/solidity/protocols/insurance.md) |
+| Index protocol, basket token, index rebalancing, tokenized portfolio, Set Protocol-style | [reference/solidity/protocols/indexes.md](reference/solidity/protocols/indexes.md) |
+| Protocol utility service, fee router, keeper network, meta-aggregator, merkle airdrop | [reference/solidity/protocols/services.md](reference/solidity/protocols/services.md) |
+| Privacy protocol, on-chain mixing, zero-knowledge proof, shielded pool, Tornado Cash-style | [reference/solidity/protocols/privacy.md](reference/solidity/protocols/privacy.md) |
+| Real world asset tokenization, tokenized securities, permissioned token, RWA on-chain representation | [reference/solidity/protocols/rwa-tokenization.md](reference/solidity/protocols/rwa-tokenization.md) |
+| RWA lending, real-world asset-backed lending, credit facility, TrueFi-style, Goldfinch-style | [reference/solidity/protocols/rwa-lending.md](reference/solidity/protocols/rwa-lending.md) |
+
+---
+
 ## Ethereum/Solidity DeFi AMM/DEX Tricks
 
 - Check if external calls use .call() but don't validate return data length for contracts that might self-destruct
