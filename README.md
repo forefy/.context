@@ -13,13 +13,19 @@
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
 ```
 
-The installer will prompt you to select your platform and automatically configure everything.
+- The installer will:
+    - prompt you to select your agent harness (e.g. Claude Code) and install location (e.g. globally to `~/.claude/skills`)
+    - clone this repo temporarily to copy contents of `.context/skills/*` to the correct path
+- Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
+
 
 <br>
 
 ## What is this?
 
-Security audit skills for AI agents. Turn GitHub Copilot, Claude Code, or any coding agent into a specialized security auditor.
+Security aditing skills for AI agents, adhering to the [Agent Skills Format](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
+
+`.context` is one of the oldest efforts by security researchers to share auditing knowledge directly to your AI agent, and is built gradually over time. at the most simple form, you type "audit this contract" and end up with a multi-agent triaged AI report.
 
 <p align="center">
 <img src="static/example-1.png" alt="Before: .context reop setup" width="600">
