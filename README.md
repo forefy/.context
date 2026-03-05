@@ -12,10 +12,6 @@
  <a href="https://t.me/forefy_t" title="forefy Telegram">Telegram DM</a>
 </p>
 
-<p align="center">
-  <img src="https://claude.ai/favicon.ico" width="14" height="14" alt="Claude"> Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="14" height="14" alt="Copilot"> Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="14" height="14" alt="Gemini"> Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="14" height="14" alt="Codex"> Codex
-</p>
-
 ## Quick Start
 
 ```bash
