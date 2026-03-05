@@ -8,21 +8,17 @@
 </p>
 
 ## Quick Start
-### Via npx
-```
-npx skills add forefy/.context
-```
 
-### Via installer
 ```bash
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
 ```
 
 - The installer will prompt for your agent harness and install location:
-    - **Global** — skills installed to `~/.claude/skills/`
-    - **Current project** — skills installed to `.claude/skills/`
+  - **Global** — skills installed to `~/.claude/skills/`
+  - **Current project** — skills installed to `.claude/skills/`
 - Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
 
+You can also use `npx skills add forefy/.context` but vercel's skills registry is less optimal
 
 <br>
 
@@ -47,12 +43,15 @@ Security aditing skills for AI agents, adhering to the [Agent Skills Format](htt
 <br>
 
 ## Usage
-### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code  /  <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> Copilot CLI
+
+### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code / <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> Copilot CLI
 
 Skills are auto-installed to `.claude/skills/` and invoked via textual inference when you request to audit a codebase, for example:
+
 ```
 > Audit this codebase with the scope of @file.sol
 ```
+
 <br>
 
 ### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot (VSCode IDE)
@@ -111,6 +110,5 @@ Audits generate numbered folders in `.context/outputs/`:
     </td>
 </tr>
 </table>
-
 
 Your research knowledge is the only skill required to contribute, whether its a methodology, specific knowledge on a protocol or language or even corrections - everything's highly welcome! help secure and improve the community!
