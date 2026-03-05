@@ -2,63 +2,28 @@
 
 ## TLDR
 
-When a loop involves multiple calls to external contracts (e.g., `token.transfer()` or `someOtherContract.call()`), the gas cost becomes unpredictable and can be higher than expected due to the external call’s complexity.
+Loops that perform external calls on each iteration compound two risks: unbounded gas cost from the iteration itself, and reentrancy from any external call within the loop body. A malicious recipient can re-enter the looping function mid-iteration, causing state corruption, double-spending, or out-of-gas reversions that permanently lock funds.
 
-## Game
+## Detection Signals
 
-You’ve discovered a contract designed to distribute funds across multiple recipients. But wait—what happens when one recipient is a contract with a fallback function that calls back into the fund distributor? Is the loop secure, or will it spin out of control?
+**External Call Inside Loop With State Updated After Call**
+- `payable(addr).transfer(amount)` or `addr.call{value:...}("")` inside a `for` loop where the balance decrement follows the transfer
+- `IERC20(token).transfer(recipient, amount)` inside a loop over untrusted recipient addresses
+- State invariant (total balance, processed flag) is not fully committed before the first external call in the loop
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**No Reentrancy Protection on Looping Function**
+- Function performing the loop lacks a `nonReentrant` modifier
+- Checks-effects-interactions pattern violated: effects (state writes) interleaved with or after interactions (external calls)
+- No per-recipient state isolation preventing a re-entering call from replaying a prior iteration
 
-contract ReentrancyLoopsGame {
-    mapping(address => uint256) public balances;
+**Caller-Controlled Recipient List**
+- `recipients` array is passed as a calldata or memory argument by an untrusted caller
+- Caller can include a contract address they control as a recipient
+- No address validation or whitelist applied to the recipient list
 
-    // Distribute funds to an array of recipients
-    function distributeFunds(address[] memory recipients, uint256[] memory amounts) public {
-        require(recipients.length == amounts.length, "Mismatched inputs");
+## False Positives
 
-        for (uint256 i = 0; i < recipients.length; i++) {
-            require(balances[msg.sender] >= amounts[i], "Insufficient balance");
-            balances[msg.sender] -= amounts[i];
-            payable(recipients[i]).transfer(amounts[i]);
-        }
-    }
-
-    // Deposit funds
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
-}
-
-```
-
-
-### Hint 1
-What happens if a recipient’s contract has a fallback function that re-calls `distributeFunds` during the loop? Could the loop continue in an unexpected way?
-
-
-### Hint 2
-Consider how you might prevent a recipient’s contract from interfering with the loop’s execution.
-
-
-### Solution
-```solidity
-function distributeFunds(address[] memory recipients, uint256[] memory amounts) public {
-    require(recipients.length == amounts.length, "Mismatched inputs");
-
-    for (uint256 i = 0; i < recipients.length; i++) {
-        require(balances[msg.sender] >= amounts[i], "Insufficient balance");
-        balances[msg.sender] -= amounts[i]; // Fix: Update state before external interaction
-    }
-
-    for (uint256 i = 0; i < recipients.length; i++) {
-        // Fix: Perform external interaction in a separate loop to mitigate reentrancy
-        payable(recipients[i]).transfer(amounts[i]);
-    }
-}
-```
-
-
+- All state updates occur before any external calls in the loop (strict checks-effects-interactions order)
+- `nonReentrant` modifier applied to the function
+- Pull-over-push pattern: recipients claim individually rather than being iterated over in a single transaction
+- Recipients are a protocol-controlled, pre-validated set containing no external contracts

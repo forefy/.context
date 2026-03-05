@@ -2,58 +2,23 @@
 
 ## TLDR
 
-This issue arises when a loop iterates over a dynamic array (an array whose size can grow over time) without bounds or a reasonable upper limit
+Loops that iterate over a dynamic array whose length grows with user-controlled input have unbounded gas cost. As the array grows, any function performing a full iteration will eventually exceed the block gas limit and revert permanently.
 
-## Game
+## Detection Signals
 
-Hoping that the array size can't grow too large..?
+**Iteration Over User-Growable Array**
+- `for (uint256 i = 0; i < arr.length; i++)` where `arr` is a storage array with no length cap
+- Array is appended to by an externally callable function with no `require(arr.length < MAX)` guard
+- No pagination or chunked access pattern for the iteration
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Missing Invariant on Array Bounds**
+- No maximum length constant or state variable enforced at push time
+- Array length depends on cumulative user calls rather than a protocol-controlled parameter
 
-contract DynamicArrayGame {
-    uint256[] public numbers;
+## False Positives
 
-    function addNumber(uint256 number) public {
-        numbers.push(number);
-    }
-
-    function sumNumbers() public view returns (uint256) {
-        uint256 sum = 0;
-        for (uint256 i = 0; i < numbers.length; i++) {
-            sum += numbers[i];
-        }
-        return sum;
-    }
-}
-```
-
-
-### Hint 1
-Consider how the size of `numbers` affects the gas cost of `sumNumbers`. Is there a way to limit the size of the array or break the operation into smaller steps?
-
-
-### Hint 2
-Precomputing or caching results can help avoid iterating through large arrays during transactions.
-
-
-### Solution
-```solidity
-contract DynamicArrayGame {
-    uint256[] public numbers;
-    uint256 public cachedSum;
-
-    function addNumber(uint256 number) public {
-        numbers.push(number);
-        cachedSum += number; // Fix: Update cached sum during each addition
-    }
-
-    function sumNumbers() public view returns (uint256) {
-        return cachedSum; // Fix: Use cached sum instead of looping
-    }
-}
-```
+- Array length is bounded by a hard cap enforced on every push (`require(arr.length < MAX)`)
+- Iteration occurs off-chain via a view function used only in scripts or subgraphs, never in a state-changing call chain
+- Precomputed aggregate stored alongside the array so the full loop is never executed on-chain
 
 

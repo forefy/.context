@@ -38,19 +38,39 @@ contract VulnerableUncheckedCall {
 
 ## Classifications
 
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-6-unchecked-returns/<filename>` to read any case file listed below.
+
 #### [.](./ "mention")
 
-#### [fv-sol-6-c2-unchecked-transfer-return.md](fv-sol-6-c2-unchecked-transfer-return.md "mention")
+#### fv-sol-6-c2-unchecked-transfer-return.md
 
-#### [fv-sol-6-c3-silent-fail.md](fv-sol-6-c3-silent-fail.md "mention")
+#### fv-sol-6-c3-silent-fail.md
 
-#### [fv-sol-6-c4-false-positive-success-assumption.md](fv-sol-6-c4-false-positive-success-assumption.md "mention")
+#### fv-sol-6-c4-false-positive-success-assumption.md
 
-#### [fv-sol-6-c5-partial-execution-with-no-rollback.md](fv-sol-6-c5-partial-execution-with-no-rollback.md "mention")
+#### fv-sol-6-c5-partial-execution-with-no-rollback.md
 
-#### [fv-sol-6-c6-false-contract-existence-assumption.md](fv-sol-6-c6-false-contract-existence-assumption.md "mention")
+#### fv-sol-6-c6-false-contract-existence-assumption.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-6-c7-zero-amount-transfer-revert.md
+
+Tokens (LEND, early BNB) that revert on zero-amount transfers; distribution loops and rounded-fee claims DoS'd.
+
+#### fv-sol-6-c8-return-bomb.md
+
+Malicious callee returns enormous returndata; copying cost exhausts caller gas. Affects arbitrary-call dispatchers and batch executors.
+
+#### fv-sol-6-c9-erc721-unsafe-transfer.md
+
+`_mint`/`transferFrom` used instead of `_safeMint`/`safeTransferFrom`; NFTs permanently locked in non-receiver contracts.
+
+#### fv-sol-6-c10-nonstandard-erc20-behavior.md
+
+Missing return values (USDT/BNB), non-zero-to-non-zero approve revert, max-approval revert, missing Transfer/Approval events.
+
+#### fv-sol-6-c11-create-deployment-silent-failure.md
+
+Assembly `create`/`create2` returns `address(0)` on failure without reverting; zero address stored or called silently.
 
 ## Mitigation Patterns
 

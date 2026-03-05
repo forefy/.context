@@ -2,59 +2,26 @@
 
 ## TLDR
 
-If a contract does not verify that an external address is a valid contract, it may perform operations under the incorrect assumption that the contract exists, risking failed calls.
+Calling a function on an address that contains no contract code does not revert — the EVM treats it as a successful call returning empty data. When a protocol stores or accepts an external address without verifying it is a deployed contract, calls to that address silently succeed as no-ops, producing incorrect state updates or bypassed logic.
 
-## Game
+## Detection Signals
 
-What assumptions can be false?
+**Unvalidated Address at Construction or Initialization**
+- Constructor assigns `externalContract = _addr` without `require(_addr.code.length > 0)`
+- `initialize(address token)` stores `token` without verifying it is a contract
+- Admin setter `setTarget(address t)` with no `extcodesize` or `code.length` check
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Interface Cast Without Existence Check**
+- `IExternalContract(addr).performAction()` where `addr` is user-supplied or comes from an unvalidated storage variable
+- Multicall or batch executor iterates over user-provided addresses without per-entry validation
 
-interface IExternalContract {
-    function performAction() external;
-}
+**Post-Creation Use Without Zero-Address Check**
+- `factory.deploy()` result used to call methods without checking the returned address is non-zero and is a contract
+- Address loaded from a mapping or array that was never validated at write time
 
-contract ExistenceAssumptionGame {
-    address public externalContractAddress;
+## False Positives
 
-    constructor(address _externalContractAddress) {
-        externalContractAddress = _externalContractAddress;
-    }
-
-    // Function that assumes the address is a valid contract and calls a function on it
-    function executeAction() public {
-        IExternalContract(externalContractAddress).performAction();
-    }
-}
-```
-
-
-### Hint 1
-Consider how you might confirm that an address actually points to a contract before attempting to call a function on it.
-
-Solidity provides certain tools to help verify contract existence.
-
-
-### Hint 2
-Checking if code exists at `externalContractAddress` can help determine if the address points to a contract or an EOA.
-
-
-### Solution
-```solidity
-function executeAction() public {
-    require(isContract(externalContractAddress), "Address is not a contract"); // Fix: Check if address is a contract
-    IExternalContract(externalContractAddress).performAction();
-}
-
-// New function
-function isContract(address addr) internal view returns (bool) {
-    uint256 size;
-    assembly { size := extcodesize(addr) }
-    return size > 0;
-}
-```
-
-
+- Address validated at storage time with `require(addr.code.length > 0)` before assignment
+- Address is a compile-time constant referencing a known deployed contract
+- Address constrained to a whitelist where all entries were verified to be contracts at onboarding time
+- EIP-1167 minimal proxy: zero-code check is not applicable because the proxy is deployed atomically in the same call

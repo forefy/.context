@@ -2,57 +2,26 @@
 
 ## TLDR
 
-In **dynamic reentrancy**, the reentrant attack doesn’t target a specific function directly but instead exploits more complex, user-controlled logic in the contract.
+Dynamic reentrancy arises when the target of an external call is a user-supplied parameter rather than a hardcoded or whitelist-verified address. Even with correct CEI ordering, the external call hands control to attacker-controlled code, which can re-enter the contract through a different entry point or exploit logic that was not covered by the reentrancy guard.
 
-This type of reentrancy often arises when a contract allows external calls that influence its state unpredictably, based on dynamic or user-supplied data.
+## Detection Signals
 
-## Game
+**User-Controlled External Call Target**
+- Function signature `function f(address target, ...)` where `target` is used in a subsequent `.call{}`, `.delegatecall{}`, or token transfer without whitelist validation
+- `target.call{value: amount}("")` where `target` is derived from `msg.sender`, `msg.data`, or any storage slot the caller can influence
+- No `require(isApproved[target])` or equivalent allowlist check before the external call
 
-What could happen if `msg.sender` sets `target` as a contract they control, with a fallback function that calls `dynamicPayout` again?
+**Reentrancy Through Side-Entry Points**
+- The function deducts from a balance before the call but other functions in the same contract read that balance without a guard, enabling the callback to exploit sibling functions
+- `nonReentrant` applied only to the function with the explicit guard, while the dynamically-called target can re-enter through an unprotected sibling
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Delegatecall With Dynamic Target**
+- `address(target).delegatecall(data)` where `target` is caller-supplied — grants the target full write access to the contract's storage layout
+- Proxy or router patterns that forward arbitrary `(target, calldata)` pairs from untrusted input
 
-contract DynamicReentrancyGame {
-    mapping(address => uint256) public balances;
+## False Positives
 
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
-
-    function dynamicPayout(address target, uint256 amount) public {
-        require(balances[msg.sender] >= amount, "Insufficient balance");
-        balances[msg.sender] -= amount;
-        (bool success, ) = target.call{value: amount}("");
-        require(success, "Transfer failed");
-    }
-}
-```
-
-
-### Hint 1
-Dynamic reentrancy often exploits user-controlled parameters that determine the target of an external call. Here, `dynamicPayout` allows the user to specify `target`.
-
-Consider what happens if `target` is a contract that re-calls `dynamicPayout`.
-
-
-### Hint 2
-Think about whether `balances[msg.sender]` is updated _before_ the external call. If `dynamicPayout` is reentered, would the balance deduction prevent repeated calls, or is there a way to exploit this order?
-
-
-### Solution
-```solidity
-function dynamicPayout(address target, uint256 amount) public {
-    require(balances[msg.sender] >= amount, "Insufficient balance");
-
-    // Fix: Set balance to zero before any external call to prevent reentrancy
-    balances[msg.sender] -= amount;
-
-    (bool success, ) = target.call{value: amount}("");
-    require(success, "Transfer failed");
-}
-```
-
-
+- State fully updated (all balances decremented, flags set) before the dynamic external call is issued
+- `nonReentrant` applied to the function and all sibling functions that share the same state variables
+- `target` validated against an immutable allowlist or registry before the call
+- `delegatecall` restricted to a single implementation slot controlled by a time-locked admin

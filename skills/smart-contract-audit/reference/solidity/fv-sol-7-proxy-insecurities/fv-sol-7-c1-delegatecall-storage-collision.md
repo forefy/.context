@@ -2,88 +2,30 @@
 
 ## TLDR
 
-`delegatecall` is a function call that allows a contract to run code from another contract while preserving the original caller's context, including storage, `msg.sender`, and `msg.value`
+`delegatecall` executes code from another contract in the calling contract's storage context, preserving `msg.sender` and `msg.value`. When the proxy and implementation contracts declare state variables at overlapping storage slots, writes from the implementation silently corrupt proxy-level state such as the admin address or the stored implementation pointer.
 
-Since `delegatecall` runs in the storage context of the caller, if the contract calls `delegatecall` on user-supplied input, an attacker can input an address to a malicious contract that can manipulate the storage of the calling contract, potentially overwriting sensitive variables or stealing funds
+## Detection Signals
 
-If the target contract has a different storage layout, it may overwrite or corrupt crucial storage variables in the calling contract.
+**Proxy and Implementation Share Sequential Slot Layout**
+- Proxy declares one or more state variables (e.g., `address public implementation`) starting at slot 0
+- Implementation also declares state variables starting at slot 0
+- No EIP-1967 or EIP-7201 namespaced slot used for proxy-reserved storage
 
-## Game
+**Implementation Pointer Stored in Sequential Slot**
+- `implementation` address stored as a regular top-level state variable instead of via `sstore` to a `keccak256`-derived slot
+- First storage slot of proxy holds the implementation address, making it overwritable by any implementation function that writes to slot 0
 
-In this setup, the `ProxyContract` delegates all calls to `LogicContract` using `delegatecall`.
+**User-Controlled delegatecall Target**
+- `delegatecall` called with a target address supplied by the caller or stored in unconstrained proxy state
+- No validation that the target address is an approved or expected implementation contract
 
-What could possibly go wrong.
+**Missing Zero-Address Guard Before delegatecall**
+- Fallback or forwarding function calls `delegatecall` without checking `implementation != address(0)`
+- Uninitialized proxy delegates to the zero address, which succeeds silently on some chains
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+## False Positives
 
-contract LogicContract {
-    uint256 public data;
-
-    function setData(uint256 _data) public {
-        data = _data;
-    }
-}
-
-contract ProxyContract {
-    address public implementation;
-
-    constructor(address _implementation) {
-        implementation = _implementation;
-    }
-
-    // Fallback function that forwards calls to the implementation contract
-    fallback() external payable {
-        (bool success, ) = implementation.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
-### Hint 1
-`delegatecall` executes code in the context of the calling contract’s storage, meaning the storage layout must be identical between proxy and implementation.
-
-Consider how `data` and `implementation` might share the same storage slot.
-
-
-### Hint 2
-Using a specific storage slot layout or reserved storage pattern can help avoid storage collisions. Look into how to separate the proxy's storage from the implementation's storage.
-
-
-### Solution
-```solidity
-contract ProxyContract {
-    // Fix: Use a unique storage slot for the implementation address
-    bytes32 private constant implementationSlot = keccak256("proxy.implementation.address");
-
-    constructor(address _implementation) {
-        setImplementation(_implementation);
-    }
-
-    function setImplementation(address _implementation) internal {
-        assembly {
-            sstore(implementationSlot, _implementation)
-        }
-    }
-
-    function getImplementation() public view returns (address impl) {
-        assembly {
-            impl := sload(implementationSlot)
-        }
-    }
-
-    // Fallback function that forwards calls to the implementation contract
-    fallback() external payable {
-        address impl = getImplementation();
-        require(impl != address(0), "Implementation not set");
-
-        (bool success, ) = impl.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
+- Implementation pointer stored via `sstore` at a `keccak256`-derived slot (EIP-1967: `keccak256("eip1967.proxy.implementation") - 1`)
+- All proxy-reserved storage uses EIP-7201 namespaced positions with no overlap with sequential implementation slots
+- Implementation contract has no state variables at slot 0 (all storage in a diamond-style namespaced struct)
+- Read-only proxies that never write storage through delegatecall

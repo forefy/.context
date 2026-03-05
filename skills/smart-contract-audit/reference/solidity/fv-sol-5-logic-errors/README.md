@@ -54,17 +54,41 @@ contract VulnerableMarket {
 
 ## Classifications
 
-#### [fv-sol-5-c1-boundary-misalignment.md](fv-sol-5-c1-boundary-misalignment.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-5-logic-errors/<filename>` to read any case file listed below.
 
-#### [fv-sol-5-c2-incorrect-conditionals.md](fv-sol-5-c2-incorrect-conditionals.md "mention")
+#### fv-sol-5-c1-boundary-misalignment.md
 
-#### [fv-sol-5-c3-improper-state-transitions.md](fv-sol-5-c3-improper-state-transitions.md "mention")
+#### fv-sol-5-c2-incorrect-conditionals.md
 
-#### [fv-sol-5-c4-misordered-calculations.md](fv-sol-5-c4-misordered-calculations.md "mention")
+#### fv-sol-5-c3-improper-state-transitions.md
 
-#### [fv-sol-5-c5-event-misreporting.md](fv-sol-5-c5-event-misreporting.md "mention")
+#### fv-sol-5-c4-misordered-calculations.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-5-c5-event-misreporting.md
+
+#### fv-sol-5-c6-same-block-snapshot-abuse.md
+
+Flash loan + same-block deposit captures governance votes, yield, or insurance coverage; no minimum holding period enforced.
+
+#### fv-sol-5-c7-msg-value-reuse-multicall.md
+
+msg.value read inside loop credits full ETH on every iteration; delegatecall-based multicall allows msg.value reuse across sub-calls.
+
+#### fv-sol-5-c8-force-eth-injection.md
+
+selfdestruct, coinbase rewards, and CREATE2 pre-funding send ETH without triggering receive(); breaks balance-based invariants.
+
+#### fv-sol-5-c9-deployment-config-pitfalls.md
+
+Cross-chain replay, nonce gaps, non-atomic init front-running, immutable misconfiguration, hardcoded addresses, block-number-as-timestamp.
+
+#### fv-sol-5-c10-data-structure-state-integrity.md
+
+Array delete leaves zero gap; duplicate IDs in user-supplied arrays enable double-claims; nested mappings not cleared on struct delete.
+
+#### fv-sol-5-c11-weak-onchain-randomness.md
+
+prevrandao, blockhash, block.timestamp, and coinbase all manipulable or predictable; commit-reveal without future-block binding insufficient.
 
 ## Mitigation Patterns
 

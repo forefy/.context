@@ -68,7 +68,7 @@ Liquidation must have its own pause flag, independent of deposit or repay pauses
 
 ---
 
-### Oracle Price Manipulation (ref: fv-sol-10)
+### Oracle Price Manipulation (ref: fv-sol-10, fv-sol-10-c5, fv-sol-10-c6, fv-sol-10-c7)
 
 **Protocol-Specific Preconditions**
 - Protocol reads `IUniswapV3Pool.slot0()` for pricing; slot0 reflects the last executed trade and is trivially movable by a flash loan in the same transaction
@@ -290,7 +290,7 @@ Caviar's first depositor could break share minting by depositing 1 wei, then don
 
 ---
 
-### Flash Loan Attacks (no fv-sol equivalent — candidate for new entry)
+### Flash Loan Attacks (ref: fv-sol-8-c1, fv-sol-10-c3)
 
 **Protocol-Specific Preconditions**
 - Reward eligibility or governance voting power is based on instantaneous balance rather than a time-weighted or checkpointed snapshot
@@ -413,7 +413,7 @@ Astaria's ERC4626Router functions always reverted because the router approved th
 
 ---
 
-### Signature and Replay Vulnerabilities (no fv-sol equivalent — candidate for new entry)
+### Signature and Replay Vulnerabilities (ref: fv-sol-4-c4, fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 - Signed messages omit the chain ID from the digest, allowing signatures from one chain to be replayed on any other chain the protocol is deployed on
@@ -462,7 +462,7 @@ LI.FI's proxy facets approved arbitrary user-supplied addresses for ERC-20 token
 
 ---
 
-### Fee-on-Transfer Token Handling (no fv-sol equivalent — candidate for new entry)
+### Fee-on-Transfer Token Handling (ref: fv-sol-2-c7)
 
 **Protocol-Specific Preconditions**
 - The protocol calls `token.transferFrom(user, address(this), amount)` and credits `amount` to internal accounting, but the token charges a transfer fee so the contract receives less than `amount`

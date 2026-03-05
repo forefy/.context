@@ -2,90 +2,29 @@
 
 ## TLDR
 
-When two functions in the implementation contract have the same function selector, unintended functions can be called, leading to incorrect behavior or security loopholes
+Function selectors are the first four bytes of the keccak256 hash of a function signature. When a proxy contract exposes public functions whose selectors match functions in the implementation, the proxy intercepts and handles those calls itself rather than delegating them, causing silent misbehavior or unauthorized access to proxy-level operations.
 
-## Game
+## Detection Signals
 
-This proxy implements a function with a selector that could potentially collide with implementation contract functions.
+**Public Functions on Proxy Contract**
+- Proxy contract defines `public` or `external` functions beyond the fallback and constructor
+- Any proxy function selector can be brute-forced or accidentally matched by an implementation function
 
-## Sections
-### Code
-```solidity
+**Upgrade or Admin Functions Exposed as Public**
+- `setImplementation`, `upgradeTo`, or admin transfer functions are `public` instead of `internal` or protected behind a dedicated admin-only path
+- Callers targeting the implementation can accidentally trigger proxy-level state changes
 
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+**No Selector Isolation Between Proxy and Implementation**
+- Proxy and implementation compiled without a tool (e.g., OZ upgrades plugin) that checks for selector collisions at build time
+- Implementation ABI not compared against proxy ABI for four-byte collisions before deployment
 
-contract LogicContract {
-    uint256 public data;
+**Transparent Proxy Pattern Not Applied**
+- Proxy does not distinguish between admin callers (routed to proxy functions) and non-admin callers (routed to implementation)
+- All callers share the same routing logic, making selector collisions exploitable by any address
 
-    function setData(uint256 _data) public {
-        data = _data;
-    }
-}
+## False Positives
 
-contract ProxyContract {
-    address public implementation;
-
-    constructor(address _implementation) {
-        implementation = _implementation;
-    }
-
-    function setImplementation(address _implementation) public {
-        implementation = _implementation;
-    }
-
-    // Fallback function that forwards calls to the implementation contract
-    fallback() external payable {
-        (bool success, ) = implementation.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
-### Hint 1
-The function selector is determined by the first four bytes of the hashed function signature.&#x20;
-
-Think about what happens if a call intended for `LogicContract` accidentally matches a function in `ProxyContract`.
-
-
-### Hint 2
-Using a specific interface structure can help avoid accidental selector collisions between proxy and implementation.
-
-Look into ways to segregate function selectors in proxy and implementation contracts.
-
-
-### Solution
-```solidity
-contract ProxyContract {
-    bytes32 private constant implementationSlot = keccak256("proxy.implementation.address");
-
-    constructor(address _implementation) {
-        setImplementation(_implementation);
-    }
-    
-    // Fix: setImplementation is now internal to block collisions
-    function setImplementation(address _implementation) internal {
-        assembly {
-            sstore(implementationSlot, _implementation)
-        }
-    }
-
-    function getImplementation() public view returns (address impl) {
-        assembly {
-            impl := sload(implementationSlot)
-        }
-    }
-
-    // Fallback function that forwards calls to the implementation contract
-    fallback() external payable {
-        address impl = getImplementation();
-        require(impl != address(0), "Implementation not set");
-
-        (bool success, ) = impl.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
+- Transparent proxy pattern where admin calls are routed to proxy functions and all other callers are unconditionally forwarded via fallback
+- UUPS pattern where upgrade logic lives in the implementation (no public proxy functions that can collide)
+- Selector collision checks enforced in CI via the OpenZeppelin upgrades plugin or equivalent static analysis
+- Proxy exposes only `fallback` and `receive`, with all admin operations gated through a separate `ProxyAdmin` contract

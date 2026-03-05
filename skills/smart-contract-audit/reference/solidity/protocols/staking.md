@@ -267,7 +267,7 @@ Place all `require` success checks before any `return` statement and after all s
 
 ---
 
-### Vault Share Inflation and First-Depositor Attack (no fv-sol equivalent — candidate for new entry)
+### Vault Share Inflation and First-Depositor Attack (ref: fv-sol-2-c6)
 
 **Protocol-Specific Preconditions**
 - The vault follows an ERC4626-style `shares = assets * totalSupply / totalAssets` formula with no virtual offset or dead-share initialization.
@@ -326,7 +326,7 @@ Update the `rewardPerToken` accumulator synchronously on every deposit, withdraw
 
 ---
 
-### ERC4626 Vault Non-Compliance (no fv-sol equivalent — candidate for new entry)
+### ERC4626 Vault Non-Compliance (ref: fv-sol-2-c6)
 
 **Protocol-Specific Preconditions**
 - `maxDeposit`, `maxMint`, `maxWithdraw`, or `maxRedeem` return non-zero values when the vault is paused, causing integrating protocols to attempt operations that will revert.
@@ -354,7 +354,7 @@ Implement `maxDeposit` and `maxMint` with an explicit `if (paused()) return 0` g
 
 ---
 
-### Token Integration Issues (no fv-sol equivalent — candidate for new entry)
+### Token Integration Issues (ref: fv-sol-2-c7, fv-sol-6-c10)
 
 **Protocol-Specific Preconditions**
 - The protocol accepts arbitrary ERC20 tokens and records deposit amounts from the `transferFrom` parameter rather than a before/after balance difference, causing over-accounting for fee-on-transfer tokens.
@@ -382,7 +382,7 @@ Use before/after balance difference (`balanceAfter - balanceBefore`) for all dep
 
 ---
 
-### Governance and Voting Manipulation (no fv-sol equivalent — candidate for new entry)
+### Governance and Voting Manipulation (ref: fv-sol-5-c6)
 
 **Protocol-Specific Preconditions**
 - Voting checkpoints are written per-transfer; multiple transfers in the same block create separate checkpoints with the same timestamp, and binary search returns the wrong one.
@@ -410,7 +410,7 @@ Consolidate voting checkpoints within the same block timestamp into a single ent
 
 ---
 
-### Signature Replay and Validation Gaps (no fv-sol equivalent — candidate for new entry)
+### Signature Replay and Validation Gaps (ref: fv-sol-4-c4, fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 - `ecrecover` is called directly without checking for an `address(0)` return, which occurs for any invalid signature input; if `address(0)` holds a role or is an initialized mapping key, the check passes.

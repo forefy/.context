@@ -2,45 +2,25 @@
 
 ## TLDR
 
-functions like `delegatecall`, `call`, `staticcall`, `send`, and external contract function calls fail but return values go unchecked, leading to unintended state changes, lost funds, or incorrect assumptions about success
+Low-level calls (`call`, `delegatecall`, `staticcall`, `send`) return a boolean success flag instead of reverting on failure. When the return value is discarded the caller continues execution under the false assumption that the operation succeeded, enabling lost funds, skipped logic, and corrupted state.
 
-## Game
+## Detection Signals
 
-Look for unchecked low level calls
+**Discarded Return Value**
+- `target.call(data)` as a standalone statement with no `(bool success, ...)` capture
+- `target.delegatecall(data)` or `target.staticcall(data)` return value not stored or checked
+- `target.send(amount)` without storing and checking the returned bool
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Captured but Unchecked**
+- `(bool success, bytes memory ret) = target.call(data)` followed by no `require(success)` or conditional revert
+- `bool ok = addr.call(...)` where `ok` is never read after assignment
 
-contract UncheckedCallGame {
-    address public targetContract;
+**Indirect Patterns**
+- Helper function wraps a low-level call and returns void, discarding the inner bool
+- Assembly `call` opcode with the success value popped from stack rather than stored
 
-    constructor(address _targetContract) {
-        targetContract = _targetContract;
-    }
+## False Positives
 
-    function executeExternalCall(bytes memory data) public {
-        targetContract.call(data);
-    }
-}
-```
-
-
-### Hint 1
-Low-level calls (`call`) do not automatically revert if they fail. Consider how you might confirm that the `call` succeeded before allowing the function to proceed.
-
-
-### Hint 2
-Use the return values from `call` to check if the external call succeeded and take appropriate action if it didn’t.
-
-
-### Solution
-```solidity
-function executeExternalCall(bytes memory data) public {
-    (bool success, ) = targetContract.call(data);
-    require(success, "External call failed"); // Fix: Check the success of the call
-}
-```
-
-
+- `require(success, "...")` or `if (!success) revert ...` immediately follows the captured bool
+- Intentional fire-and-forget call where failure is an accepted outcome and is explicitly documented in a NatSpec comment
+- Wrapped in an internal helper that itself reverts on failure and is used consistently throughout the codebase

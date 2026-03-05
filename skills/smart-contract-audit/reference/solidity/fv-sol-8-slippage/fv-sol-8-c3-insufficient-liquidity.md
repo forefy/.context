@@ -2,57 +2,27 @@
 
 ## TLDR
 
-If a DEX doesn’t have enough liquidity in the token pair, the price impact will be disproportionately high, leading to significant slippage or failed transactions.
+When a DEX pool has insufficient liquidity relative to the swap size, price impact grows non-linearly and the resulting output can be drastically below fair value. Without a pre-swap liquidity check or a tightly enforced `amountOutMinimum`, the contract accepts any output the pool returns, including near-zero amounts caused by thin liquidity.
 
-## Game
+## Detection Signals
 
-If the DEX’s liquidity is low, the swap might incur heavy slippage, or worse, revert due to insufficient output tokens. What to do??
+**No Pre-Swap Liquidity Validation**
+- `dex.swap(tokenIn, tokenOut, amountIn)` called without checking available pool reserves
+- No call to `getAvailableLiquidity()`, `getReserves()`, or equivalent before the swap
+- Swap size not compared against pool depth as a percentage — no maximum trade-size-to-liquidity ratio enforced
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Insufficient Post-Swap Output Check**
+- `require(amountOut > 0)` is the only output validation — accepts any non-zero dust amount
+- `amountOutMinimum` absent or set to zero in the swap call
+- No caller-supplied minimum output parameter; contract does not propagate slippage bound to the DEX router
 
-interface IDEX {
-    function swap(address tokenIn, address tokenOut, uint256 amountIn) external returns (uint256);
-    function getAvailableLiquidity(address tokenOut) external view returns (uint256);
-}
+**No Liquidity Threshold Parameter**
+- Function signature lacks a `minLiquidity` or `minAmountOut` parameter
+- Liquidity floor, if any, is hardcoded to zero or not present
 
-contract InsufficientLiquidityGame {
-    IDEX public dex;
-    address public tokenOut;
+## False Positives
 
-    constructor(address _dex, address _tokenOut) {
-        dex = IDEX(_dex);
-        tokenOut = _tokenOut;
-    }
-
-    function executeSwap(address tokenIn, uint256 amountIn) public {
-        uint256 amountOut = dex.swap(tokenIn, tokenOut, amountIn);
-        require(amountOut > 0, "Swap failed");
-    }
-}
-
-```
-
-
-### Hint 1
-Before performing a swap, consider how you might verify that the DEX has enough liquidity for the requested token.
-
-
-### Hint 2
-Checking the DEX’s available liquidity for `tokenOut` can help you ensure that the swap is feasible and reduce the risk of slippage or failure.
-
-
-### Solution
-```solidity
-function executeSwap(address tokenIn, uint256 amountIn, uint256 minLiquidity) public {
-    uint256 availableLiquidity = dex.getAvailableLiquidity(tokenOut);
-    require(availableLiquidity >= minLiquidity, "Insufficient liquidity"); // Fix: Check liquidity before swapping
-
-    uint256 amountOut = dex.swap(tokenIn, tokenOut, amountIn);
-    require(amountOut > 0, "Swap failed");
-}
-```
-
-
+- `amountOutMinimum` is a caller-supplied parameter validated on-chain by the router before execution
+- Protocol enforces a minimum pool TVL threshold and reverts if liquidity falls below it before swapping
+- Swap is routed across multiple pools with aggregate liquidity validation ensuring total output meets the user's minimum
+- Concentrated liquidity pool (e.g. Uniswap v3) with tight price range guarantees sufficient depth at current tick

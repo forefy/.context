@@ -245,7 +245,7 @@ Require `tokenIds.length > 0` for all order entries before executing any transfe
 
 ---
 
-### Raffle and Randomness Manipulation (no fv-sol equivalent — candidate for new entry)
+### Raffle and Randomness Manipulation (ref: fv-sol-5-c11)
 
 **Protocol-Specific Preconditions**
 

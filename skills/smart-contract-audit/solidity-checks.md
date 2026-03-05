@@ -2,31 +2,31 @@
 
 ## Protocol Context Lookup
 
-After detecting the protocol type, load the corresponding protocol context file from `reference/solidity/protocols/`. Each file contains protocol-specific preconditions, detection heuristics, and historical exploit patterns cross-referenced to fv-sol-X IDs.
+After detecting the protocol type, run `cat $SKILL_DIR/reference/solidity/protocols/<file>` for the matching row. Each file contains protocol-specific preconditions, detection heuristics, and historical exploit patterns cross-referenced to fv-sol-X IDs.
 
-| Detected Protocol Characteristics | Load File |
-|------------------------------------|-----------|
-| AMM, DEX, swap, Uniswap-style, Curve-style, order book, concentrated liquidity | [reference/solidity/protocols/dexes.md](reference/solidity/protocols/dexes.md) |
-| Lending, borrowing, collateral-backed money market, flash loan, Aave-style, Compound-style | [reference/solidity/protocols/lending.md](reference/solidity/protocols/lending.md) |
-| Bridge, cross-chain, message passing, lock-and-mint, LayerZero, Wormhole | [reference/solidity/protocols/bridges.md](reference/solidity/protocols/bridges.md) |
-| Algorithmic stablecoin, rebase token, seigniorage, endogenous collateral, Luna/UST-style | [reference/solidity/protocols/algo-stables.md](reference/solidity/protocols/algo-stables.md) |
-| Decentralized stablecoin, exogenous collateral, CDP-backed stable, DAI-style | [reference/solidity/protocols/decentralized-stablecoin.md](reference/solidity/protocols/decentralized-stablecoin.md) |
-| Reserve currency, treasury-backed token, Olympus-style, protocol-owned liquidity | [reference/solidity/protocols/reserve-currency.md](reference/solidity/protocols/reserve-currency.md) |
-| Yield farming, yield aggregator, strategy vault, auto-compounder, ERC-4626, Yearn-style | [reference/solidity/protocols/yield.md](reference/solidity/protocols/yield.md) |
-| Staking pool, liquid staking, validator pool, ETH staking, restaking | [reference/solidity/protocols/staking.md](reference/solidity/protocols/staking.md) |
-| Derivatives, perpetuals, funding rate, leveraged positions, on-chain perps, GMX-style | [reference/solidity/protocols/derivatives.md](reference/solidity/protocols/derivatives.md) |
-| Synthetics, synthetic asset issuance, debt pool, mirror asset, Synthetix-style | [reference/solidity/protocols/synthetics.md](reference/solidity/protocols/synthetics.md) |
-| NFT marketplace, order book marketplace, Seaport-style, on-chain NFT auction, NFT lending market | [reference/solidity/protocols/nft-marketplace.md](reference/solidity/protocols/nft-marketplace.md) |
-| NFT minting, gaming, play-to-earn, gamefi, NFT staking | [reference/solidity/protocols/nft-gaming.md](reference/solidity/protocols/nft-gaming.md) |
-| Liquidity manager, position manager, Arrakis-style, Gamma-style, concentrated liquidity wrapper, Uniswap v3 position vault | [reference/solidity/protocols/liquidity-manager.md](reference/solidity/protocols/liquidity-manager.md) |
-| Governance, DAO, on-chain voting, timelock, treasury management | [reference/solidity/protocols/governance.md](reference/solidity/protocols/governance.md) |
-| Token launchpad, IDO, token sale, vesting, fair launch | [reference/solidity/protocols/launchpad.md](reference/solidity/protocols/launchpad.md) |
-| On-chain insurance, coverage protocol, risk pool, parametric insurance, claims | [reference/solidity/protocols/insurance.md](reference/solidity/protocols/insurance.md) |
-| Index protocol, basket token, index rebalancing, tokenized portfolio, Set Protocol-style | [reference/solidity/protocols/indexes.md](reference/solidity/protocols/indexes.md) |
-| Protocol utility service, fee router, keeper network, meta-aggregator, merkle airdrop | [reference/solidity/protocols/services.md](reference/solidity/protocols/services.md) |
-| Privacy protocol, on-chain mixing, zero-knowledge proof, shielded pool, Tornado Cash-style | [reference/solidity/protocols/privacy.md](reference/solidity/protocols/privacy.md) |
-| Real world asset tokenization, tokenized securities, permissioned token, RWA on-chain representation | [reference/solidity/protocols/rwa-tokenization.md](reference/solidity/protocols/rwa-tokenization.md) |
-| RWA lending, real-world asset-backed lending, credit facility, TrueFi-style, Goldfinch-style | [reference/solidity/protocols/rwa-lending.md](reference/solidity/protocols/rwa-lending.md) |
+| Detected Protocol Characteristics | Bash Command |
+|------------------------------------|--------------|
+| AMM, DEX, swap, Uniswap-style, Curve-style, order book, concentrated liquidity | `cat $SKILL_DIR/reference/solidity/protocols/dexes.md` |
+| Lending, borrowing, collateral-backed money market, flash loan, Aave-style, Compound-style | `cat $SKILL_DIR/reference/solidity/protocols/lending.md` |
+| Bridge, cross-chain, message passing, lock-and-mint, LayerZero, Wormhole | `cat $SKILL_DIR/reference/solidity/protocols/bridges.md` |
+| Algorithmic stablecoin, rebase token, seigniorage, endogenous collateral, Luna/UST-style | `cat $SKILL_DIR/reference/solidity/protocols/algo-stables.md` |
+| Decentralized stablecoin, exogenous collateral, CDP-backed stable, DAI-style | `cat $SKILL_DIR/reference/solidity/protocols/decentralized-stablecoin.md` |
+| Reserve currency, treasury-backed token, Olympus-style, protocol-owned liquidity | `cat $SKILL_DIR/reference/solidity/protocols/reserve-currency.md` |
+| Yield farming, yield aggregator, strategy vault, auto-compounder, ERC-4626, Yearn-style | `cat $SKILL_DIR/reference/solidity/protocols/yield.md` |
+| Staking pool, liquid staking, validator pool, ETH staking, restaking | `cat $SKILL_DIR/reference/solidity/protocols/staking.md` |
+| Derivatives, perpetuals, funding rate, leveraged positions, on-chain perps, GMX-style | `cat $SKILL_DIR/reference/solidity/protocols/derivatives.md` |
+| Synthetics, synthetic asset issuance, debt pool, mirror asset, Synthetix-style | `cat $SKILL_DIR/reference/solidity/protocols/synthetics.md` |
+| NFT marketplace, order book marketplace, Seaport-style, on-chain NFT auction, NFT lending market | `cat $SKILL_DIR/reference/solidity/protocols/nft-marketplace.md` |
+| NFT minting, gaming, play-to-earn, gamefi, NFT staking | `cat $SKILL_DIR/reference/solidity/protocols/nft-gaming.md` |
+| Liquidity manager, position manager, Arrakis-style, Gamma-style, concentrated liquidity wrapper, Uniswap v3 position vault | `cat $SKILL_DIR/reference/solidity/protocols/liquidity-manager.md` |
+| Governance, DAO, on-chain voting, timelock, treasury management | `cat $SKILL_DIR/reference/solidity/protocols/governance.md` |
+| Token launchpad, IDO, token sale, vesting, fair launch | `cat $SKILL_DIR/reference/solidity/protocols/launchpad.md` |
+| On-chain insurance, coverage protocol, risk pool, parametric insurance, claims | `cat $SKILL_DIR/reference/solidity/protocols/insurance.md` |
+| Index protocol, basket token, index rebalancing, tokenized portfolio, Set Protocol-style | `cat $SKILL_DIR/reference/solidity/protocols/indexes.md` |
+| Protocol utility service, fee router, keeper network, meta-aggregator, merkle airdrop | `cat $SKILL_DIR/reference/solidity/protocols/services.md` |
+| Privacy protocol, on-chain mixing, zero-knowledge proof, shielded pool, Tornado Cash-style | `cat $SKILL_DIR/reference/solidity/protocols/privacy.md` |
+| Real world asset tokenization, tokenized securities, permissioned token, RWA on-chain representation | `cat $SKILL_DIR/reference/solidity/protocols/rwa-tokenization.md` |
+| RWA lending, real-world asset-backed lending, credit facility, TrueFi-style, Goldfinch-style | `cat $SKILL_DIR/reference/solidity/protocols/rwa-lending.md` |
 
 ---
 
@@ -119,14 +119,14 @@ After detecting the protocol type, load the corresponding protocol context file 
 
 ## Knowledge Base References
 
-For detailed vulnerability patterns, see:
-- `reference/solidity/fv-sol-1-reentrancy/` - Reentrancy attack patterns
-- `reference/solidity/fv-sol-2-precision-errors/` - Fixed-point math issues
-- `reference/solidity/fv-sol-3-arithmetic-errors/` - Overflow/underflow patterns
-- `reference/solidity/fv-sol-4-bad-access-control/` - Access control vulnerabilities
-- `reference/solidity/fv-sol-5-logic-errors/` - Business logic flaws
-- `reference/solidity/fv-sol-6-unchecked-returns/` - External call validation
-- `reference/solidity/fv-sol-7-proxy-insecurities/` - Proxy pattern vulnerabilities
-- `reference/solidity/fv-sol-8-slippage/` - MEV and slippage issues
-- `reference/solidity/fv-sol-9-unbounded-loops/` - DoS vulnerabilities
-- `reference/solidity/fv-sol-10-oracle-manipulation/` - Oracle attack vectors
+For detailed vulnerability patterns, read the relevant README then drill into case files:
+- `cat $SKILL_DIR/reference/solidity/fv-sol-1-reentrancy/README.md` - Reentrancy attack patterns
+- `cat $SKILL_DIR/reference/solidity/fv-sol-2-precision-errors/README.md` - Fixed-point math, ERC4626 rounding, special token accounting
+- `cat $SKILL_DIR/reference/solidity/fv-sol-3-arithmetic-errors/README.md` - Overflow/underflow, assembly pitfalls
+- `cat $SKILL_DIR/reference/solidity/fv-sol-4-bad-access-control/README.md` - Access control, signatures, hash collision
+- `cat $SKILL_DIR/reference/solidity/fv-sol-5-logic-errors/README.md` - Business logic, deployment config, randomness
+- `cat $SKILL_DIR/reference/solidity/fv-sol-6-unchecked-returns/README.md` - External call validation, non-standard tokens
+- `cat $SKILL_DIR/reference/solidity/fv-sol-7-proxy-insecurities/README.md` - Proxy patterns, upgrade lifecycle, diamond
+- `cat $SKILL_DIR/reference/solidity/fv-sol-8-slippage/README.md` - MEV, slippage, oracle front-running
+- `cat $SKILL_DIR/reference/solidity/fv-sol-9-unbounded-loops/README.md` - DoS, gas griefing, blacklistable tokens
+- `cat $SKILL_DIR/reference/solidity/fv-sol-10-oracle-manipulation/README.md` - Oracle attacks, Chainlink validity, L2 sequencer

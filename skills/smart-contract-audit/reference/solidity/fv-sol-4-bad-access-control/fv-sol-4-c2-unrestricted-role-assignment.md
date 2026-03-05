@@ -2,51 +2,26 @@
 
 ## TLDR
 
-If a function to set an owner or assign roles is **public or lacks access control**, anyone can call it, potentially taking control of the contract
+When a function that assigns ownership, admin rights, or privileged roles is public and lacks any access control guard, any caller can elevate their own privileges or assign them to an attacker-controlled address, taking full control of the contract.
 
-## Game
+## Detection Signals
 
-Your task is to identify how unauthorized users might exploit this contract to assign themselves privileged access. The `assignPrivilege` function seems simple, but there’s more to consider in how it’s secured.
+**Unguarded Role-Assignment Function**
+- `public` or `external` function that writes to `owner`, `admin`, or a role-tracking mapping without a `require(msg.sender == admin)` or role-based modifier
+- Missing `onlyOwner`, `onlyRole`, or equivalent guard on any function that grants or revokes roles
+- `setOwner(address)`, `grantRole(bytes32, address)`, `addAdmin(address)` callable by any address
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Initialization-Time Exposure**
+- `initialize()` function with no access control that sets owner — callable by anyone after deployment if not called atomically
+- Proxy pattern where `initialize` is not gated by `initializer` modifier, allowing re-initialization
 
-contract RoleAssignmentGame {
-    address public admin;
-    mapping(address => bool) public privilegedUsers;
+**Indirect Privilege Escalation**
+- A public function that writes to a mapping used later as an authorization check without validating who the caller is
+- `privilegedUsers[user] = true` reachable without a caller identity check
 
-    constructor() {
-        admin = msg.sender;
-    }
+## False Positives
 
-    function assignPrivilege(address user) public {
-        privilegedUsers[user] = true;
-    }
-
-    function restrictedFunction() public view returns (string memory) {
-        require(privilegedUsers[msg.sender], "Access denied");
-        return "Privileged access granted!";
-    }
-}
-```
-
-
-### Hint 1
-When thinking about role assignment, consider who should ideally have control over this function and whether this is enforced here.
-
-
-### Hint 2
-Ask yourself if any user could call `assignPrivilege` and what might happen if they did so.
-
-
-### Solution
-```solidity
-function assignPrivilege(address user) public {
-    require(msg.sender == admin, "Only admin can assign privileges"); // Fix: access control
-    privilegedUsers[user] = true;
-}
-```
-
-
+- Role-assignment function is `internal` or `private`
+- `onlyOwner` or `onlyRole` modifier present and correctly enforced
+- Assignment occurs exclusively in the `constructor` where `msg.sender` is implicitly trusted
+- OpenZeppelin `AccessControl` or `Ownable` used without overrides that bypass guards

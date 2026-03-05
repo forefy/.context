@@ -40,15 +40,23 @@ contract VulnerableSwap {
 
 ## Classifications
 
-#### [fv-sol-8-c1-price-manipulation.md](fv-sol-8-c1-price-manipulation.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-8-slippage/<filename>` to read any case file listed below.
 
-#### [fv-sol-8-c2-front-running.md](fv-sol-8-c2-front-running.md "mention")
+#### fv-sol-8-c1-price-manipulation.md
 
-#### [fv-sol-8-c3-insufficient-liquidity.md](fv-sol-8-c3-insufficient-liquidity.md "mention")
+#### fv-sol-8-c2-front-running.md
 
-#### [fv-sol-8-c4-unexpected-gas-increase.md](fv-sol-8-c4-unexpected-gas-increase.md "mention")
+#### fv-sol-8-c3-insufficient-liquidity.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-8-c4-unexpected-gas-increase.md
+
+#### fv-sol-8-c5-missing-deadline.md
+
+`deadline: block.timestamp` or `type(uint256).max` provides no protection; multi-hop slippage enforced at intermediate step only.
+
+#### fv-sol-8-c6-oracle-price-update-frontrunning.md
+
+Push-model oracle update visible in public mempool; attacker front-runs with position at stale price before update lands.
 
 ## Mitigation Patterns
 

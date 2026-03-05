@@ -2,64 +2,28 @@
 
 ## TLDR
 
-Attacker uses multiple functions within the same contract that share state
+Multiple functions within the same contract share a state variable. One function makes an external call before updating that variable, while another function relies on the same variable for access control or accounting. An attacker re-enters the second function during the callback window to exploit the stale shared state.
 
-## Game
+## Detection Signals
 
-Cross-function reentrancy occurs when an attacker can exploit reentrant calls across multiple functions, rather than a single function, how can you see this affecting the nature of the vulnerability?
+**Shared State Variable Across Functions with Mixed Access Patterns**
+- Two or more functions read or write the same `mapping` or state variable (e.g., `balances[msg.sender]`)
+- One function contains an external call before the shared variable is updated; another function checks or decrements that same variable
+- Pattern: `withdraw` does `.call{value: balance}("")` before `balances[x] = 0`, while `play` or `transfer` reads `balances[x]` for authorization or deduction
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Re-entry Path Through a Different Function**
+- Attacker's `receive`/`fallback` calls a sibling function (not the same entry point) during the callback window
+- The sibling function passes its own `require` because the shared state has not yet been updated by the original caller
+- Functions that deduct from `balances` without an external call become weaponizable if a co-function leaves the balance stale during a call
 
-contract CrossFunctionReentrancyGame {
-    mapping(address => uint256) public balances;
+**Missing Guard Coverage**
+- `nonReentrant` applied to only one function while the sibling function that shares state is unprotected
+- Guard covers `withdraw` but not `play`, `transfer`, `borrow`, or other functions that read the same balance slot
 
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
+## False Positives
 
-    function withdraw() public {
-        uint256 balance = balances[msg.sender];
-        require(balance > 0, "Insufficient balance");
-        (bool success, ) = msg.sender.call{value: balance}("");
-        require(success, "Transfer failed");
-        balances[msg.sender] = 0;
-    }
-
-    function play() public {
-        require(balances[msg.sender] >= 1 ether, "Must have at least 1 ether to play");
-        balances[msg.sender] -= 1 ether;
-    }
-}
-```
-
-
-### Hint 1
-Cross-function reentrancy occurs when multiple functions use the same state variable inconsistently.\
-\
-Look at how `withdraw` and `play` interact with `balances` and consider what might happen if an attacker calls `play` within a reentrant `withdraw` call.
-
-
-### Hint 2
-Think about what happens if `msg.sender` is a contract that calls `withdraw` first and then repeatedly reenters `play`.\
-\
-Would `balances[msg.sender]` behave as expected, or could it be manipulated across the two functions?
-
-
-### Solution
-```solidity
-function withdraw() public {
-    uint256 balance = balances[msg.sender];
-    require(balance > 0, "Insufficient balance");
-    
-    // Fix: Set balance to zero before transferring
-    balances[msg.sender] = 0; 
-    
-    (bool success, ) = msg.sender.call{value: balance}("");
-    require(success, "Transfer failed");
-}
-```
+- CEI followed in every function that touches the shared state variable — no function leaves state stale during an external call
+- `nonReentrant` applied to all functions that read or write the shared state variable
+- Shared variable is written atomically at the start of each function before any interaction (checks-effects pattern, not checks-interactions)
 
 

@@ -2,81 +2,32 @@
 
 ## TLDR
 
-Solidity rounds down in integer division, which can lead to small precision losses that add up over multiple calculations.
+Solidity performs integer division with truncation (floor rounding toward zero), which silently discards fractional remainders. In contracts that distribute funds, accrue rewards, or compute fees across many users or iterations, these per-operation losses accumulate into meaningful discrepancies — either funds become permanently stuck, or repeated operations allow users to extract slightly more than they contributed.
 
-This is particularly problematic in contracts dealing with revenue sharing, staking, or rewards distribution, where precision is critical.
+## Detection Signals
 
-## Game
+**Unscaled Division in Share or Reward Allocation**
+- `allocation = (totalFunds * recipientShares) / totalShares` without a prior scaling multiplication
+- `reward = (elapsed * rewardRate) / PERIOD` where elapsed and rewardRate are raw values without WAD scaling
+- Share price computed as `totalAssets / totalShares` used directly in downstream arithmetic
 
-In this contract, the `allocateShare` function calculates a recipient's share based on `totalFunds`, `recipientShares`, and `totalShares`
+**Rounding Direction Not Considered**
+- Same division formula used for both deposit (should round down) and withdrawal (should round up) paths
+- No use of `Math.mulDiv(..., Rounding.Ceil)` or equivalent ceiling division for user-unfavorable paths
+- Protocol claims ERC4626 compliance but `previewWithdraw` and `previewRedeem` both round the same direction
 
-Look for uneven divisions.
+**Accumulated Dust**
+- `totalFunds` decremented by a rounded `allocation` value across many calls — final state leaves unclaimable residue
+- No reconciliation or sweep function for remainder dust in distribution contracts
+- Sum of all per-user allocations computed independently and then compared to total — verify they can diverge
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Fee Calculation Precision Loss**
+- `fee = amount * feeBps / 10000` where `amount` values can be small enough to round the fee to zero
+- Protocol collects fees by subtracting rounded values, allowing fee-free micro-transactions
 
-contract SharesCalculationGame {
-    uint256 public totalShares;
-    uint256 public totalFunds;
+## False Positives
 
-    mapping(address => uint256) public shares;
-
-    constructor(uint256 _totalShares) {
-        totalShares = _totalShares;
-    }
-
-    function depositFunds() public payable {
-        totalFunds += msg.value;
-    }
-
-    function allocateShare(address recipient, uint256 recipientShares) public {
-        require(recipientShares <= totalShares, "Not enough shares available");
-
-        uint256 allocation = (totalFunds * recipientShares) / totalShares;
-        require(allocation <= totalFunds, "Allocation exceeds funds");
-
-        shares[recipient] += recipientShares;
-        totalFunds -= allocation;
-
-        (bool success, ) = payable(recipient).call{value: allocation}("");
-        require(success, "Transfer failed");
-    }
-}
-
-
-```
-
-
-### Hint 1
-Solidity's integer division truncates decimals, which can lead to rounding issues in share calculations.
-
-When `totalShares` is much larger than `recipientShares`, or doesn’t divide `totalFunds` evenly, think about how `(totalFunds * recipientShares) / totalShares` might round down and lose precision
-
-
-### Hint 2
-Examine how repeated calls to `allocateShare` might cause the total allocated funds to differ from `totalFunds`, especially in cases where small precision errors accumulate.
-
-
-### Solution
-```solidity
-function allocateShare(address recipient, uint256 recipientShares) public {
-    require(recipientShares <= totalShares, "Not enough shares available");
-
-    // Fix: Apply a scaling factor to increase precision in calculations
-    uint256 scaledTotalFunds = totalFunds * 10**18;
-    uint256 allocation = (scaledTotalFunds * recipientShares) / totalShares / 10**18;
-
-    require(allocation <= totalFunds, "Allocation exceeds funds");
-
-    shares[recipient] += recipientShares;
-    totalFunds -= allocation;
-
-    (bool success, ) = payable(recipient).call{value: allocation}("");
-    require(success, "Transfer failed");
-}
-
-```
-
-
+- A WAD or RAY scaling factor is applied before every division, making truncated remainders sub-wei
+- Protocol explicitly tracks and periodically redistributes dust remainder to a designated address
+- Rounding direction is intentionally protocol-favorable: deposit rounds down (fewer shares), withdrawal rounds up (more shares burned), consistent with EIP-4626
+- Values involved are large enough by protocol invariant (e.g., minimum deposit enforced) that per-operation dust is negligible and bounded

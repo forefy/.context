@@ -2,59 +2,29 @@
 
 ## TLDR
 
-Precision errors often occur when dealing with tokens that have decimal points, especially when tokens with varying decimal standards (e.g., 6, 8, or 18 decimals) interact within the same system.
+Precision errors occur when contracts hardcode a decimal assumption (commonly 18) rather than reading the token's actual `decimals()` value. When a contract interacts with tokens like USDC (6 decimals) or WBTC (8 decimals) using an 18-decimal assumption, amounts are over- or under-scaled by orders of magnitude, leading to catastrophically incorrect transfers or balance accounting.
 
-A mismatch in decimal handling can lead to incorrect calculations, resulting in inaccurate token transfers or balances.
+## Detection Signals
 
-## Game
+**Hardcoded Decimal Scaling**
+- `amount * 10**18` or `amount * 1e18` in a function that accepts an arbitrary ERC20 address
+- `amount / 10**18` used to normalize values without consulting `token.decimals()`
+- Constant like `uint256 constant PRECISION = 1e18` applied uniformly across tokens with different decimals
 
-The `transferAmount` function assumes the token has 18 decimals, can you identify how this assumption could lead to a significant error in token transfers?
+**Missing Decimal Query**
+- No call to `token.decimals()` anywhere in the contract or its libraries
+- Conversion between token amounts and internal units does not factor in per-token decimal count
+- Multi-token contracts (e.g., AMMs, lending pools) that normalize all token values with the same fixed exponent
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Cross-Token Comparison Without Normalization**
+- Two token balances compared or combined directly without adjusting for differing `decimals()` values
+- Price or rate computed as `tokenA.balanceOf(...) / tokenB.balanceOf(...)` where decimals differ
+- Oracle price feed combined with a raw token amount without decimal reconciliation
 
-interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-    function decimals() external view returns (uint8);
-}
+## False Positives
 
-contract TokenDecimalsGame {
-    IERC20 public token;
-
-    constructor(address _token) {
-        token = IERC20(_token);
-    }
-
-    function transferAmount(address recipient, uint256 amount) public {
-        uint256 tokenAmount = amount * 10**18;
-        require(token.transfer(recipient, tokenAmount), "Transfer failed");
-    }
-}
-```
-
-
-### Hint 1
-ERC-20 tokens can have varying decimal places, often indicated by `decimals()`. If the contract assumes a specific decimal (e.g., 18), what might happen if the token has only 6 or 8 decimals?
-
-Consider how `amount * 10**18` would differ depending on the actual decimals of the token
-
-
-### Hint 2
-Precision errors often arise when calculations assume a specific unit. In `transferAmount`, think about how the calculation could go wrong if the token's decimal setting differs from the assumed 18.
-
-How could you dynamically adjust the transfer amount to match the token's decimals?
-
-
-### Solution
-```solidity
-function transferAmount(address recipient, uint256 amount) public {
-    uint8 decimals = token.decimals(); // Fix: Get the token's actual decimals
-    uint256 tokenAmount = amount * 10**decimals;
-    require(token.transfer(recipient, tokenAmount), "Transfer failed");
-}
-```
+- Contract explicitly documents and enforces that only 18-decimal tokens are accepted, enforced at the token whitelist or constructor level
+- `decimals()` is called dynamically per token and the result is used in every scaling operation
+- Protocol normalizes all values to a fixed internal precision (e.g., 18 decimals) at ingestion time, with the normalization factor derived from `token.decimals()` on each token
 
 

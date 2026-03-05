@@ -2,60 +2,29 @@
 
 ## TLDR
 
-Attacker calls a vulnerable function repeatedly within itself, exploiting incomplete state updates to drain funds
+A single function performs an external call before updating its own state. An attacker's `receive` or `fallback` function re-enters the same function before the state change lands, allowing repeated withdrawal of the same balance within one transaction.
 
-## Game
+## Detection Signals
 
-Try to find what's wrong with the `withdraw` function, how would you turn this code secure?
+**CEI Violation in Withdrawal or Payout Functions**
+- State variable (e.g., `balances[msg.sender]`) read for the transfer amount but not zeroed or decremented before `.call{value:}()`
+- Pattern: `require(balances[x] > 0)` → `.call{value: balances[x]}("")` → `balances[x] = 0` (update after call)
+- `.call{value:}("")` targeting `msg.sender` or any caller-controlled address before the corresponding accounting update
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**External Call Vectors That Enable Callback**
+- `.call{value:}("")` — forwards all remaining gas, allows arbitrary re-entry
+- `payable(x).transfer()` or `.send()` — 2300-gas limit, but not a reliable guard post-Cancun
+- Any low-level call to a user-supplied or caller-derived address before state is finalized
 
-contract ReentrancyGame {
-    mapping(address => uint256) public balances;
+**Missing or Insufficient Guards**
+- No `nonReentrant` modifier on functions that combine a balance read, an external call, and a state write
+- Reentrancy guard stored in transient storage (`TSTORE`) without a fallback to regular storage for the 2300-gas path
 
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
+## False Positives
 
-    function withdraw() public {
-        require(balances[msg.sender] > 0, "Insufficient balance");
-
-        (bool success, ) = msg.sender.call{value: balances[msg.sender]}("");
-        require(success, "Transfer failed");
-
-        balances[msg.sender] = 0;
-    }
-}
-```
-
-
-### Hint 1
-When reviewing smart contract code, always check if any **state changes** (e.g., updating balances or other internal values) happen _after_ an external call, especially when using `.call`
-
-Notice the order of operations in `withdraw` - does the balance update happen before or after the funds are sent?
-
-
-### Hint 2
-When `msg.sender` is a smart contract, it can have a `receive` or `fallback` function that gets triggered automatically when it receives Ether.
-
-If this function calls `withdraw` again (before the balance is updated), it can re-enter the vulnerable function.
-
-
-### Solution
-```solidity
-function withdraw() public {
-    uint256 amount = balances[msg.sender];
-    require(amount > 0, "Insufficient balance");
-
-    // Fix: set balance to zero before transferring
-    balances[msg.sender] = 0;
-
-    (bool success, ) = msg.sender.call{value: amount}("");
-    require(success, "Transfer failed");
-}
-```
+- All accounting state is updated before the external call (CEI strictly followed)
+- `nonReentrant` modifier (backed by regular storage) applied to the function
+- `transfer()` or `send()` used and no `TSTORE` write is reachable within 2300 gas from any `receive`/`fallback` in scope
+- Function is `view` or `pure` with no state-modifying side effects
 
 

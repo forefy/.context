@@ -2,63 +2,27 @@
 
 ## TLDR
 
-In **cross-contract reentrancy**, an attacker uses two separate contracts: one vulnerable contract and another malicious contract.
+An attacker deploys a dedicated malicious contract that acts as `msg.sender` and re-enters the victim contract during an external call callback. The malicious contract's `receive` or `fallback` calls back into the victim before the victim's state update, allowing repeated exploitation across a contract boundary.
 
-The attacker’s contract calls the vulnerable contract repeatedly across functions to manipulate shared state and drain funds.
+## Detection Signals
 
-## Game
+**External Call to Caller-Controlled Address Before State Update**
+- `.call{value:}("")" to `msg.sender` before `balances[msg.sender]` is zeroed or decremented
+- Any pattern where the recipient of an external call can be a contract address supplied or implied by the caller
+- `withdraw`, `redeem`, `claim`, or `payout` functions that send ETH or tokens to `msg.sender` as the last step
 
-Think about how an attacker could exploit this setup if they deploy a separate malicious contract.
+**No Verification That Recipient Is an EOA**
+- No `extcodesize(msg.sender) == 0` check (note: this check is bypassable during construction, but absence is a signal)
+- No `msg.sender == tx.origin` guard (note: this has other trade-offs, but absence is a signal worth investigating)
+- No `nonReentrant` modifier restricting reentry from any external address
 
-Can you identify how `withdraw` might allow another contract to repeatedly manipulate `balances` and drain funds?
+**State Update Ordering**
+- Balance or ownership mapping updated after the external call in functions that transfer ETH or tokens out
+- Local variable caches the pre-call balance (`uint256 balance = balances[msg.sender]`) but the mapping is cleared only after the call
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+## False Positives
 
-contract CrossContractReentrancyGame {
-    mapping(address => uint256) public balances;
-
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
-
-    function withdraw() public {
-        uint256 balance = balances[msg.sender];
-        require(balance > 0, "Insufficient balance");
-        (bool success, ) = msg.sender.call{value: balance}("");
-        require(success, "Transfer failed");
-        balances[msg.sender] = 0;
-    }
-}
-```
-
-
-### Hint 1
-Cross-contract reentrancy leverages a separate malicious contract that repeatedly calls into the vulnerable contract.
-
-Look at the external call to `msg.sender` in `withdraw`, and consider what could happen if `msg.sender` is itself a contract with logic to call `withdraw` repeatedly.
-
-
-### Hint 2
-Notice that `balances[msg.sender]` is only updated after the Ether transfer.
-
-Think about how a separate attacker contract could call back into `withdraw` multiple times within a single transaction to exploit this delay.
-
-
-### Solution
-```solidity
-function withdraw() public {
-    uint256 balance = balances[msg.sender];
-    require(balance > 0, "Insufficient balance");
-    
-    // Fix: Set balance to zero before transferring
-    balances[msg.sender] = 0; 
-    
-    (bool success, ) = msg.sender.call{value: balance}("");
-    require(success, "Transfer failed");
-}
-```
-
-
+- State zeroed or decremented before the `.call{value:}("")` (CEI strictly followed)
+- `nonReentrant` modifier present on the withdrawing function
+- Function uses `transfer()` or `send()` and no `TSTORE` path is reachable in 2300 gas from any attacker-controlled fallback
+- Recipient is a protocol-controlled address (not caller-supplied), verified via access control before the call

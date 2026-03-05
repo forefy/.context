@@ -39,7 +39,7 @@ The same-block branch must compute and store the full correct total, not assign 
 
 ---
 
-### Flash Loan Vote Manipulation (no fv-sol equivalent — candidate for new entry)
+### Flash Loan Vote Manipulation (ref: fv-sol-5-c6)
 
 **Protocol-Specific Preconditions**
 
@@ -126,7 +126,7 @@ Store the original voting power at stake time in a `mapping(uint256 => uint256)`
 
 ---
 
-### Quorum and Threshold Manipulation via Live Supply (no fv-sol equivalent — candidate for new entry)
+### Quorum and Threshold Manipulation via Live Supply (ref: fv-sol-5-c6)
 
 **Protocol-Specific Preconditions**
 

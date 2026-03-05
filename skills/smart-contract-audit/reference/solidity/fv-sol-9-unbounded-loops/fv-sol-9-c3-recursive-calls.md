@@ -2,59 +2,29 @@
 
 ## TLDR
 
-Although Solidity does not support native recursion due to lack of stack depth, developers may attempt recursive-like behavior by using repetitive function calls that mimic loops
+Solidity imposes a call-stack depth limit of 1024 frames. Recursive self-calls or chains of delegating function calls that scale with user-supplied input will exhaust the call stack or gas budget before completing. Even when disguised as iterative withdrawal logic, each self-call consumes additional stack frames and per-call gas overhead that grows linearly with the input value.
 
-## Game
+## Detection Signals
 
-Can you spot why this contract might run out of gas and fail spectacularly?
+**Direct Self-Recursive Call**
+- A `public` or `external` function calls itself with a decremented counter or shrinking parameter
+- No base case enforces an early return before call-stack exhaustion
+- Each recursive frame performs an external interaction (transfer, call) multiplying gas consumption
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Indirect Recursion via External Call Cycle**
+- Function A calls function B which calls back into function A within the same transaction
+- No reentrancy guard prevents the cycle
+- Depth scales with a user-controlled amount or count parameter
 
-contract RecursiveCallsGame {
-    mapping(address => uint256) public balances;
+**Linear Work Per Unit of User-Supplied Input**
+- Gas cost is O(n) where n is a user-supplied numeric argument (e.g., processing 1 unit per recursive frame)
+- No upper bound enforced on the argument at function entry
+- A loop with the same logic would be equally unbounded
 
-    // Deposit Ether
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
+## False Positives
 
-    // Withdraw funds recursively
-    function withdraw(uint256 amount) public {
-        require(balances[msg.sender] >= amount, "Insufficient balance");
-        balances[msg.sender] -= amount;
-
-        // Recursive payout
-        if (amount > 0) {
-            payable(msg.sender).transfer(1); // Transfer 1 wei at a time
-            withdraw(amount - 1); // Recursive call
-        }
-    }
-}
-
-```
-
-
-### Hint 1
-Look at how the function calls itself. What happens if the `amount` is large? Will it ever stop, or will something else stop it?
-
-
-### Hint 2
-Consider how Solidity handles recursion and gas. Think about whether this design scales.
-
-
-### Solution
-```solidity
-function withdraw(uint256 amount) public {
-    require(balances[msg.sender] >= amount, "Insufficient balance");
-    balances[msg.sender] -= amount;
-
-    for (uint256 i = 0; i < amount; i++) {
-        payable(msg.sender).transfer(1); // Fix: Iteratively transfer funds
-    }
-}
-```
+- Recursion depth is strictly bounded by a protocol-controlled constant, not user input
+- `nonReentrant` modifier is present and prevents callback cycles
+- Operation is restructured to a single bulk transfer rather than one-unit-at-a-time calls
 
 

@@ -40,15 +40,27 @@ contract Caller {
 
 ## Classifications
 
-#### [fv-sol-7-c1-delegatecall-storage-collision.md](fv-sol-7-c1-delegatecall-storage-collision.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-7-proxy-insecurities/<filename>` to read any case file listed below.
 
-#### [fv-sol-7-c2-function-selector-collision.md](fv-sol-7-c2-function-selector-collision.md "mention")
+#### fv-sol-7-c1-delegatecall-storage-collision.md
 
-#### [fv-sol-7-c3-centralized-update-control.md](fv-sol-7-c3-centralized-update-control.md "mention")
+#### fv-sol-7-c2-function-selector-collision.md
 
-#### [fv-sol-7-c4-uninitialized-proxy.md](fv-sol-7-c4-uninitialized-proxy.md "mention")
+#### fv-sol-7-c3-centralized-update-control.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-7-c4-uninitialized-proxy.md
+
+#### fv-sol-7-c5-proxy-implementation-attacks.md
+
+Immutable context mismatch across proxies; arbitrary delegatecall in implementation; assembly proxy missing returndata propagation; minimal proxy implementation destruction; metamorphic CREATE2 code swap.
+
+#### fv-sol-7-c6-proxy-upgrade-lifecycle.md
+
+Re-initialization with wrong version; UUPS upgrade logic removed in V2; upgrade race condition; missing _authorizeUpgrade access control; non-atomic initialization front-running.
+
+#### fv-sol-7-c7-diamond-proxy-pitfalls.md
+
+Cross-facet storage collision from top-level variables; selector collision on diamondCut; DiamondStorage not at EIP-7201 namespaced position.
 
 ## Mitigation Patterns
 

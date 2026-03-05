@@ -2,69 +2,31 @@
 
 ## TLDR
 
-If the upgrade process is too centralized, it creates a single point of failure, and generally considered unethical to the users
+When upgrade authority is held by a single EOA or unconstrained admin address, a compromised or malicious key holder can replace the implementation with arbitrary code, draining funds or bricking the contract. This represents a critical trust assumption that undermines the security guarantees of the protocol for all users.
 
-## Game
+## Detection Signals
 
-Web3 does not like centralized stuff. What are the risks in this contract?
+**Single EOA Holds Upgrade Authority**
+- `require(msg.sender == admin, ...)` in upgrade function where `admin` is set to `msg.sender` in the constructor
+- No multisig, timelock, or governance contract in the upgrade call chain
+- Admin address is a regular EOA rather than a contract address
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**No Timelock on Upgrades**
+- `updateImplementation` or `upgradeTo` takes effect immediately without a queuing delay
+- No `TimelockController` or equivalent in the upgrade path
+- Users have no window to exit before a new implementation is active
 
-contract CentralizedProxy {
-    address public implementation;
-    address public admin;
+**Admin Role Non-Transferable or Irrevocable**
+- No mechanism to transfer admin to a more secure address after deployment
+- No two-step admin transfer (propose + accept) to prevent accidental lockout
 
-    constructor(address _implementation) {
-        implementation = _implementation;
-        admin = msg.sender;
-    }
+**Lack of Upgrade Event or Transparency**
+- Implementation change emits no event or logs no verifiable on-chain record
+- No mechanism for users or watchers to detect that an upgrade has occurred
 
-    function updateImplementation(address newImplementation) public {
-        require(msg.sender == admin, "Only admin can update the implementation");
-        implementation = newImplementation;
-    }
+## False Positives
 
-    // Fallback function that forwards calls to the implementation contract
-    fallback() external payable {
-        (bool success, ) = implementation.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
-### Hint 1
-Consider how decentralizing control over updates or requiring multiple approvals could mitigate the risk of a single point of failure.
-
-
-### Hint 2
-Multi-signature wallets or decentralized governance mechanisms are common solutions for critical operations that need more security and transparency.
-
-
-### Solution
-```solidity
-contract DecentralizedProxy {
-    address public implementation;
-    address public admin;
-
-    constructor(address _implementation, address _admin) {
-        implementation = _implementation;
-        admin = _admin; // Fix: Set multi-signature wallet or governance contract as the admin
-    }
-
-    function updateImplementation(address newImplementation) public {
-        require(msg.sender == admin, "Only admin (multi-sig) can update the implementation");
-        implementation = newImplementation;
-    }
-
-    fallback() external payable {
-        (bool success, ) = implementation.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
-
-
+- Admin is a multisig wallet (e.g., Gnosis Safe) with a threshold requiring multiple independent signers
+- Upgrade function is gated behind a governance contract with on-chain voting and a timelock
+- Upgrades require a two-step process: proposal followed by a time-delayed execution
+- Protocol is in a guarded launch phase with planned migration to decentralized governance, documented and time-bounded

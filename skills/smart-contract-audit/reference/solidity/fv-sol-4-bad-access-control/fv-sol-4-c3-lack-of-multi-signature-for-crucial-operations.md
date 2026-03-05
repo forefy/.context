@@ -2,74 +2,27 @@
 
 ## TLDR
 
-If a critical function (like transferring large funds or changing important contract settings) is controlled by a single address (usually the contract owner), it creates a single point of failure.
+When a single address controls a critical operation — such as draining contract funds, upgrading implementation logic, or changing protocol parameters — that address is a single point of failure. Compromise, loss, or coercion of that one key results in irreversible protocol damage with no recourse.
 
-## Game
+## Detection Signals
 
-Consider the risks associated with allowing a single administrator to have complete control over all contract funds. What might be a safer approach for sensitive operations like `withdrawAllFunds`?
+**Single-Owner Control Over High-Impact Operations**
+- `require(msg.sender == owner)` as the sole guard on functions that transfer all funds, pause the protocol, or change fee parameters
+- `withdrawAllFunds`, `emergencyDrain`, `transferOwnership`, or `upgradeTo` callable by a single EOA without a timelock or co-signer requirement
+- Owner address is an EOA (not a multisig) verified via etherscan or deployment scripts
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Missing Approval Threshold Pattern**
+- No multi-step approval mapping (e.g., `approvals[tx]++` + `require(approvals[tx] >= threshold)`)
+- No timelock delay before execution of high-impact changes
+- No governance vote or quorum check before execution
 
-contract SingleAdminOperation {
-    address public admin;
-    uint256 public contractBalance;
+**Irreversibility Without Safeguards**
+- Fund withdrawal sends full balance in a single call with no partial-withdrawal limit
+- Upgrade or ownership transfer takes effect immediately with no cancellation window
 
-    constructor() {
-        admin = msg.sender;
-    }
+## False Positives
 
-    function deposit() public payable {
-        contractBalance += msg.value;
-    }
-
-    function withdrawAllFunds(address payable recipient) public {
-        require(msg.sender == admin, "Only admin can withdraw funds");
-        recipient.transfer(contractBalance);
-        contractBalance = 0;
-    }
-}
-
-```
-
-
-### Hint 1
-For highly sensitive actions, it’s often wise to have multiple parties involved. Think about how consensus could add security here.
-
-
-### Hint 2
-Consider if adding conditions or roles for more than one user might mitigate the risk of a single point of control.
-
-
-### Solution
-```solidity
-mapping(address => bool) public approvers;
-uint256 public approvalCount;
-uint256 public requiredApprovals;
-
-// Fix: Constructor now sets up initial approvers and required approvals
-constructor(address[] memory initialApprovers, uint256 _requiredApprovals) {
-    require(_requiredApprovals <= initialApprovers.length, "Invalid number of required approvals");
-    for (uint256 i = 0; i < initialApprovers.length; i++) {
-        approvers[initialApprovers[i]] = true;
-    }
-    requiredApprovals = _requiredApprovals;
-    admin = msg.sender;
-}
-
-function approveWithdrawal() public {
-    require(approvers[msg.sender], "Not authorized to approve");
-    approvalCount += 1;
-}
-
-function withdrawAllFunds(address payable recipient) public {
-    require(approvalCount >= requiredApprovals, "Not enough approvals");
-    recipient.transfer(contractBalance);
-    contractBalance = 0;
-    approvalCount = 0; // Reset approval count after withdrawal
-}
-```
-
-
+- Owner address is a deployed Gnosis Safe or other multisig contract
+- Operation is protected by a timelock contract requiring a mandatory delay before execution
+- Governance module requires on-chain vote with quorum before the privileged call can execute
+- Operation is bounded by a small daily limit making catastrophic single-transaction drain impossible

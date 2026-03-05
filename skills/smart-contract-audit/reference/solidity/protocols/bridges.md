@@ -173,7 +173,7 @@ Flow rate limits must be tracked and enforced per-token; activation of a queue f
 
 ---
 
-### Oracle and Price Feed Issues (ref: fv-sol-10)
+### Oracle and Price Feed Issues (ref: fv-sol-10, fv-sol-10-c5, fv-sol-10-c6, fv-sol-10-c7)
 
 **Protocol-Specific Preconditions**
 - Chainlink `latestRoundData()` is called without checking `updatedAt` staleness, `answeredInRound >= roundId`, or `price > 0`
@@ -199,7 +199,7 @@ All Chainlink calls in bridge contracts must use the full validation pattern: po
 
 ---
 
-### Cross-Chain Message Verification and Replay (no fv-sol equivalent — candidate for new entry)
+### Cross-Chain Message Verification and Replay (ref: fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 - Cross-chain message handlers do not verify that `msg.sender` is the trusted bridge endpoint, or do not verify the original sender address on the source chain
@@ -227,7 +227,7 @@ Every cross-chain message handler must follow a strict sequence: (1) verify `msg
 
 ---
 
-### External Call Injection (no fv-sol equivalent — candidate for new entry)
+### External Call Injection (ref: fv-sol-4-c6)
 
 **Protocol-Specific Preconditions**
 - Bridge executor or router contracts forward arbitrary calldata supplied by users to arbitrary target addresses with no whitelist restriction
@@ -306,7 +306,7 @@ Any operation that removes an entity from the bridge (token manager deregistrati
 
 ---
 
-### ERC4626 Vault Integration Issues (no fv-sol equivalent — candidate for new entry)
+### ERC4626 Vault Integration Issues (ref: fv-sol-2-c6)
 
 **Protocol-Specific Preconditions**
 - Bridge-connected vaults are vulnerable to first-depositor share price inflation when no virtual shares offset is present
@@ -334,7 +334,7 @@ Bridges that custody assets in ERC4626 vaults must validate full specification c
 
 ---
 
-### Non-Standard Token Handling (no fv-sol equivalent — candidate for new entry)
+### Non-Standard Token Handling (ref: fv-sol-2-c7, fv-sol-6-c10)
 
 **Protocol-Specific Preconditions**
 - Bridge accepts fee-on-transfer tokens but records the nominal transfer amount rather than the actual balance delta, overstating the locked amount and permitting over-release on the destination chain
@@ -362,7 +362,7 @@ Bridge contracts must use the balance-delta pattern for every inbound token tran
 
 ---
 
-### Native ETH Handling (no fv-sol equivalent — candidate for new entry)
+### Native ETH Handling (ref: fv-sol-5-c8)
 
 **Protocol-Specific Preconditions**
 - `msg.value` sent to a bridge function is not forwarded to the downstream messaging layer, leaving ETH permanently stranded in the bridge contract

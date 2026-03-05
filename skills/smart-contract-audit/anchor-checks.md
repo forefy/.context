@@ -86,14 +86,14 @@
 
 ## Knowledge Base References
 
-For detailed vulnerability patterns, see:
-- `reference/anchor/fv-anc-1-arithmetic-operations/` - Math overflow/underflow
-- `reference/anchor/fv-anc-2-signer-checks/` - Signer validation issues
-- `reference/anchor/fv-anc-3-account-ownership-validations/` - Account validation
-- `reference/anchor/fv-anc-4-pda-security/` - PDA vulnerabilities
-- `reference/anchor/fv-anc-5-cross-program-invocation-cpi/` - CPI security
-- `reference/anchor/fv-anc-6-error-handling/` - Error handling patterns
-- `reference/anchor/fv-anc-7-token-operations/` - Token security
-- `reference/anchor/fv-anc-8-system-account-validation/` - System account checks
-- `reference/anchor/fv-anc-9-type-cosplay/` - Type confusion
-- `reference/anchor/fv-anc-10-closing-accounts/` - Account closure security
+For detailed vulnerability patterns, read the relevant README then drill into case files:
+- `cat $SKILL_DIR/reference/anchor/fv-anc-1-arithmetic-operations/README.md` - Math overflow/underflow
+- `cat $SKILL_DIR/reference/anchor/fv-anc-2-signer-checks/README.md` - Signer validation issues
+- `cat $SKILL_DIR/reference/anchor/fv-anc-3-account-ownership-validations/README.md` - Account validation
+- `cat $SKILL_DIR/reference/anchor/fv-anc-4-pda-security/README.md` - PDA vulnerabilities
+- `cat $SKILL_DIR/reference/anchor/fv-anc-5-cross-program-invocation-cpi/README.md` - CPI security
+- `cat $SKILL_DIR/reference/anchor/fv-anc-6-error-handling/README.md` - Error handling patterns
+- `cat $SKILL_DIR/reference/anchor/fv-anc-7-token-operations/README.md` - Token security
+- `cat $SKILL_DIR/reference/anchor/fv-anc-8-system-account-validation/README.md` - System account checks
+- `cat $SKILL_DIR/reference/anchor/fv-anc-9-type-cosplay/README.md` - Type confusion
+- `cat $SKILL_DIR/reference/anchor/fv-anc-10-closing-accounts/README.md` - Account closure security

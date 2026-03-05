@@ -46,17 +46,29 @@ contract UnboundedLoopExample {
 
 ## Classifications
 
-#### [fv-sol-9-c1-dynamic-array.md](fv-sol-9-c1-dynamic-array.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-9-unbounded-loops/<filename>` to read any case file listed below.
 
-#### [fv-sol-9-c2-unrestricted-mapping.md](fv-sol-9-c2-unrestricted-mapping.md "mention")
+#### fv-sol-9-c1-dynamic-array.md
 
-#### [fv-sol-9-c3-recursive-calls.md](fv-sol-9-c3-recursive-calls.md "mention")
+#### fv-sol-9-c2-unrestricted-mapping.md
 
-#### [fv-sol-9-c4-reentrancy-loops.md](fv-sol-9-c4-reentrancy-loops.md "mention")
+#### fv-sol-9-c3-recursive-calls.md
 
-#### [fv-sol-9-c5-nested-loops.md](fv-sol-9-c5-nested-loops.md "mention")
+#### fv-sol-9-c4-reentrancy-loops.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-9-c5-nested-loops.md
+
+#### fv-sol-9-c6-blacklistable-token-payment.md
+
+Covers: push-model transfer with USDC/USDT in critical payment path; single blacklisted address blocks entire operation.
+
+#### fv-sol-9-c7-gas-griefing.md
+
+Covers: block stuffing of time-sensitive windows; 63/64 rule insufficient gas forwarding in relayer patterns.
+
+#### fv-sol-9-c8-dust-griefing.md
+
+Covers: dust deposit resetting timelocks/cooldowns; zero-balance gate bricked by dust transfer.
 
 ## Mitigation Patterns
 
