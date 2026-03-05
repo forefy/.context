@@ -8,7 +8,12 @@
 </p>
 
 ## Quick Start
+### Via npx
+```
+npx skills add forefy/.context
+```
 
+### Via installer
 ```bash
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
 ```
