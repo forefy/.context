@@ -49,6 +49,8 @@ contract VulnerableToken {
 
 #### [fv-sol-2-c5-time-based.md](fv-sol-2-c5-time-based.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### FV-SOL-2-M1 Unit Testing on Edge Cases

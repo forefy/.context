@@ -41,6 +41,8 @@ contract VulnerableCompound {
 
 #### [fv-sol-10-c4-time-lags.md](fv-sol-10-c4-time-lags.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Multi-Sourced Oracles (FV-SOL-10-M1)

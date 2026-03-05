@@ -263,3 +263,62 @@ Nouns DAO received a cluster of medium-severity findings where a malicious DAO c
 **Remediation Notes**
 
 All governance parameter changes should be routed through a timelock whose duration is at minimum equal to the voting period, preventing the parameter from taking effect before any ongoing proposal concludes. The vetoer or guardian role should require multi-party authorization to transfer or revoke. Proposal content should be hashed and committed at creation time; any update should invalidate existing votes.
+
+### Governance Flash-Loan Proxy Upgrade Hijack (ref: pashov-90)
+
+**Protocol-Specific Preconditions**
+
+Proxy contract upgrades are authorized by governance votes that read vote weight from the current block (`balanceOf` or `getPastVotes(account, block.number)`) rather than a prior checkpoint. No voting delay forces a waiting period between proposal creation and voting. No timelock delays execution after a vote passes. An attacker can flash-borrow sufficient governance tokens, create a proposal, vote, and execute an upgrade to a malicious implementation within a single transaction.
+
+**Detection Heuristics**
+
+- Find the vote weight lookup in `castVote` or equivalent; verify it uses `getPastVotes(account, block.number - 1)` or a snapshot block strictly before the proposal's creation block, not the current block.
+- Check whether a `votingDelay` parameter is non-zero and enforced, preventing a proposal from being voted on in the same block it was created.
+- Verify that a timelock of meaningful duration (24 hours minimum) sits between vote execution authorization and the actual upgrade call.
+- Check whether governance token staking has a lock-up period that prevents flash loan acquisition.
+
+**False Positives**
+
+- Vote weight is read from `getPastVotes(account, block.number - 1)` with a voting delay enforced in addition.
+- A timelock of at least 24 hours is interposed between vote finalization and execution.
+- A quorum threshold is set high enough that flash-loan capital cannot reach it without exhausting the available lending market for the governance token.
+- Governance tokens require staking with a lock period, blocking flash loan-based participation.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Use `getPastVotes(account, block.number - 1)` as the minimum snapshot offset and enforce a non-zero `votingDelay` so that snapshot and voting blocks are strictly separated. Require a timelock of at least 24 to 72 hours between vote execution authorization and any upgrade or parameter-change execution. For protocols whose governance tokens are available on lending markets, consider requiring staked governance tokens with a lock period for voting power.
+
+---
+
+### Flash Loan Vote Manipulation for Arbitrary Proposals (ref: pashov-131)
+
+**Protocol-Specific Preconditions**
+
+Voting power is read from `token.balanceOf(msg.sender)` or `getPastVotes(account, block.number)` at the time of the vote, allowing a flash loan of governance tokens to provide voting power within the same transaction. There is no minimum holding period between token acquisition and voting, and no timelock between vote finalization and execution. An attacker can borrow tokens, vote on or pass a proposal, and repay the loan within one atomic transaction.
+
+**Detection Heuristics**
+
+- Check the vote power source in `castVote` or `_countVote`; any read of `balanceOf` or `getPastVotes(account, block.number)` is exploitable via flash loan.
+- Verify whether a cooldown or lock period prevents a newly acquired token balance from being used for voting until at least the next block.
+- Check whether a meaningful timelock separates vote finalization from execution.
+- Simulate the flash loan path: borrow tokens, delegate if necessary, vote, and verify whether the proposal is executable within the same transaction.
+
+**False Positives**
+
+- `getPastVotes(account, block.number - 1)` is used with a snapshot taken strictly before the proposal's creation block.
+- A mandatory timelock sits between a passed vote and execution, making intra-transaction execution impossible.
+- The governance token is non-transferable or unavailable on any lending venue that would supply flash loan liquidity.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Replace any `balanceOf` or current-block `getPastVotes` call with `getPastVotes(account, proposalSnapshot)` where `proposalSnapshot` is set to a block strictly before proposal creation. Enforce a non-zero `votingDelay` in the governor contract. Add a timelock between vote finalization and execution to ensure that governance decisions cannot be atomically proposed, voted, and executed within a single transaction.
+
+---

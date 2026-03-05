@@ -64,6 +64,8 @@ contract VulnerableMarket {
 
 #### [fv-sol-5-c5-event-misreporting.md](fv-sol-5-c5-event-misreporting.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### State Machine Design (FV-SOL-5-M1)

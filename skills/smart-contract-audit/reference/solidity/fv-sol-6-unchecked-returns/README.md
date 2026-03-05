@@ -50,6 +50,8 @@ contract VulnerableUncheckedCall {
 
 #### [fv-sol-6-c6-false-contract-existence-assumption.md](fv-sol-6-c6-false-contract-existence-assumption.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Checked Returns FV-SOL-6-M1)

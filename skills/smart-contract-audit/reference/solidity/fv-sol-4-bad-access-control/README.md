@@ -32,6 +32,8 @@ contract BadAccessControl {
 
 #### [fv-sol-4-c2-unrestricted-role-assignment.md](fv-sol-4-c2-unrestricted-role-assignment.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ### Lack of Multi-Signature for Crucial Operations (FV-SOL-4-C3)
 
 if a critical function (like transferring large funds or changing important contract settings) is controlled by a **single address** (usually the contract owner), it creates a **single point of failure**

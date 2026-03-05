@@ -48,6 +48,8 @@ contract VulnerableSwap {
 
 #### [fv-sol-8-c4-unexpected-gas-increase.md](fv-sol-8-c4-unexpected-gas-increase.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Minimum Amount Checks (FV-SOL-8-M1)

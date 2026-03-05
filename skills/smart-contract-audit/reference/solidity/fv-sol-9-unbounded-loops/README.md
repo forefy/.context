@@ -56,6 +56,8 @@ contract UnboundedLoopExample {
 
 #### [fv-sol-9-c5-nested-loops.md](fv-sol-9-c5-nested-loops.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Batch Processing (FV-SOL-9-M1)
