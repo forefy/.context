@@ -9,8 +9,9 @@ echo "Select your platform:"
 echo "1) Claude Code [default]"
 echo "2) Copilot CLI"
 echo "3) GitHub Copilot (VSCode)"
+echo "4) Gemini CLI / Codex"
 echo ""
-read -p "Choice [1-3] (Enter for default): " choice </dev/tty
+read -p "Choice [1-4] (Enter for default): " choice </dev/tty
 choice="${choice:-1}"
 
 echo ""
@@ -77,6 +78,14 @@ case $choice in
     echo "Skills copied to $INSTALL_BASE/.claude/skills/"
     echo "Prompts copied to $INSTALL_BASE/.github/prompts/"
     echo "Use prompts with: /generate_audit_report_generic"
+    ;;
+  4)
+    echo "Installing for Gemini CLI / Codex..."
+    mkdir -p "$INSTALL_BASE/.agents/skills/"
+    cp -r "$CONTEXT_DIR/skills/"* "$INSTALL_BASE/.agents/skills/"
+    echo "Skills copied to $INSTALL_BASE/.agents/skills/"
+    echo ""
+    echo "To start: gemini"
     ;;
   *)
     echo "Invalid choice"
