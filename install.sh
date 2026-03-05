@@ -58,7 +58,6 @@ case $choice in
     mkdir -p "$INSTALL_BASE/.claude/skills/"
     cp -r "$CONTEXT_DIR/skills/"* "$INSTALL_BASE/.claude/skills/"
     echo "Skills copied to $INSTALL_BASE/.claude/skills/"
-    echo "Use with: @smart-contract-security-audit or @infrastructure-security-audit"
     echo ""
     echo "To start: claude"
     ;;
@@ -67,7 +66,6 @@ case $choice in
     mkdir -p "$INSTALL_BASE/.claude/skills/"
     cp -r "$CONTEXT_DIR/skills/"* "$INSTALL_BASE/.claude/skills/"
     echo "Skills copied to $INSTALL_BASE/.claude/skills/"
-    echo "Use with: @smart-contract-security-audit or @infrastructure-security-audit"
     echo ""
     echo "To start: copilot"
     ;;
@@ -78,7 +76,6 @@ case $choice in
     cp "$CONTEXT_DIR/prompts/"*.prompt.md "$INSTALL_BASE/.github/prompts/" 2>/dev/null || true
     echo "Skills copied to $INSTALL_BASE/.claude/skills/"
     echo "Prompts copied to $INSTALL_BASE/.github/prompts/"
-    echo "Use skills with: @smart-contract-security-audit or @infrastructure-security-audit"
     echo "Use prompts with: /generate_audit_report_generic"
     ;;
   *)
