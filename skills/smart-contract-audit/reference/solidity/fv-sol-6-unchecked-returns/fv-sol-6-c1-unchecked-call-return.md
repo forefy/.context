@@ -4,7 +4,7 @@
 
 Low-level calls (`call`, `delegatecall`, `staticcall`, `send`) return a boolean success flag instead of reverting on failure. When the return value is discarded the caller continues execution under the false assumption that the operation succeeded, enabling lost funds, skipped logic, and corrupted state.
 
-## Detection Signals
+## Detection Heuristics
 
 **Discarded Return Value**
 - `target.call(data)` as a standalone statement with no `(bool success, ...)` capture

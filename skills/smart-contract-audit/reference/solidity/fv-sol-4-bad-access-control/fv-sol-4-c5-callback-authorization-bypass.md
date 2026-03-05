@@ -4,7 +4,7 @@
 
 External callback functions (`onFlashLoan`, `onERC721Received`, `onERC1155Received`) are invoked by third-party contracts. If the callback does not verify `msg.sender` is the expected caller, anyone can invoke it directly with fabricated parameters, bypassing intended access control. ERC4626 `withdraw`/`redeem` has a related variant: when `msg.sender != owner`, allowance must be checked and decremented or any address can burn an arbitrary owner's shares.
 
-## Detection Signals
+## Detection Heuristics
 
 **Flash Loan Callback**
 - `onFlashLoan` does not verify `msg.sender == address(lendingPool)`

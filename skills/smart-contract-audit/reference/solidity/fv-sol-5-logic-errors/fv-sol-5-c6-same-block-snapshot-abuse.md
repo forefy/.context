@@ -4,7 +4,7 @@
 
 Protocols that calculate yield, rewards, voting power, or insurance coverage based on a balance snapshot at a single point in time are vulnerable to flash loan amplification. An attacker borrows tokens, deposits before the snapshot (or in the same block), claims the benefit, then repays — all in one transaction. No minimum holding period means the capital requirement is zero.
 
-## Detection Signals
+## Detection Heuristics
 
 - Governance voting uses `balanceOf` or current `balances[msg.sender]` rather than `getPastVotes(block.number - 1)`
 - Reward/yield distribution uses current balance snapshot with no lock period

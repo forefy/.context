@@ -4,7 +4,7 @@
 
 Arithmetic operations applied in the wrong sequence produce incorrect results. Common cases include applying a bonus before a tax so the bonus is also taxed, computing interest before updating the principal, or applying a percentage to a post-adjusted value when the specification requires it on the pre-adjusted amount.
 
-## Detection Signals
+## Detection Heuristics
 
 **Bonus or Premium Applied Before Percentage Deduction**
 - Bonus, incentive, or premium added to a base value before a tax or fee percentage is applied to the combined sum

@@ -4,7 +4,7 @@
 
 Function selectors are the first four bytes of the keccak256 hash of a function signature. When a proxy contract exposes public functions whose selectors match functions in the implementation, the proxy intercepts and handles those calls itself rather than delegating them, causing silent misbehavior or unauthorized access to proxy-level operations.
 
-## Detection Signals
+## Detection Heuristics
 
 **Public Functions on Proxy Contract**
 - Proxy contract defines `public` or `external` functions beyond the fallback and constructor

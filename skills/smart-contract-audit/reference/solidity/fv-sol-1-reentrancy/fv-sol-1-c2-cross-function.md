@@ -4,7 +4,7 @@
 
 Multiple functions within the same contract share a state variable. One function makes an external call before updating that variable, while another function relies on the same variable for access control or accounting. An attacker re-enters the second function during the callback window to exploit the stale shared state.
 
-## Detection Signals
+## Detection Heuristics
 
 **Shared State Variable Across Functions with Mixed Access Patterns**
 - Two or more functions read or write the same `mapping` or state variable (e.g., `balances[msg.sender]`)

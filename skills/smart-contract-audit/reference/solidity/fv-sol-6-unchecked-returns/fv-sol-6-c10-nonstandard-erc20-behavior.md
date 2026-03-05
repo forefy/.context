@@ -11,7 +11,7 @@ Several widely-used tokens deviate from the ERC20 spec in ways that break standa
 
 All of these are silent integration failures — no revert, wrong state, or broken tooling.
 
-## Detection Signals
+## Detection Heuristics
 
 **Missing Return Value**
 - `require(token.transfer(...))` or `require(token.transferFrom(...))` without SafeERC20

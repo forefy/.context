@@ -4,7 +4,7 @@
 
 Delaying block production or influencing the timing of oracle updates causes the price feed to serve stale data. Protocols that accept arbitrarily old prices expose themselves to exploitation using valuations that no longer reflect market reality — an attacker can front-run the staleness window to lock in favorable rates before a fresh update arrives.
 
-## Detection Signals
+## Detection Heuristics
 
 **Stale Price Acceptance**
 - `getLastUpdatedTime()` return value checked only for non-zero (`require(lastUpdated > 0)`), not for freshness relative to `block.timestamp`

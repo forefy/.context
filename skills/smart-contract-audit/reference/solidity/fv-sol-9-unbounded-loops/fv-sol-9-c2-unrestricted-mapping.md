@@ -4,7 +4,7 @@
 
 Solidity mappings cannot be iterated natively, so developers often maintain a parallel array of keys. If this auxiliary array grows without restriction, any function that loops over it to aggregate or process mapping values will eventually exceed the block gas limit.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unbounded Key-Tracking Array**
 - A storage `address[]` or `uint256[]` array is appended to inside a public or externally callable function with no length cap

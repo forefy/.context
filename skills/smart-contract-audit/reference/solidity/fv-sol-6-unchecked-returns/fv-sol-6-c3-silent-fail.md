@@ -4,7 +4,7 @@
 
 A function call fails without detection and execution continues as if it succeeded, producing an invalid or inconsistent contract state. This pattern arises whenever a callee signals failure through a return value rather than a revert and the caller does not inspect that value.
 
-## Detection Signals
+## Detection Heuristics
 
 **Bool-Returning External Calls Without Checks**
 - External function typed `returns (bool)` called as a statement with the return discarded

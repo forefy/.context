@@ -4,7 +4,7 @@
 
 EIP-2535 Diamond proxies introduce unique storage and selector collision risks beyond standard proxy patterns. Facets that declare top-level state variables all start at slot 0, overwriting each other's data. Adding a facet with a selector that already exists in another facet hijacks all calls to that function. Shared `DiamondStorage` structs accessed at non-namespaced slots collide with facet storage.
 
-## Detection Signals
+## Detection Heuristics
 
 **Cross-Facet Storage Collision**
 - Facet contracts declare top-level `uint256`, `address`, or other state variables (not inside a struct)

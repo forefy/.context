@@ -4,7 +4,7 @@
 
 Proxy contracts that use `initialize()` instead of constructors for setup can be left in an uninitialized state if the initializer is never called, or can be re-initialized if the initializer lacks a one-time-use guard. Either condition allows an attacker to set critical ownership or configuration variables to their own address.
 
-## Detection Signals
+## Detection Heuristics
 
 **No Zero-Address Check on Implementation Before delegatecall**
 - `fallback` forwards calls via `delegatecall` without verifying `implementation != address(0)`

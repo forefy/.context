@@ -4,7 +4,7 @@
 
 The upgrade lifecycle — initialization, authorization, and execution ordering — has several critical failure modes including re-initialization via wrong modifier, permanent loss of upgrade capability when UUPS logic is dropped, race conditions between upgrade and configuration, missing access control on `_authorizeUpgrade`, front-runnable non-atomic initialization, and admin routing confusion in transparent proxies.
 
-## Detection Signals
+## Detection Heuristics
 
 **Re-initialization**
 - V2+ contract uses `initializer` modifier instead of `reinitializer(N)`

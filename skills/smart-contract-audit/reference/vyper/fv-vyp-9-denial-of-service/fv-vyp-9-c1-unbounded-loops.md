@@ -1,65 +1,32 @@
 # FV-VYP-9-C1 Unbounded Loops
 
-## Bad
+## TLDR
 
-```vyper
-# @version ^0.3.0
+Vyper requires loop bounds to be statically known at compile time, but a loop over a `DynArray` iterates up to the declared maximum length, which can be reached at runtime. When the array grows through user-controlled appends, the gas cost of any function that iterates the full array grows proportionally, eventually exceeding the block gas limit and permanently bricking the operation.
 
-participants: public(DynArray[address, 1000])
-balances: public(HashMap[address, uint256])
+## Detection Heuristics
 
-@external
-def distribute_rewards():
-    reward_per_participant: uint256 = self.balance / len(self.participants)
-    
-    # Vulnerable: unbounded loop can cause gas limit issues
-    for participant in self.participants:
-        self.balances[participant] += reward_per_participant
+**`for` loop over a `DynArray` populated by untrusted callers**
+- `for recipient in self.recipients:` where `self.recipients` is a `DynArray[address, N]` that any caller can append to via a public `join` or `register` function
+- `for participant in self.participants:` inside `distribute_rewards` or `settle` where `self.participants` grows unboundedly
 
-@external
-def remove_participant(target: address):
-    new_participants: DynArray[address, 1000] = []
-    
-    # Vulnerable: loop over entire array to remove one element
-    for participant in self.participants:
-        if participant != target:
-            new_participants.append(participant)
-    
-    self.participants = new_participants
-```
+**Large declared `DynArray` maximum combined with full iteration**
+- `DynArray[address, 1000]` or larger used as the type for a list that is fully iterated in a single function call
+- The declared maximum (`N`) in `DynArray[T, N]` is large enough that iterating all `N` elements would consume more than the block gas limit at realistic per-iteration cost
 
-## Good
+**Array compaction via full-scan removal**
+- Element removal implemented by iterating the entire array to rebuild it without the target element: `for item in self.items: if item != target: new_list.append(item)`
+- No O(1) swap-and-pop pattern used; removal cost grows linearly with array length
 
-```vyper
-# @version ^0.3.0
+**Accumulation inside a loop with no batch-processing mechanism**
+- A single function iterates the full list and writes to storage for every element: `self.balances[p] += reward` inside a loop with no `start_index` / `batch_size` pagination
+- No `distribution_index` or equivalent cursor to resume a partial iteration in a subsequent transaction
 
-participants: public(DynArray[address, 100])  # Limit array size
-balances: public(HashMap[address, uint256])
-participant_indices: HashMap[address, uint256]
-distribution_index: public(uint256)
+**Loop bounds derived from storage length at call time**
+- `for i in range(len(self.list)):` where `len` is evaluated at call time and the list may have grown since deployment
 
-@external
-def distribute_rewards_batch(batch_size: uint256):
-    reward_per_participant: uint256 = self.balance / len(self.participants)
-    end_index: uint256 = min(self.distribution_index + batch_size, len(self.participants))
-    
-    # Safe: process in batches to avoid gas limit
-    for i in range(self.distribution_index, end_index):
-        self.balances[self.participants[i]] += reward_per_participant
-    
-    self.distribution_index = end_index
+## False Positives
 
-@external
-def remove_participant(target: address):
-    target_index: uint256 = self.participant_indices[target]
-    last_index: uint256 = len(self.participants) - 1
-    
-    # Safe: O(1) removal by swapping with last element
-    if target_index != last_index:
-        last_participant: address = self.participants[last_index]
-        self.participants[target_index] = last_participant
-        self.participant_indices[last_participant] = target_index
-    
-    self.participants.pop()
-    self.participant_indices[target] = 0
-```
+- `DynArray` with a small declared maximum (e.g., `DynArray[address, 10]`) where the worst-case gas cost per call is bounded and well within the block gas limit
+- Loop iteration where the declared maximum is enforced by a require in the append function and the per-iteration gas cost is low and audited
+- Batch processing functions with explicit `start: uint256` and `end: uint256` parameters that allow callers to iterate a subset of the array across multiple transactions

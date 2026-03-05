@@ -4,7 +4,7 @@
 
 On L2 networks (Arbitrum, Optimism, Base, and others), Chainlink price feeds continue to serve the last known price during sequencer downtime. When the sequencer resumes, there is a brief window where prices may be stale relative to L1 market moves. Protocols that use Chainlink feeds on L2 without querying the L2 Sequencer Uptime Feed may execute liquidations or trades at incorrect prices during or immediately after downtime.
 
-## Detection Signals
+## Detection Heuristics
 
 **Missing Sequencer Uptime Check**
 - Contract deployed on Arbitrum, Optimism, Base, or another L2 network that uses a centralized sequencer

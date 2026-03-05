@@ -4,7 +4,7 @@
 
 When a DEX pool has insufficient liquidity relative to the swap size, price impact grows non-linearly and the resulting output can be drastically below fair value. Without a pre-swap liquidity check or a tightly enforced `amountOutMinimum`, the contract accepts any output the pool returns, including near-zero amounts caused by thin liquidity.
 
-## Detection Signals
+## Detection Heuristics
 
 **No Pre-Swap Liquidity Validation**
 - `dex.swap(tokenIn, tokenOut, amountIn)` called without checking available pool reserves

@@ -4,7 +4,7 @@
 
 Swap transactions published to the public mempool expose their parameters — token pair, input amount, and minimum output — before inclusion. MEV bots observe these parameters and sandwich the victim: a buy is inserted before the transaction to move the price up, and a sell is inserted after, extracting value from the slippage tolerance the victim granted.
 
-## Detection Signals
+## Detection Heuristics
 
 **Transparent Swap Parameters**
 - Swap function accepts `tokenIn`, `amountIn`, and `minAmountOut` directly as calldata with no obfuscation

@@ -1,30 +1,23 @@
 # FV-ANC-4-CL2 PDA Seed Concatenation Collision
 
-## Bad
+## TLDR
 
+When multiple variable-length byte slices are passed as PDA seeds without length disambiguation, different combinations of inputs can produce the same raw seed bytes and therefore the same PDA address. An attacker can craft inputs that collide with a legitimate account's PDA.
 
-```rust
-// Seeds are concatenated without length-prefixing or separators.
-// ["AB", "C"] and ["A", "BC"] produce identical raw seed bytes
-// and therefore the same PDA.
-let pda = Pubkey::find_program_address(
-    &[prefix.as_bytes(), suffix.as_bytes()],
-    program_id,
-);
-```
+## Detection Heuristics
 
-## Good
+**Adjacent Variable-Length Seeds Without Separators**
+- `Pubkey::find_program_address(&[prefix.as_bytes(), suffix.as_bytes()], program_id)` where both seeds are variable-length strings or byte slices
+- Two or more `&str` or `Vec<u8>` seeds concatenated as adjacent slices without length prefixes or fixed-length encoding
 
+**String Seeds Derived From User Input**
+- Seeds include user-provided names, labels, or identifiers that are not fixed-length, creating collision opportunities between different user inputs
 
-```rust
-// Use a fixed-length or hashed representation so seeds are unambiguous.
-let pda = Pubkey::find_program_address(
-    &[
-        &(prefix.len() as u32).to_le_bytes(),
-        prefix.as_bytes(),
-        suffix.as_bytes(),
-    ],
-    program_id,
-);
-// Or use distinct constant separators between variable-length fields.
-```
+**Anchor seeds Constraint With Dynamic Slices**
+- `#[account(seeds = [user_input_a.as_ref(), user_input_b.as_ref()], bump)]` where both inputs are variable-length
+
+## False Positives
+
+- All seed components are fixed-length (e.g., `Pubkey` references at 32 bytes, `u64` encoded as 8 bytes), making concatenation unambiguous
+- Seeds use a constant string separator between variable-length components that cannot appear in the values themselves
+- Only a single variable-length seed component is used alongside fixed-length components

@@ -4,7 +4,7 @@
 
 Cryptographic access control schemes fail when the protected value is not bound to `msg.sender`. A commitment hash that omits the sender can be front-run or replayed from a different address. A Merkle leaf that omits the sender is claimable by anyone who observes the proof on-chain. Single-hashed leaves are additionally vulnerable to second-preimage attacks where a 64-byte intermediate node is passed as a leaf.
 
-## Detection Signals
+## Detection Heuristics
 
 **Commit-Reveal Not Bound to Sender**
 - `keccak256(abi.encodePacked(value, salt))` without `msg.sender` included in the hash

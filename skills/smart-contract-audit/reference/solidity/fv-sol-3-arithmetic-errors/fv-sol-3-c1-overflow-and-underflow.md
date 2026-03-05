@@ -4,7 +4,7 @@
 
 Integer overflow and underflow occur when arithmetic results exceed or drop below the bounds of the integer type. In Solidity versions before 0.8.0, these conditions wrap silently without reverting. In 0.8.0 and later, the compiler inserts checked arithmetic by default, but `unchecked {}` blocks and inline assembly restore the wrapping behavior.
 
-## Detection Signals
+## Detection Heuristics
 
 **Pre-0.8.0 Contracts Without SafeMath**
 - `pragma solidity ^0.7.x` or earlier with `+`, `-`, `*` applied to user-controlled values

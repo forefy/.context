@@ -4,7 +4,7 @@
 
 Contracts that use `block.timestamp` for fund release, access control, or randomness are exposed to two distinct risks: miner (or validator) manipulation of the timestamp by up to approximately 12-15 seconds per block, and the imprecision of treating a monotonically-increasing but not strictly-regular clock as a reliable scheduling mechanism. Lock periods enforced by exact timestamp comparisons can be bypassed or have their timing altered by block producers.
 
-## Detection Signals
+## Detection Heuristics
 
 **Exact or Tight Timestamp Comparisons**
 - `require(block.timestamp >= unlockTime)` where `unlockTime` was set as `block.timestamp + N` with small N (seconds to minutes)

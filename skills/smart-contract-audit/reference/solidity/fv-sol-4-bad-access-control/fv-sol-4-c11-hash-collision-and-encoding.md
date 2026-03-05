@@ -4,7 +4,7 @@
 
 Two encoding bugs allow attackers to produce colliding hashes or bypass deduplication. When `abi.encodePacked` is used with two or more dynamic-type arguments, inputs with different field boundaries but identical concatenated bytes produce the same hash. When protocols deduplicate by hashing raw `msg.data`, attackers can produce semantically identical but bytewise-different calldata by manipulating ABI offset pointers, bypassing replay protection.
 
-## Detection Signals
+## Detection Heuristics
 
 **abi.encodePacked Collision**
 - `keccak256(abi.encodePacked(a, b, ...))` where two or more arguments are `string`, `bytes`, or dynamic arrays

@@ -4,7 +4,7 @@
 
 Environment variables such as `block.timestamp`, `block.number`, and `block.basefee` carry miner- or validator-influenced values that should not be used as precise inputs to arithmetic or access control. Small manipulations of `block.timestamp` (up to ~15 seconds on Ethereum mainnet) are within validator discretion, and `block.number` advances at variable real-world time between networks. Arithmetic that assumes exact or predictable values from these variables is exploitable or unreliable.
 
-## Detection Signals
+## Detection Heuristics
 
 **Timestamp Arithmetic for Time-Sensitive Logic**
 - `block.timestamp +/- N` used to set deadlines, unlock times, or cooldown windows shorter than ~15 minutes

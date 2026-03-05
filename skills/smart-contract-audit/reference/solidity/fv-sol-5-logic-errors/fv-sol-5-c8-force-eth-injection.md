@@ -10,7 +10,7 @@ Three mechanisms send ETH to a contract without triggering `receive()` or `fallb
 
 Contracts that use `address(this).balance` for invariant checks, exact-match accounting, or as a trigger condition can have those invariants violated by any of these mechanisms.
 
-## Detection Signals
+## Detection Heuristics
 
 - `require(address(this).balance == X)` or `require(address(this).balance >= X)` as invariant guard
 - `require(address(this).balance == 0)` as initialization guard

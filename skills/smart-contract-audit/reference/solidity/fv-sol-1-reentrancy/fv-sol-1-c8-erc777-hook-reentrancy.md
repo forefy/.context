@@ -4,7 +4,7 @@
 
 ERC777 tokens are backward-compatible with ERC20 but fire `tokensToSend` (on sender) and `tokensReceived` (on recipient) hooks via the ERC1820 registry on every transfer, including ERC20-style `transfer()` and `transferFrom()`. A protocol that uses standard ERC20 calls against what it believes is an ERC20 token unknowingly grants the sender or recipient a callback, enabling reentrancy.
 
-## Detection Signals
+## Detection Heuristics
 
 **ERC20-Compatible Call That May Trigger ERC777 Hook**
 - `transfer()` or `transferFrom()` called before state updates on a token whose type is not statically restricted

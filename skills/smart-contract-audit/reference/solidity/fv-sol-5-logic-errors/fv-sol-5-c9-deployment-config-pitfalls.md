@@ -13,7 +13,7 @@ Key patterns:
 - **Hardcoded addresses**: literal `address(0x...)` for external dependencies, wrong on other chains
 - **Block number as timestamp**: `block.number * 13` assumes fixed block times across chains
 
-## Detection Signals
+## Detection Heuristics
 
 **Cross-Chain Replay / Wrong Network**
 - `block.chainid` not asserted at start of deployment script or in constructor

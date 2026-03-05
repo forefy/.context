@@ -4,7 +4,7 @@
 
 Two related patterns allow attackers to bypass access controls that assume `msg.sender` is an EOA or a not-yet-deployed address. During construction, `extcodesize` is zero even though the caller is a contract, allowing constructor-context calls to pass EOA-only guards. With CREATE2, if the salt is not bound to `msg.sender`, an attacker can precompute the deterministic address and deploy first, squatting the victim's expected counterfactual address and taking ownership.
 
-## Detection Signals
+## Detection Heuristics
 
 **extcodesize Bypass**
 - `require(msg.sender.code.length == 0)` or `require(extcodesize(caller()) == 0)` used as the primary security guard

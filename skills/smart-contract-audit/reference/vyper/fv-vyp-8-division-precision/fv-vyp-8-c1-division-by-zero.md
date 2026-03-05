@@ -1,40 +1,29 @@
 # FV-VYP-8-C1 Division by Zero
 
-## Bad
+## TLDR
 
-```vyper
-# @version ^0.3.0
+Vyper reverts on division by zero for integer types, but the revert is an unhandled exception that may occur at unexpected points in execution, leaving state partially modified if writes preceded the division. Contracts must validate divisors before any division that depends on runtime values.
 
-@external
-@view
-def calculate_share(total_amount: uint256, total_shares: uint256) -> uint256:
-    # Vulnerable: division by zero
-    return total_amount / total_shares
+## Detection Heuristics
 
-@external
-@view
-def calculate_percentage(value: uint256, total: uint256) -> uint256:
-    # Vulnerable: no zero check
-    return (value * 100) / total
-```
+**Division by a value derived from storage without a prior zero-check**
+- `total_amount / self.total_shares` where `self.total_shares` can be zero if no participants have joined yet
+- `reward / len(self.participants)` where `self.participants` is a `DynArray` that may be empty at the time of the call
+- `(value * 100) / self.total` where `self.total` starts at zero before the first deposit
 
-## Good
+**Division by a function parameter without validation**
+- `return amount / participants` in a `@view` or `@pure` function where `participants` is a caller-supplied argument with no `assert participants > 0` guard
+- `fee = (msg.value * rate) / denominator` where `denominator` is passed by the caller
 
-```vyper
-# @version ^0.3.0
+**State mutations before the division that are not rolled back on revert**
+- Storage variable updated (e.g., a counter incremented or a balance modified) before a division operation that may revert, leaving the contract in an inconsistent state if the division panics
 
-@external
-@view
-def calculate_share(total_amount: uint256, total_shares: uint256) -> uint256:
-    # Safe: check for zero before division
-    assert total_shares > 0, "No shares available"
-    return total_amount / total_shares
+**Share or ratio calculations on first-deposit edge cases**
+- Initial liquidity deposit to a pool computes `shares = deposited_amount / self.price_per_share` where `self.price_per_share` is initialized to zero or only set after the first deposit
+- `convert(a, decimal) / convert(b, decimal)` where `b` as a `decimal` can be `0.0`
 
-@external
-@view
-def calculate_percentage(value: uint256, total: uint256) -> uint256:
-    # Safe: handle zero case explicitly
-    if total == 0:
-        return 0
-    return (value * 100) / total
-```
+## False Positives
+
+- Division by a `constant` value defined at the module level, which the compiler can verify is non-zero at compile time
+- Division preceded by `assert denominator > 0` or an equivalent `if denominator == 0: return 0` guard that handles the zero case before the operation
+- Division by `len(arr)` where `arr` is a `DynArray` that is always non-empty due to a prior `assert len(arr) > 0` or an invariant maintained by the contract

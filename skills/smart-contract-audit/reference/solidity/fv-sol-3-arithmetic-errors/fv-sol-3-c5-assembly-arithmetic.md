@@ -4,7 +4,7 @@
 
 Arithmetic inside `assembly {}` (Yul) does not benefit from Solidity 0.8's checked math. Overflow and underflow wrap silently (same as `unchecked {}`) and division by zero returns 0 instead of reverting. Developers accustomed to the Solidity 0.8 safety guarantees frequently introduce these bugs when writing inline assembly for gas optimization. Narrow-type arithmetic before upcast is a related Solidity-level issue: `uint8 a * uint8 b` overflows in the narrow type even though the result is assigned to a `uint256`.
 
-## Detection Signals
+## Detection Heuristics
 
 **Assembly Division by Zero**
 - `div(x, y)` or `sdiv(x, y)` inside `assembly {}` where denominator is user-supplied or not guaranteed non-zero

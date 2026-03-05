@@ -4,7 +4,7 @@
 
 Nested loops whose bounds are both determined by user-controlled data produce O(n*m) gas costs. Even modest growth in either dimension can push the combined iteration count past the block gas limit, permanently bricking any function that relies on full traversal in a single transaction.
 
-## Detection Signals
+## Detection Heuristics
 
 **Double-Dimension User-Controlled Iteration**
 - Outer loop iterates over a user-supplied or user-growable array of addresses or IDs

@@ -11,7 +11,7 @@ Inline assembly bypasses Solidity's memory safety guarantees. Six distinct pitfa
 - `calldataload` out-of-bounds: reads zero-padded bytes silently past `calldatasize()`
 - Free memory pointer corruption: writing above `mload(0x40)` without updating it
 
-## Detection Signals
+## Detection Heuristics
 
 **mstore8 Partial Write**
 - `mstore8` in a loop building a byte array, followed by `keccak256` or `return` on the full word region

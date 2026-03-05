@@ -6,7 +6,7 @@ When a contract makes an external call using `(bool success, bytes memory data) 
 
 This is particularly dangerous when `target` is user-supplied (e.g., in batch executors, meta-transaction relayers, or arbitrary call dispatchers).
 
-## Detection Signals
+## Detection Heuristics
 
 - `(bool success, bytes memory returndata) = target.call(payload)` where `target` is user-controlled
 - Batch executor or multicall copying returndata from arbitrary addresses

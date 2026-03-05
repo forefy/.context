@@ -4,7 +4,7 @@
 
 `delegatecall` executes code from another contract in the calling contract's storage context, preserving `msg.sender` and `msg.value`. When the proxy and implementation contracts declare state variables at overlapping storage slots, writes from the implementation silently corrupt proxy-level state such as the admin address or the stored implementation pointer.
 
-## Detection Signals
+## Detection Heuristics
 
 **Proxy and Implementation Share Sequential Slot Layout**
 - Proxy declares one or more state variables (e.g., `address public implementation`) starting at slot 0

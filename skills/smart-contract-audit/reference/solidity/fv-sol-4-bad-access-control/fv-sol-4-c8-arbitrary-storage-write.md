@@ -4,7 +4,7 @@
 
 Two distinct patterns allow writing to arbitrary storage slots: inline assembly `sstore(slot, value)` where the slot is derived from user input without bounds checking, and in Solidity < 0.6, direct assignment to `array.length` combined with a crafted large index causes slot arithmetic to wrap, writing to any storage location. Both patterns allow an attacker to overwrite critical state variables including access control roles and ownership addresses.
 
-## Detection Signals
+## Detection Heuristics
 
 **User-Controlled Assembly sstore**
 - `sstore(slot, value)` in inline assembly where `slot` is derived from `msg.sender`, calldata, or any function parameter

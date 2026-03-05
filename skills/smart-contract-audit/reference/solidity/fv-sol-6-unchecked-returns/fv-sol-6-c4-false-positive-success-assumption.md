@@ -4,7 +4,7 @@
 
 The contract captures a failure signal from an external call but treats the failure path as a no-op, allowing execution to continue as if the call succeeded. This produces state inconsistencies and incorrect balance or permission assumptions when the external call actually failed.
 
-## Detection Signals
+## Detection Heuristics
 
 **Empty Failure Branch**
 - `if (!success) { }` or `if (!success) { /* ignored */ }` with no revert, emit, or corrective action

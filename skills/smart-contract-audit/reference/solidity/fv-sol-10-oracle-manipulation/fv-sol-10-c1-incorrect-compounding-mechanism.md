@@ -4,7 +4,7 @@
 
 Oracle price is used as a direct multiplier in interest or yield compounding logic without validation. An attacker who can influence the oracle can inflate or deflate the calculated interest in a single call, permanently distorting the cumulative value.
 
-## Detection Signals
+## Detection Heuristics
 
 **Oracle-Dependent Compounding**
 - `oracle.getPrice()` return value multiplied directly into an interest or yield calculation with no prior sanity check

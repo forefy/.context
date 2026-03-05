@@ -4,7 +4,7 @@
 
 Loops that iterate over a dynamic array whose length grows with user-controlled input have unbounded gas cost. As the array grows, any function performing a full iteration will eventually exceed the block gas limit and revert permanently.
 
-## Detection Signals
+## Detection Heuristics
 
 **Iteration Over User-Growable Array**
 - `for (uint256 i = 0; i < arr.length; i++)` where `arr` is a storage array with no length cap

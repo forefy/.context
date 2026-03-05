@@ -4,7 +4,7 @@
 
 Solidity performs integer division with truncation (floor rounding toward zero), which silently discards fractional remainders. In contracts that distribute funds, accrue rewards, or compute fees across many users or iterations, these per-operation losses accumulate into meaningful discrepancies — either funds become permanently stuck, or repeated operations allow users to extract slightly more than they contributed.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unscaled Division in Share or Reward Allocation**
 - `allocation = (totalFunds * recipientShares) / totalShares` without a prior scaling multiplication

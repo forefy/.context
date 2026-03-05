@@ -4,7 +4,7 @@
 
 When a function that assigns ownership, admin rights, or privileged roles is public and lacks any access control guard, any caller can elevate their own privileges or assign them to an attacker-controlled address, taking full control of the contract.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unguarded Role-Assignment Function**
 - `public` or `external` function that writes to `owner`, `admin`, or a role-tracking mapping without a `require(msg.sender == admin)` or role-based modifier

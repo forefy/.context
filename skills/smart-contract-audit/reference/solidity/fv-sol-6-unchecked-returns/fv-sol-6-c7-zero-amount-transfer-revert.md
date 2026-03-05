@@ -4,7 +4,7 @@
 
 Some non-standard ERC20 tokens (LEND, early BNB, and others) revert on `transfer(to, 0)` or `transferFrom(from, to, 0)`. Protocols that perform distribution loops or yield claims without guarding against zero amounts will be DoS'd when the distributed amount rounds to zero — permanently bricking claims for affected users or entire distribution rounds.
 
-## Detection Signals
+## Detection Heuristics
 
 - `token.transfer(to, amount)` or `token.transferFrom(from, to, amount)` where `amount` can be zero
 - Distribution loop: `share = total * weight[i] / totalWeight` — per-recipient share rounds to zero when `total` is small or `totalWeight` is large

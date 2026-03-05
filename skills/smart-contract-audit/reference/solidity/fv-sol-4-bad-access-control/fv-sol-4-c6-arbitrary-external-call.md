@@ -4,7 +4,7 @@
 
 When a contract executes `target.call{value: v}(data)` where `target` or `data` are caller-supplied, an attacker can craft parameters to invoke unintended functions on any target contract. Common impact includes draining ERC20 allowances the contract holds, invoking `transferFrom` on behalf of the contract, or calling governance or upgrade functions on contracts that trust the calling contract as an authorized party.
 
-## Detection Signals
+## Detection Heuristics
 
 **Caller-Controlled Target or Calldata**
 - `target.call{value: v}(data)` where `target` or `data` (or both) arrive as function parameters from `msg.sender`

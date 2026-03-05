@@ -4,7 +4,7 @@
 
 An oracle can return a technically valid price — passing all staleness, round, and sign checks — that is wildly wrong for protocol purposes, such as during a flash crash or when a Chainlink circuit breaker activates. Without min/max sanity bounds or a secondary oracle deviation check, the protocol executes liquidations, swaps, or collateral valuations at that incorrect price. A related variant is a short TWAP window: a window under 30 minutes is manipulable by post-Merge validators who can hold a skewed AMM state across consecutive blocks they propose, shifting the TWAP at low cost.
 
-## Detection Signals
+## Detection Heuristics
 
 **Missing Price Bounds**
 - Oracle price used in liquidation, collateral valuation, or swap pricing without `require(price >= MIN_PRICE && price <= MAX_PRICE)`

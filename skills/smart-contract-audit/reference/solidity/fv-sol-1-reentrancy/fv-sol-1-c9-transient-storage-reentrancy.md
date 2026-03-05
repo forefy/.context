@@ -4,7 +4,7 @@
 
 Two reentrancy risks introduced by EIP-1153 (Cancun, March 2024): first, the classic `transfer()`/`send()` 2300-gas reentrancy guard is bypassed because `TSTORE` costs only 100 gas, allowing a `receive()` fallback to write transient state and re-enter within the gas limit. Second, a reentrancy lock backed by `TSTORE`/`TLOAD` that is never explicitly cleared persists for the entire transaction, causing permanent DoS for any multicall or flash-loan-callback flow that attempts a second call.
 
-## Detection Signals
+## Detection Heuristics
 
 **2300-Gas Guard Bypass via TSTORE**
 - `transfer()` or `send()` used as the sole reentrancy guard while the contract also contains `TSTORE`/`TLOAD` opcodes (inline assembly or via a transient-storage library)

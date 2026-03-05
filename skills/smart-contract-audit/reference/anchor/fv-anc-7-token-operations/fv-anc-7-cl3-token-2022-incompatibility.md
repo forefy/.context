@@ -1,39 +1,28 @@
 # FV-ANC-7-CL3 Token-2022 Incompatibility
 
-## Bad
+## TLDR
 
+The legacy SPL Token program and Token-2022 have different program IDs and different instruction formats for operations like `transfer`. Code that hardcodes `anchor_spl::token` will fail or behave incorrectly when used with Token-2022 mints, which introduce transfer fees, interest, confidential transfers, and other extensions.
 
-```rust
-// anchor_spl::token::transfer is hardcoded to the legacy Token program ID.
-// Calling it with a Token-2022 mint silently fails or panics at runtime.
-use anchor_spl::token::{self, Transfer};
+## Detection Heuristics
 
-let cpi_ctx = CpiContext::new(
-    ctx.accounts.token_program.to_account_info(),
-    Transfer {
-        from: ctx.accounts.from.to_account_info(),
-        to: ctx.accounts.to.to_account_info(),
-        authority: ctx.accounts.authority.to_account_info(),
-    },
-);
-token::transfer(cpi_ctx, amount)?;
-```
+**anchor_spl::token Instead of anchor_spl::token_interface**
+- `use anchor_spl::token::{Transfer, transfer}` used in an instruction that is intended to support both Token and Token-2022 mints
+- `token::transfer(cpi_ctx, amount)` called instead of `token_interface::transfer_checked(cpi_ctx, amount, decimals)`
 
-## Good
+**Hardcoded Token Program ID in Constraints**
+- `#[account(address = spl_token::ID)]` on a token program account when the protocol intends to support Token-2022
+- `token_program: Program<'info, Token>` in the context struct instead of `token_program: Interface<'info, TokenInterface>`
 
+**Missing Mint Account in transfer_checked Calls**
+- `transfer` used instead of `transfer_checked`, omitting the mint account parameter required by Token-2022 for fee calculation
+- Protocol does not pass the mint account to token operation CPIs, making it incompatible with fee-on-transfer extensions
 
-```rust
-// Use the token_interface module which handles both Token and Token-2022.
-use anchor_spl::token_interface::{self, TransferChecked};
+**No Extension Checks for Transfer Fee or Other Hooks**
+- Program does not inspect mint extension data to account for transfer fees before computing expected received amounts
+- Transfer hook extensions not handled, causing unexpected behavior on Token-2022 mints with hooks
 
-let cpi_ctx = CpiContext::new(
-    ctx.accounts.token_program.to_account_info(),
-    TransferChecked {
-        from: ctx.accounts.from.to_account_info(),
-        mint: ctx.accounts.mint.to_account_info(),
-        to: ctx.accounts.to.to_account_info(),
-        authority: ctx.accounts.authority.to_account_info(),
-    },
-);
-token_interface::transfer_checked(cpi_ctx, amount, decimals)?;
-```
+## False Positives
+
+- Protocol explicitly restricts itself to legacy SPL Token mints and enforces this via mint account ownership checks against `spl_token::ID`
+- Token-2022 extensions are irrelevant for the specific mint the protocol uses, and this is enforced by a constraint on the mint account

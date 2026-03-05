@@ -4,7 +4,7 @@
 
 An attacker deploys a dedicated malicious contract that acts as `msg.sender` and re-enters the victim contract during an external call callback. The malicious contract's `receive` or `fallback` calls back into the victim before the victim's state update, allowing repeated exploitation across a contract boundary.
 
-## Detection Signals
+## Detection Heuristics
 
 **External Call to Caller-Controlled Address Before State Update**
 - `.call{value:}("")" to `msg.sender` before `balances[msg.sender]` is zeroed or decremented

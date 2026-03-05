@@ -4,7 +4,7 @@
 
 Cross-chain reentrancy exploits the absence of replay protection and access control on bridge completion functions. An attacker triggers `completeTransfer` (or equivalent) from a manipulated or replayed cross-chain message, crediting balances that were never actually locked on the source chain. The asynchronous nature of cross-chain messaging makes state inconsistencies harder to detect and replay attacks easier to execute.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unguarded Bridge Completion Functions**
 - `completeTransfer`, `finalizeDeposit`, `mintWrapped`, or equivalent functions callable by any address without `onlyTrustedRelayer` or equivalent access control
