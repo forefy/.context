@@ -4,7 +4,7 @@
 
 Three related token behaviors break standard balance accounting assumptions: fee-on-transfer tokens deduct a fee during `transferFrom` so the contract records more than it received; rebasing tokens (stETH, AMPL, aTokens) change `balanceOf` over time without any transfer so cached balances go stale; and any contract that reads `balanceOf` once and stores it is vulnerable to drift from either mechanism or from direct token transfers. In all three cases the accounting variable diverges from actual holdings, enabling over-withdrawal, price manipulation, or stuck funds.
 
-## Detection Signals
+## Detection Heuristics
 
 **Fee-on-Transfer**
 - `balances[user] += amount` after `transferFrom(..., amount)` without a before/after balance check

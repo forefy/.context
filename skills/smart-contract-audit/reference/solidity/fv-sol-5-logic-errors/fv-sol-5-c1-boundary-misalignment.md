@@ -4,7 +4,7 @@
 
 Occurs when code fails to correctly define exclusive versus inclusive boundaries at interval thresholds, causing values at the cutoff to fall into the wrong range, be double-counted, or be skipped entirely.
 
-## Detection Signals
+## Detection Heuristics
 
 **Mixed Inclusive/Exclusive Operators in Chained Conditions**
 - Adjacent if-else ranges mix `<` and `<=` without accounting for overlap at shared boundary values

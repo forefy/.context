@@ -4,7 +4,7 @@
 
 Signature-based authentication is vulnerable to three related issues: malleability (the same signing key produces two valid signatures for the same message), zero-address recovery (`ecrecover` returns `address(0)` for malformed signatures), and replay attacks (a valid signature used once can be reused). Raw use of `ecrecover` without input validation exposes all three.
 
-## Detection Signals
+## Detection Heuristics
 
 **Signature Malleability**
 - Raw `ecrecover` without `require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0)`

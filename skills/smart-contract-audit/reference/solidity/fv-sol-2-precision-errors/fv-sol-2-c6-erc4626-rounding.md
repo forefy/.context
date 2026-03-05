@@ -11,7 +11,7 @@ EIP-4626 mandates specific rounding directions on every conversion function to p
 
 Violations allow attackers to cycle deposit→redeem repeatedly for net profit, or to extract more assets than deposited.
 
-## Detection Signals
+## Detection Heuristics
 
 **Preview/Mint Asymmetry**
 - `previewDeposit` returns more shares than `deposit` actually mints

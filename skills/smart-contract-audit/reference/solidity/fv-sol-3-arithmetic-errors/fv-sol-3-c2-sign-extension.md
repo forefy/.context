@@ -4,7 +4,7 @@
 
 Sign extension issues occur when a smaller signed integer type is implicitly or explicitly cast to a larger signed integer type. The sign bit propagates to fill the additional high-order bits, which can turn a small negative value into a very large negative number or corrupt a value that was intended to be treated as unsigned.
 
-## Detection Signals
+## Detection Heuristics
 
 **Signed-to-Wider-Signed Cast**
 - `int8`, `int16`, or `int32` variable cast to `int256` or any wider signed type

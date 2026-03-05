@@ -4,7 +4,7 @@
 
 `tx.origin` always resolves to the original EOA that initiated the transaction, regardless of how many contracts the call passed through. A malicious contract invoked by a privileged user can exploit this to impersonate that user in any contract that relies on `tx.origin` for access control.
 
-## Detection Signals
+## Detection Heuristics
 
 **tx.origin Used as Access Guard**
 - `require(tx.origin == admin)` or `require(tx.origin == owner)` as the sole authorization check

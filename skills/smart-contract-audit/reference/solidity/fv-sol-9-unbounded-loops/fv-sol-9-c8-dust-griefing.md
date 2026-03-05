@@ -4,7 +4,7 @@
 
 Two griefing patterns exploiting minimal-cost interactions: a dust deposit with no minimum amount can reset a per-user timelock indefinitely, and a dust token transfer to a contract can permanently block a zero-balance gate that guards a state transition.
 
-## Detection Signals
+## Detection Heuristics
 
 **Dust Deposit / Timelock Reset**
 - `lastActionTime[user] = block.timestamp` inside a deposit or action function with no `require(amount >= MIN)` guard

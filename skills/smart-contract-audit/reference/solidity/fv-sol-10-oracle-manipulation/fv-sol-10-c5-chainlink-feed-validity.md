@@ -4,7 +4,7 @@
 
 `latestRoundData()` returns multiple fields that must all be validated. Missing any check leaves the protocol vulnerable to stale prices, deprecated feeds, and decimal scaling errors. Staleness means `updatedAt` is older than the feed's configured heartbeat — the feed stopped updating but continues returning the last known value. Round incompleteness means `answeredInRound < roundId` — the current round has not been answered and the returned price is from a prior round. Deprecated aggregator addresses can be replaced by Chainlink without notice, returning stale or zero values. Hardcoded decimal assumptions (e.g., always 8) fail for feeds that return 18 decimals, causing a 10^10 scaling error.
 
-## Detection Signals
+## Detection Heuristics
 
 **Staleness Check Missing**
 - `latestRoundData()` called but `require(updatedAt >= block.timestamp - MAX_STALENESS)` absent

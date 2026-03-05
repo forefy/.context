@@ -4,7 +4,7 @@
 
 Division by zero in Solidity causes an unconditional revert since 0.8.x (via the built-in overflow/underflow checks) or silent undefined behavior in earlier versions. Beyond crashes, an attacker who can set a denominator to zero can selectively brick functions, trigger denial-of-service, or force a contract into an unrecoverable state. The risk is highest when the denominator is user-controlled, derived from an external call, or can reach zero through normal protocol lifecycle (e.g., all shares redeemed, pool fully drained).
 
-## Detection Signals
+## Detection Heuristics
 
 **Denominator From User Input or State**
 - `return (userContribution * 100) / totalShares` where `totalShares` is set by any caller via a public setter

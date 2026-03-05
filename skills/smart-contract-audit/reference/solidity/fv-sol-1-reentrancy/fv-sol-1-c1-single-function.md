@@ -4,7 +4,7 @@
 
 A single function performs an external call before updating its own state. An attacker's `receive` or `fallback` function re-enters the same function before the state change lands, allowing repeated withdrawal of the same balance within one transaction.
 
-## Detection Signals
+## Detection Heuristics
 
 **CEI Violation in Withdrawal or Payout Functions**
 - State variable (e.g., `balances[msg.sender]`) read for the transfer amount but not zeroed or decremented before `.call{value:}()`

@@ -10,7 +10,7 @@ Randomness derived from on-chain values is manipulable by validators/miners or p
 
 A commit-reveal scheme provides genuine randomness only when the reveal is bound to a future block hash and there is slashing/penalty for non-reveal.
 
-## Detection Signals
+## Detection Heuristics
 
 - `block.prevrandao`, `block.difficulty`, `block.timestamp`, `block.coinbase`, or `blockhash` used as primary randomness source
 - Any combination of the above: `keccak256(abi.encodePacked(block.timestamp, msg.sender))` is still manipulable

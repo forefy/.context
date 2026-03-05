@@ -1,23 +1,23 @@
-# FV-ANC-3-CL1 Trying to modify an account without checking if it's writeable
+# FV-ANC-3-CL1 Trying to Modify an Account Without Checking if it is Writable
 
-## Bad
+## TLDR
 
+Solana requires accounts to be marked writable in the transaction's account list before the runtime permits lamport or data changes. Writing to an account not flagged as writable will either panic or silently fail depending on the Solana version, and opens logic errors when the writability check is absent at the program level.
 
-```rust
-// Attempt to modify account without checking if it is writable
-let data = &mut ctx.accounts.config.data.borrow_mut();
-data[0] = 42;
-```
+## Detection Heuristics
 
-## Good
+**Mutation Without Writable Guard**
+- `ctx.accounts.config.data.borrow_mut()` or similar data mutation on an `AccountInfo` without a prior `require!(ctx.accounts.config.is_writable, ...)` check
+- Lamport arithmetic on an account (e.g., `**account.lamports.borrow_mut() += ...`) without verifying `is_writable`
 
+**Missing mut Constraint in Anchor Context**
+- Account field in `#[derive(Accounts)]` struct lacks `#[account(mut)]` yet the instruction body writes to it
+- Anchor `Account<'info, T>` used without `mut` constraint on a data-mutating instruction
 
-```rust
-// Explicitly verify that the account is writable before modification
-if !ctx.accounts.config.is_writable {
-    return Err(ProgramError::InvalidAccountData);
-}
+**Unconditional Write on User-Supplied Accounts**
+- `AccountInfo` received from `ctx.remaining_accounts` or a raw account list is written without checking `is_writable`
 
-let data = &mut ctx.accounts.config.data.borrow_mut();
-data[0] = 42;
-```
+## False Positives
+
+- Account is written only via CPI and the callee program enforces writable constraints on its own accounts
+- Read-only deserialization of account data into a local variable without any mutation of the account itself

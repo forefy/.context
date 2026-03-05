@@ -8,7 +8,7 @@ A related variant affects custom batch mint/transfer loops that update `_balance
 
 A second variant causes `totalSupply` inflation: if `totalSupply[id]` is incremented after `_mint` fires the callback, the supply is stale-low during the callback, inflating share calculations.
 
-## Detection Signals
+## Detection Heuristics
 
 **ERC721/ERC1155 Callback Reentrancy**
 - `safeTransferFrom` or `safeMint` called before state updates

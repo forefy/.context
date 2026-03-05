@@ -4,7 +4,7 @@
 
 Solidity imposes a call-stack depth limit of 1024 frames. Recursive self-calls or chains of delegating function calls that scale with user-supplied input will exhaust the call stack or gas budget before completing. Even when disguised as iterative withdrawal logic, each self-call consumes additional stack frames and per-call gas overhead that grows linearly with the input value.
 
-## Detection Signals
+## Detection Heuristics
 
 **Direct Self-Recursive Call**
 - A `public` or `external` function calls itself with a decremented counter or shrinking parameter

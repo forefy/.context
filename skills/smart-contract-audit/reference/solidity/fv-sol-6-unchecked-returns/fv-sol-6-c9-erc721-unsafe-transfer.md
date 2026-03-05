@@ -6,7 +6,7 @@
 
 `safeTransferFrom()` and `_safeMint()` trigger `onERC721Received()` on the recipient and revert if the return value is not the expected selector. Using the unsafe variants on user-supplied or unknown recipient addresses silently locks tokens.
 
-## Detection Signals
+## Detection Heuristics
 
 - `_mint(to, tokenId)` or `_transfer(from, to, tokenId)` called directly where `to` is user-supplied
 - `nft.transferFrom(from, to, id)` in marketplace/escrow/settlement logic without `to.code.length` check

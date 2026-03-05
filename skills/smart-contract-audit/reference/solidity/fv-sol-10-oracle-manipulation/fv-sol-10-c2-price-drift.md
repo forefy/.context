@@ -4,7 +4,7 @@
 
 An oracle price that drifts gradually from reality causes cumulative accounting errors that compound over time. Because no reference price is stored and no deviation band is enforced, each incremental update silently accepts a slightly-wrong value, allowing long-term exploitation through slowly accumulated pricing error.
 
-## Detection Signals
+## Detection Heuristics
 
 **Stateless Price Validation**
 - `totalValue` multiplied by oracle price each call with no stored reference price to detect gradual drift

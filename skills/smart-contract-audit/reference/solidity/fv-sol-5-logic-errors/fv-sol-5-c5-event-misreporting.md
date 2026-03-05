@@ -4,7 +4,7 @@
 
 Events emit incorrect values — such as a cumulative balance instead of the current operation amount — causing off-chain indexers, monitoring systems, and oracles to record wrong data while on-chain state may be correct.
 
-## Detection Signals
+## Detection Heuristics
 
 **Post-Update State Emitted Instead of Operation Delta**
 - Event parameter passes `balances[msg.sender]` (cumulative post-update value) when the deposit delta `msg.value` should be reported

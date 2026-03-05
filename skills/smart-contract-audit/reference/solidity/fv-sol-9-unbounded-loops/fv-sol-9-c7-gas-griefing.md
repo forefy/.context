@@ -4,7 +4,7 @@
 
 Two related gas-based DoS patterns: block stuffing fills blocks with high-gas-price transactions to prevent time-sensitive protocol operations from executing within their window; the 63/64 rule allows a relayer to forward insufficient gas so the inner call silently fails while the outer call marks the request as processed.
 
-## Detection Signals
+## Detection Heuristics
 
 **Block Stuffing**
 - Time-sensitive function with a short execution window (seconds to minutes)

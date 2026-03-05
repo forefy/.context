@@ -4,7 +4,7 @@
 
 Precision errors occur when contracts hardcode a decimal assumption (commonly 18) rather than reading the token's actual `decimals()` value. When a contract interacts with tokens like USDC (6 decimals) or WBTC (8 decimals) using an 18-decimal assumption, amounts are over- or under-scaled by orders of magnitude, leading to catastrophically incorrect transfers or balance accounting.
 
-## Detection Signals
+## Detection Heuristics
 
 **Hardcoded Decimal Scaling**
 - `amount * 10**18` or `amount * 1e18` in a function that accepts an arbitrary ERC20 address

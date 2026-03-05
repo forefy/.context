@@ -1,49 +1,27 @@
 # FV-VYP-3-C1 Missing Owner Checks
 
-## Bad
+## TLDR
 
-```vyper
-# @version ^0.3.0
+Vyper has no built-in access control modifiers analogous to OpenZeppelin's `onlyOwner`. Every privileged function must explicitly assert the caller's identity. Missing or misplaced `assert msg.sender == self.owner` statements leave administrative, emergency, and fund-moving functions callable by any address.
 
-owner: public(address)
-paused: public(bool)
+## Detection Heuristics
 
-@external
-def __init__():
-    self.owner = msg.sender
+**State-mutating `@external` functions with no caller assertion**
+- Functions that write to `self.owner`, `self.paused`, or any configuration variable contain no `assert msg.sender == ...` at the top
+- `raw_call(msg.sender, b"", value=self.balance)` or similar ETH-draining call appears in a function with no access guard
+- Functions named `pause`, `unpause`, `set_fee`, `upgrade`, `emergency_withdraw`, or similar administrative verbs lack any access check
 
-@external
-def pause():
-    # Vulnerable: anyone can pause the contract
-    self.paused = True
+**`assert` placed after state-mutating lines**
+- An access check appears after a storage write or `raw_call`, meaning the side effect occurs before authorization is validated
 
-@external
-def emergency_withdraw():
-    # Vulnerable: anyone can drain the contract
-    raw_call(msg.sender, b"", value=self.balance)
-```
+**Owner stored in a mutable variable with no transfer guard**
+- `self.owner` can be overwritten by a function that only checks `msg.sender == self.owner` but not the zero address or other invariants, allowing the owner to be burned
 
-## Good
+**`@internal` helper functions that perform privileged operations without caller checks**
+- An internal function executes `raw_call` or modifies critical state, and the calling `@external` function has no access guard
 
-```vyper
-# @version ^0.3.0
+## False Positives
 
-owner: public(address)
-paused: public(bool)
-
-@external
-def __init__():
-    self.owner = msg.sender
-
-@external
-def pause():
-    # Safe: only owner can pause
-    assert msg.sender == self.owner, "Only owner"
-    self.paused = True
-
-@external
-def emergency_withdraw():
-    # Safe: only owner can withdraw
-    assert msg.sender == self.owner, "Only owner"
-    raw_call(msg.sender, b"", value=self.balance)
-```
+- Functions intentionally open to all callers: `deposit`, `bid`, `enter`, or any participation function where unrestricted access is the design intent
+- View or pure functions (`@view`, `@pure`) that read state but cannot modify it
+- Functions guarded by an alternative mechanism such as a `paused` flag checked before execution, where the separate `pause` function itself is properly access-controlled

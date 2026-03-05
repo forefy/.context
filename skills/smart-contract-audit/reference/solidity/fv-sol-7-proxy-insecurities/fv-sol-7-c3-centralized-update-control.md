@@ -4,7 +4,7 @@
 
 When upgrade authority is held by a single EOA or unconstrained admin address, a compromised or malicious key holder can replace the implementation with arbitrary code, draining funds or bricking the contract. This represents a critical trust assumption that undermines the security guarantees of the protocol for all users.
 
-## Detection Signals
+## Detection Heuristics
 
 **Single EOA Holds Upgrade Authority**
 - `require(msg.sender == admin, ...)` in upgrade function where `admin` is set to `msg.sender` in the constructor

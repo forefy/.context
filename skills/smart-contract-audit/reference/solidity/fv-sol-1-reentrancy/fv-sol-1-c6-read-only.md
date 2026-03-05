@@ -4,7 +4,7 @@
 
 Read-only reentrancy occurs when a `view` function or an eligibility/price-check is called inside a state-modifying function after an external call. The view function returns stale or inconsistent state because the state update has not yet occurred, allowing a reentrant callback to pass checks it should fail or to read an artificially inflated or deflated value.
 
-## Detection Signals
+## Detection Heuristics
 
 **View Function Called After External Call in the Same Transaction**
 - Sequence: external call (e.g., ETH send) → callback re-enters → `view` function consulted before the state update in the original frame completes

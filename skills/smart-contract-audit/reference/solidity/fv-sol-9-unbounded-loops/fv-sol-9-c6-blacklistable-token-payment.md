@@ -4,7 +4,7 @@
 
 Push-model payment loops that transfer tokens to recipient addresses will revert entirely if any recipient is blacklisted by the token contract (USDC, USDT, and other compliant stablecoins support blacklisting). A single blacklisted address in a liquidation path, fee distribution loop, or withdrawal route can permanently brick that operation.
 
-## Detection Signals
+## Detection Heuristics
 
 **Push Transfer to Untrusted Address With Blacklistable Token**
 - `IERC20(token).transfer(recipient, amount)` or `safeTransfer` inside a loop where the token is USDC, USDT, or any contract exposing a `blacklist`, `blocklist`, or `isBlacklisted` function

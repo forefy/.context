@@ -4,7 +4,7 @@
 
 Implementation contracts are not just storage targets — they are execution contexts with their own attack surface. Vulnerabilities include immutable variable context mismatch across proxies, arbitrary delegatecall exposed in the implementation, incomplete assembly fallback propagation, minimal proxy (EIP-1167) destruction when implementation is killed, and metamorphic contract substitution via CREATE2 and selfdestruct.
 
-## Detection Signals
+## Detection Heuristics
 
 **Immutable Context Mismatch**
 - `immutable` variables in implementation for addresses, chain IDs, or other per-deployment config

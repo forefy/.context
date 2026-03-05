@@ -4,7 +4,7 @@
 
 When an external call fails mid-function, prior state mutations already applied in the same transaction are not automatically rolled back unless the function reverts. Manual compensation logic is error-prone and may leave state partially modified, producing inconsistencies that compound over subsequent transactions.
 
-## Detection Signals
+## Detection Heuristics
 
 **State Mutated Before External Call**
 - `balance += amount` or mapping write followed by `externalContract.doAction()` where the call result may indicate failure

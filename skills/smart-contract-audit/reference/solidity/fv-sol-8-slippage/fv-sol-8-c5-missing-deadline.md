@@ -6,7 +6,7 @@ Without a meaningful deadline, a swap transaction can be held in the mempool ind
 
 A related issue is enforcing slippage only at intermediate hops in a multi-hop route. If only the first hop has `minAmountOut`, the final output to the user has no bound — subsequent hops can be freely sandwiched.
 
-## Detection Signals
+## Detection Heuristics
 
 **Deadline Issues**
 - `deadline: block.timestamp` passed to router — trivially always passes

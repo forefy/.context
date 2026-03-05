@@ -4,7 +4,7 @@
 
 Solidity has no native floating-point type. Contracts that perform division before multiplication on integer values silently truncate fractional parts, producing results that are systematically wrong — often rounding small values to zero entirely. The error compounds across repeated calculations and is especially damaging in reward distribution, interest accrual, and price computation where many small fractions must sum correctly.
 
-## Detection Signals
+## Detection Heuristics
 
 **Division Before Multiplication**
 - Expression pattern `(a / b) * c` where `a`, `b`, `c` are `uint256` — the division truncates before the multiplication can recover precision

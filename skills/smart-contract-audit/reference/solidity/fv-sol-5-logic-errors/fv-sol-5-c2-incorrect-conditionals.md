@@ -4,7 +4,7 @@
 
 Results from conditions in if-else chains where more specific cases are tested after more general ones, making specific branches unreachable, or from wrong comparison operators that cause values to be handled by the wrong branch or skipped entirely.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unreachable Branches Due to Condition Order**
 - A less restrictive condition (`balance > 100`) appears before a more restrictive one (`balance > 500`) in an if-else chain, making the latter dead code

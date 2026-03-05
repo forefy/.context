@@ -6,7 +6,7 @@
 
 This also applies to `delegatecall` multicall: each sub-call executes in the same context and sees the same `msg.value`, so calling a payable function N times via multicall charges ETH once but credits N times.
 
-## Detection Signals
+## Detection Heuristics
 
 - `msg.value` read inside a `for` loop without a local accumulator variable
 - `msg.value` compared against per-iteration cost without decrement

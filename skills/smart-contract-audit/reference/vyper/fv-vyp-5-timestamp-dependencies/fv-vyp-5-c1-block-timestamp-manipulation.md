@@ -1,62 +1,30 @@
 # FV-VYP-5-C1 Block Timestamp Manipulation
 
-## Bad
+## TLDR
 
-```vyper
-# @version ^0.3.0
+`block.timestamp` in Vyper exposes the same miner-manipulable value as Solidity. Validators (post-Merge) can adjust the timestamp within the protocol's allowed drift to influence time-dependent logic such as auction deadlines, vesting cliffs, or cooldown periods. Short time windows measured in seconds are especially susceptible.
 
-auction_end: public(uint256)
-highest_bid: public(uint256)
-highest_bidder: public(address)
+## Detection Heuristics
 
-@external
-def __init__(duration: uint256):
-    self.auction_end = block.timestamp + duration
+**Critical state transitions gated on exact `block.timestamp` comparison**
+- `assert block.timestamp >= self.unlock_time` or `assert block.timestamp < self.deadline` where the window is seconds-wide and the outcome has financial value
+- Auction end or sale close logic using `block.timestamp == self.end_time` (exact equality) rather than a range check
+- Cooldown logic computing `block.timestamp - self.last_action[msg.sender] < COOLDOWN` where COOLDOWN is a small constant (under 30 seconds)
 
-@external
-@payable
-def bid():
-    # Vulnerable: relying on exact timestamp comparison
-    assert block.timestamp < self.auction_end, "Auction ended"
-    assert msg.value > self.highest_bid, "Bid too low"
-    
-    self.highest_bid = msg.value
-    self.highest_bidder = msg.sender
+**`block.timestamp` used as a seed or entropy source**
+- `convert(block.timestamp, bytes32)` passed to `keccak256` as the sole or primary entropy input for randomness
+- Winner or outcome selection using `block.timestamp % n` where `n` determines a prize
 
-@external
-def end_auction():
-    # Vulnerable: miners can manipulate timestamp slightly
-    assert block.timestamp >= self.auction_end, "Auction not ended"
-    raw_call(self.highest_bidder, b"", value=self.highest_bid)
-```
+**Timestamp-based vesting or unlock with validator-influenceable precision**
+- `self.vesting_end = block.timestamp + duration` set at deployment where `duration` is measured in seconds and the initial timestamp can be nudged by the block proposer
+- Staking reward calculations using `block.timestamp - self.stake_start` where a small timestamp delta meaningfully changes the reward amount
 
-## Good
+**`block.number` used as a timestamp proxy with inaccurate block-time assumptions**
+- Comments or constants assume exactly 12-second block times: `BLOCKS_PER_HOUR: constant(uint256) = 300` when actual block times vary
+- Duration in blocks derived from `seconds / 12` hardcoded without accounting for missed slots or Ethereum consensus changes
 
-```vyper
-# @version ^0.3.0
+## False Positives
 
-auction_end_block: public(uint256)
-highest_bid: public(uint256)
-highest_bidder: public(address)
-AUCTION_DURATION: constant(uint256) = 28800  # ~8 hours in blocks
-
-@external
-def __init__():
-    self.auction_end_block = block.number + AUCTION_DURATION
-
-@external
-@payable
-def bid():
-    # Safe: use block numbers instead of timestamps
-    assert block.number < self.auction_end_block, "Auction ended"
-    assert msg.value > self.highest_bid, "Bid too low"
-    
-    self.highest_bid = msg.value
-    self.highest_bidder = msg.sender
-
-@external
-def end_auction():
-    # Safe: block numbers are harder to manipulate
-    assert block.number >= self.auction_end_block, "Auction not ended"
-    raw_call(self.highest_bidder, b"", value=self.highest_bid)
-```
+- Time windows measured in hours or days where the allowed validator drift (a few seconds to ~15 seconds) is economically insignificant relative to the stakes
+- `block.timestamp` used only for informational event logging without affecting control flow or fund distribution
+- Contracts on chains with deterministic block timestamps (e.g., certain L2s with fixed sequencer timing) where manipulation is not possible within the threat model

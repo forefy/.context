@@ -4,7 +4,7 @@
 
 Loops that perform external calls on each iteration compound two risks: unbounded gas cost from the iteration itself, and reentrancy from any external call within the loop body. A malicious recipient can re-enter the looping function mid-iteration, causing state corruption, double-spending, or out-of-gas reversions that permanently lock funds.
 
-## Detection Signals
+## Detection Heuristics
 
 **External Call Inside Loop With State Updated After Call**
 - `payable(addr).transfer(amount)` or `addr.call{value:...}("")` inside a `for` loop where the balance decrement follows the transfer

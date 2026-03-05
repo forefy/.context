@@ -1,42 +1,33 @@
 # FV-VYP-8-C2 Precision Loss in Division
 
-## Bad
+## TLDR
 
-```vyper
-# @version ^0.3.0
+Vyper performs integer division with truncation toward zero for `uint256` and `int256` types, and rounds toward negative infinity for `decimal`. Performing division before multiplication, or dividing small numerators by large denominators, silently discards the fractional remainder. This can result in zero fees, under-distributed rewards, or stale exchange rates.
 
-@external
-@view
-def calculate_fee(amount: uint256, fee_rate: uint256) -> uint256:
-    # Vulnerable: precision loss with small amounts
-    return (amount * fee_rate) / 10000  # fee_rate in basis points
+## Detection Heuristics
 
-@external
-@view
-def split_payment(total: uint256, participants: uint256) -> uint256:
-    # Vulnerable: remainder is lost
-    return total / participants
-```
+**Division before multiplication**
+- `(amount / denominator) * multiplier` where reversing the order to `(amount * multiplier) / denominator` would preserve precision
+- Fee computed as `amount / 10000 * fee_bps` instead of `amount * fee_bps / 10000`, discarding up to `denominator - 1` units per operation
 
-## Good
+**Small numerator divided by large denominator producing zero**
+- `fee = (amount * rate) / PRECISION` where `amount * rate` is smaller than `PRECISION` (e.g., `10**18`), always producing `0`
+- Basis-point fee on small deposit amounts: `deposit * 3 / 10000` returns `0` for `deposit < 3334`
 
-```vyper
-# @version ^0.3.0
+**Remainder silently discarded in distribution**
+- `reward_per_participant = total_reward / len(self.participants)` with no accounting for `total_reward % len(self.participants)`, causing ETH or tokens to be permanently locked in the contract
+- `per_epoch = total / epochs` where `total % epochs != 0` and no remainder accumulator exists
 
-PRECISION: constant(uint256) = 10**18
+**`decimal` type division rounding not accounted for**
+- Vyper `decimal` rounds toward negative infinity; `convert(a, decimal) / convert(b, decimal)` may round down in unexpected directions for negative intermediate values
+- Mixed arithmetic between `uint256` and `decimal` via `convert` without awareness that `decimal` has 10 decimal places of precision, not 18
 
-@external
-@view
-def calculate_fee(amount: uint256, fee_rate: uint256) -> uint256:
-    # Safe: use higher precision for calculations
-    fee_with_precision: uint256 = (amount * fee_rate * PRECISION) / 10000
-    return fee_with_precision / PRECISION
+**Share price or exchange rate stored at low precision**
+- `self.price_per_share = total_assets / total_shares` stored as `uint256` without a scaling factor, losing all fractional precision as the ratio approaches 1:1
+- Accumulated interest computed as `principal * rate / 100` instead of using a higher-precision accumulator scaled by `10**18` or similar
 
-@external
-@view
-def split_payment(total: uint256, participants: uint256) -> (uint256, uint256):
-    # Safe: return both quotient and remainder
-    per_participant: uint256 = total / participants
-    remainder: uint256 = total % participants
-    return per_participant, remainder
-```
+## False Positives
+
+- Division that intentionally floors the result where the remainder is either returned to the caller or accumulated in a separate `dust` variable
+- Fixed-point arithmetic that scales the numerator before division (e.g., `amount * 10**18 / denominator`) and scales down the result afterward, correctly preserving precision
+- `decimal` type used throughout with full awareness of its 10-decimal-place fixed-point semantics and no implicit conversion from `uint256`

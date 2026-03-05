@@ -4,7 +4,7 @@
 
 Failing to check the return value of `transfer` or `transferFrom` on ERC20 tokens allows silent transfer failures to go undetected. Certain tokens return `false` instead of reverting on failure; ignoring the return value lets execution continue as if the transfer succeeded, leading to incorrect balance accounting or drained protocol value.
 
-## Detection Signals
+## Detection Heuristics
 
 **Discarded Return Value**
 - `token.transfer(recipient, amount)` as a bare statement with return value ignored

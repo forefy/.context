@@ -6,7 +6,7 @@ Push-model oracle integrations (Chainlink push, custom off-chain updater submitt
 
 This is distinct from AMM price manipulation (FV-SOL-8-C1) — no flash loan is required. The attacker simply reads the public mempool and submits a transaction with a higher gas price.
 
-## Detection Signals
+## Detection Heuristics
 
 **Push Oracle in Public Mempool**
 - Protocol uses push-model oracle and `updatePrice()` submitted via public mempool

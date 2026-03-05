@@ -6,7 +6,7 @@ Assembly `create(v, offset, size)` and `create2(v, offset, size, salt)` return `
 
 If the code does not check for the zero return value, `address(0)` is stored or used in subsequent logic. Calls to `address(0)` succeed as no-ops (no deployed code) or interact with precompiles, silently corrupting state.
 
-## Detection Signals
+## Detection Heuristics
 
 - `create(...)` or `create2(...)` in assembly without `if iszero(addr) { revert(0,0) }` immediately after
 - Returned address stored in mapping/array or used in an interface call without zero check

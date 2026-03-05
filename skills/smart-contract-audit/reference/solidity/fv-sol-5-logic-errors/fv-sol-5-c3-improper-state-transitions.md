@@ -4,7 +4,7 @@
 
 A contract with a defined lifecycle (e.g., NotStarted, Active, Paused, Completed) allows state-modifying functions to execute without validating the current state, permitting out-of-order or repeated transitions that violate invariants and can be exploited.
 
-## Detection Signals
+## Detection Heuristics
 
 **Missing Predecessor State Guard**
 - A transition function modifies `state` without a `require(state == ExpectedPredecessor)` guard

@@ -4,7 +4,7 @@
 
 Downcasting from a wider integer type to a narrower one silently drops the high-order bits. Any value larger than the target type's maximum is truncated to its low-order bits, producing a different value with no revert or warning. This affects both explicit casts and implicit narrowing in storage assignments.
 
-## Detection Signals
+## Detection Heuristics
 
 **Explicit Downcast Without Bounds Check**
 - `uint8(x)`, `uint16(x)`, `uint32(x)`, `uint128(x)` where `x` is `uint256` or wider

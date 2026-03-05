@@ -4,7 +4,7 @@
 
 ERC-1271 allows smart contract accounts to validate signatures by implementing `isValidSignature(bytes32 hash, bytes calldata signature) returns (bytes4)`. When a protocol relies on this for authorization and the implementation delegates to an externally-supplied or insufficiently-guarded module, a malicious module can always return the magic value `0x1626ba7e`, bypassing all signature checks unconditionally.
 
-## Detection Signals
+## Detection Heuristics
 
 **Unguarded Module Delegation**
 - `isValidSignature` delegates to an address stored in state that is settable by any caller without access control

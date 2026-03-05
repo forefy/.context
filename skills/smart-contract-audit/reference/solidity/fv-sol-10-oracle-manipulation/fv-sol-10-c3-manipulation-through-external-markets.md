@@ -4,7 +4,7 @@
 
 Oracles that aggregate prices from low-liquidity external markets (DEXes, AMMs) can be temporarily skewed within a single block or flash loan transaction. A protocol using such a price without smoothing or secondary validation executes collateral, liquidation, or swap logic at the manipulated value.
 
-## Detection Signals
+## Detection Heuristics
 
 **Spot Price Oracle from DEX**
 - Oracle call resolves to a DEX reserve ratio or AMM pool spot price (e.g., Uniswap `getReserves`, `slot0`) without a TWAP

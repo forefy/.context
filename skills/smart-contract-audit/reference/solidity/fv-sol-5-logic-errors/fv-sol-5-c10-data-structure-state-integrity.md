@@ -8,7 +8,7 @@ Three related patterns where data structure operations leave inconsistent state:
 - **Duplicate items in user-supplied array**: no deduplication check allows a user to pass the same ID multiple times in one call, repeatedly applying an action intended to occur once.
 - **Nested mapping not cleared on struct delete**: `delete myMapping[key]` zeroes primitive fields but cannot clear nested `mapping` or dynamic array fields — reused keys expose stale values.
 
-## Detection Signals
+## Detection Heuristics
 
 **Array Delete Gap**
 - `delete array[index]` followed by iteration over `array` (not using swap-and-pop)

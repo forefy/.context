@@ -4,7 +4,7 @@
 
 Relying solely on a DEX's own spot price to validate or derive swap parameters allows an attacker to manipulate the pool state (via flash loan or large trade) immediately before the victim transaction, causing extreme slippage. Without cross-referencing an external or time-weighted price, the contract has no means to detect that the in-block price is artificially distorted.
 
-## Detection Signals
+## Detection Heuristics
 
 **Single On-Chain Price Source**
 - `dex.getPrice(tokenIn, tokenOut)` used as sole price reference with no secondary validation
