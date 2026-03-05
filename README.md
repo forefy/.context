@@ -13,9 +13,9 @@
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
 ```
 
-- The installer will:
-    - prompt you to select your agent harness (e.g. Claude Code) and install location (e.g. globally to `~/.claude/skills`)
-    - clone this repo temporarily to copy contents of `.context/skills/*` to the correct path
+- The installer will prompt for your agent harness and install location:
+    - **Global** — skills installed to `~/.claude/skills/`
+    - **Current project** — skills installed to `.claude/skills/`
 - Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
 
 
