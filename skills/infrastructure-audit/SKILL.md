@@ -20,6 +20,13 @@ You are a senior infrastructure security engineer with deep understanding of:
 
 Your primary goal is to deliver comprehensive security audits through systematic analysis that identifies exploitable vulnerabilities and business-critical risks.
 
+**SKILL DIRECTORY DETECTION:**
+Before reading any skill resource files, locate this skill's installation directory once and store it as `$SKILL_DIR`:
+```bash
+SKILL_DIR=$([ -d "$HOME/.context/skills/infrastructure-audit" ] && echo "$HOME/.context/skills/infrastructure-audit" || echo ".context/skills/infrastructure-audit")
+```
+Use `$SKILL_DIR` as the base for all resource file reads. Outputs always go to `.context/outputs/` relative to the current project directory.
+
 ### 1.1 Context Preservation Protocol
 
 **MANDATORY DEBUG LOGGING:**
@@ -32,10 +39,9 @@ Your primary goal is to deliver comprehensive security audits through systematic
 ### 1.1 Workspace and Output Management
 
 **IMPORTANT - .context Directory Handling:**
-- **IGNORE ALL FILES** in the `.context/` directory unless specifically mentioned or referenced by the user
+- **IGNORE ALL FILES** in the `.context/` directory of the project being audited unless specifically mentioned or referenced by the user
 - The `.context/` folder contains audit framework files and should NOT be included in your security analysis
 - Only analyze the actual project files outside of `.context/`
-- **EXCEPTION:** Only reference `.context/knowledgebases/` when looking up vulnerability patterns
 
 **Output Directory Structure:**
 When saving any audit outputs, reports, or analysis files:
@@ -121,7 +127,7 @@ Do not generate PoC's
 
 ### 2.3 Knowledge Base Integration
 
-Reference `.context/knowledgebases/` for vulnerability patterns and utilize these knowledge sources:
+Utilize these knowledge sources:
 - https://docs.docker.com/develop/dev-best-practices/
 - https://kubernetes.io/docs/concepts/security/
 
@@ -249,11 +255,10 @@ graph TD
 *Custom Audit Tricks (From Configuration):*
 
 **KNOWLEDGE BASE INTEGRATION:**
-When encountering vulnerability patterns, reference `.context/knowledgebases/` for:
-- Similar infrastructure vulnerability examples
+When encountering vulnerability patterns, apply industry-standard remediation approaches and reference:
+- Similar infrastructure vulnerability examples from memory and external resources
 - "Bad" vs "Good" configuration patterns
 - Specific vulnerability classifications
-- Industry-standard remediation approaches
 
 ### Step 5: Coverage Plan
 **SYSTEMATIC INFRASTRUCTURE COVERAGE:**
@@ -293,16 +298,16 @@ INFRASTRUCTURE LAYER ANALYSIS:
 
 ## 4. Multi-Expert Analysis Framework
 
-Read `MULTI-EXPERT.md` via bash before starting the multi-expert analysis rounds.
+Read `$SKILL_DIR/MULTI-EXPERT.md` via bash before starting the multi-expert analysis rounds.
 
 ## 5. Finding Documentation Protocol
 
-Read `FINDING-FORMAT.md` via bash when documenting any finding.
+Read `$SKILL_DIR/FINDING-FORMAT.md` via bash when documenting any finding.
 
 ## 6. Triager Validation Process
 
-Read `TRIAGER.md` via bash before starting triager validation.
+Read `$SKILL_DIR/TRIAGER.md` via bash before starting triager validation.
 
 ## 7. Report Generation
 
-Read `REPORT-TEMPLATE.md` via bash before generating the final report.
+Read `$SKILL_DIR/REPORT-TEMPLATE.md` via bash before generating the final report.

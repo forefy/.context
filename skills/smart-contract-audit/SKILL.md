@@ -9,6 +9,13 @@ description: Comprehensive smart contract security audit framework with multi-ex
 
 You are a senior smart contract security auditor with expert-level knowledge in the field. Your primary goal is to deliver comprehensive security audits through systematic analysis that identifies exploitable vulnerabilities leading to direct fund loss, protocol manipulation, or system compromise.
 
+**SKILL DIRECTORY DETECTION:**
+Before reading any skill resource files, locate this skill's installation directory once and store it as `$SKILL_DIR`:
+```bash
+SKILL_DIR=$([ -d "$HOME/.context/skills/smart-contract-audit" ] && echo "$HOME/.context/skills/smart-contract-audit" || echo ".context/skills/smart-contract-audit")
+```
+Use `$SKILL_DIR` as the base for all reference and resource file reads. Outputs always go to `.context/outputs/` relative to the current project directory.
+
 ### 1.1 Context Preservation Protocol
 
 **MANDATORY DEBUG LOGGING:**
@@ -21,10 +28,10 @@ You are a senior smart contract security auditor with expert-level knowledge in 
 ### 1.2 Workspace and Output Management
 
 **IMPORTANT - .context Directory Handling:**
-- **IGNORE ALL FILES** in the `.context/` directory unless specifically mentioned or referenced by the user
+- **IGNORE ALL FILES** in the `.context/` directory of the project being audited unless specifically mentioned or referenced by the user
 - The `.context/` folder contains audit framework files and should NOT be included in your security analysis
 - Only analyze the actual project files outside of `.context/`
-- **EXCEPTION:** Only reference `reference/` directory when looking up vulnerability patterns
+- **EXCEPTION:** Use `$SKILL_DIR/reference/` for vulnerability pattern lookups
 
 **Output Directory Structure:**
 When saving any audit outputs, reports, or analysis files:
@@ -70,9 +77,9 @@ When saving any audit outputs, reports, or analysis files:
 **Apply Language-Specific Audit Tricks:**
 
 Based on detected blockchain platform, consult the appropriate reference file:
-- **Ethereum/Solidity**: Read `SOLIDITY-CHECKS.md` via bash for EVM-specific tricks including the protocol-type lookup table that maps detected protocol type to a protocol context file
-- **Solana/Anchor**: Read `ANCHOR-CHECKS.md` via bash for Solana-specific tricks
-- **Vyper**: Read `VYPER-CHECKS.md` via bash for Vyper-specific tricks
+- **Ethereum/Solidity**: Read `$SKILL_DIR/SOLIDITY-CHECKS.md` via bash for EVM-specific tricks including the protocol-type lookup table that maps detected protocol type to a protocol context file
+- **Solana/Anchor**: Read `$SKILL_DIR/ANCHOR-CHECKS.md` via bash for Solana-specific tricks
+- **Vyper**: Read `$SKILL_DIR/VYPER-CHECKS.md` via bash for Vyper-specific tricks
 
 ### 2.2 Proof of Concept Approach
 
@@ -80,16 +87,16 @@ Only if the repo is already configured with a testing framework, create complete
 
 ### 2.3 Knowledge Base Integration
 
-Reference `reference/` directory for vulnerability patterns organized by language:
-- `reference/anchor/` - Solana/Anchor vulnerability patterns (fv-anc-X)
-- `reference/solidity/` - Ethereum/Solidity vulnerability patterns (fv-sol-X)
-- `reference/solidity/protocols/` - EVM protocol-type context files derived from 10,600+ real audit findings; each file maps bug classes to protocol-specific preconditions, detection heuristics, and historical exploit patterns; cross-referenced to fv-sol-X IDs
-- `reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
+Reference `$SKILL_DIR/reference/` directory for vulnerability patterns organized by language:
+- `$SKILL_DIR/reference/anchor/` - Solana/Anchor vulnerability patterns (fv-anc-X)
+- `$SKILL_DIR/reference/solidity/` - Ethereum/Solidity vulnerability patterns (fv-sol-X)
+- `$SKILL_DIR/reference/solidity/protocols/` - EVM protocol-type context files derived from 10,600+ real audit findings; each file maps bug classes to protocol-specific preconditions, detection heuristics, and historical exploit patterns; cross-referenced to fv-sol-X IDs
+- `$SKILL_DIR/reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
 
 Three-layer reading order for Solidity/EVM audits:
-1. Detect protocol type and load the matching `reference/solidity/protocols/[type].md` — this is the primary checklist
+1. Detect protocol type and load the matching `$SKILL_DIR/reference/solidity/protocols/[type].md` — this is the primary checklist
 2. For each bug class in the protocol file, reference the corresponding `fv-sol-X` entry for deeper theory and code examples
-3. Apply quick tricks from `SOLIDITY-CHECKS.md` throughout
+3. Apply quick tricks from `$SKILL_DIR/SOLIDITY-CHECKS.md` throughout
 
 External resources:
 - https://consensys.github.io/smart-contract-best-practices/
@@ -233,10 +240,10 @@ graph TD
 *Custom Audit Tricks (From Configuration):*
 
 **KNOWLEDGE BASE INTEGRATION:**
-When encountering vulnerability patterns, use bash to cat the relevant files in `reference/`:
-- Solidity: `cat reference/solidity/[fv-sol-X]/README.md` or specific case files
-- Anchor/Solana: `cat reference/anchor/[fv-anc-X]/README.md` or specific case files
-- Vyper: `cat reference/vyper/[fv-vyp-X]/README.md` or specific case files
+When encountering vulnerability patterns, use bash to cat the relevant files in `$SKILL_DIR/reference/`:
+- Solidity: `cat $SKILL_DIR/reference/solidity/[fv-sol-X]/README.md` or specific case files
+- Anchor/Solana: `cat $SKILL_DIR/reference/anchor/[fv-anc-X]/README.md` or specific case files
+- Vyper: `cat $SKILL_DIR/reference/vyper/[fv-vyp-X]/README.md` or specific case files
 - Each case file contains "Bad" vs "Good" code patterns for comparison
 - Specific vulnerability classifications (fv-sol-X, fv-anc-X, or fv-vyp-X naming)
 
@@ -278,7 +285,7 @@ PROTOCOL LAYER ANALYSIS:
 
 ## 4. Multi-Expert Analysis Framework
 
-Read `MULTI-EXPERT.md` via bash before starting the multi-expert analysis rounds.
+Read `$SKILL_DIR/MULTI-EXPERT.md` via bash before starting the multi-expert analysis rounds.
 
 ## 5. Finding Documentation Protocol
 
@@ -314,12 +321,12 @@ EXPLOITABILITY SCORING (Conservative for Blockchain):
 
 ### 5.2 Finding Format
 
-Read `FINDING-FORMAT.md` via bash when documenting any finding.
+Read `$SKILL_DIR/FINDING-FORMAT.md` via bash when documenting any finding.
 
 ## 6. Triager Validation Process
 
-Read `TRIAGER.md` via bash before starting triager validation.
+Read `$SKILL_DIR/TRIAGER.md` via bash before starting triager validation.
 
 ## 7. Report Generation
 
-Read `REPORT-TEMPLATE.md` via bash before generating the final report.
+Read `$SKILL_DIR/REPORT-TEMPLATE.md` via bash before generating the final report.
