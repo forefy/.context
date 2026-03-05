@@ -77,12 +77,23 @@ Custom slash commands are auto-installed to `.github/prompts/`:
 
 ## About the Skills
 
-Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
 
-**Comprehensive Audits:**
+**Comprehensive audit skills**
+
+Skills are meant to run in specific invokations and be context-budgeted as much as possible. However, skills aren't good in sharing memory, hence a single flow (at the 5,000 token cap recommendation by anthropic) can be powerful for a comprehensive AI audit experience
 
 - `smart-contract-security-audit` - Full smart contract audit framework with multi-expert analysis for Solidity, Anchor, and Vyper. Includes language-specific checks and vulnerability pattern references.
+  <p align="center">
+  <img src="static/skill-architecture.png" alt="AI Audit Agent Skill Architecture" width="800">
+  </p>
 - `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations.
+
+**Workflow skills**
+- `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
+
+<br>
+
+Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
 
 Each skill is a directory with:
 
