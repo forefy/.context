@@ -2,68 +2,23 @@
 
 ## TLDR
 
-Delaying block production or influencing the timing of price updates can lead to incorrect price feeds that attackers use to profit
+Delaying block production or influencing the timing of oracle updates causes the price feed to serve stale data. Protocols that accept arbitrarily old prices expose themselves to exploitation using valuations that no longer reflect market reality — an attacker can front-run the staleness window to lock in favorable rates before a fresh update arrives.
 
-## Game
+## Detection Signals
 
-You’ve come across a contract that relies on an oracle to provide time-sensitive price data. It assumes the oracle always provides up-to-date information.
+**Stale Price Acceptance**
+- `getLastUpdatedTime()` return value checked only for non-zero (`require(lastUpdated > 0)`), not for freshness relative to `block.timestamp`
+- No `MAX_DELAY` constant or equivalent threshold defining the maximum acceptable age for oracle data
+- `require(block.timestamp - lastUpdated <= MAX_DELAY)` absent from all price consumption paths
+- `updatedAt` field from `latestRoundData()` fetched but the fetched value is unused or only logged
 
-But what if the oracle provides stale or outdated prices? Can you trust its time logs?
+**Missing Heartbeat Enforcement**
+- Protocol does not define a staleness tolerance per feed (different assets have different Chainlink heartbeats: 1 h, 24 h, etc.)
+- No fallback behavior (pause, revert, or switch to backup oracle) triggered when a freshness check fails
+- Price-dependent operations (liquidation, collateral valuation, swap) proceed regardless of how old the last update is
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+## False Positives
 
-interface IPriceOracle {
-    function getPrice() external view returns (uint256);
-    function getLastUpdatedTime() external view returns (uint256);
-}
-
-contract TimeLogsGame {
-    IPriceOracle public oracle;
-    uint256 public totalValue;
-
-    constructor(address _oracle, uint256 _initialValue) {
-        oracle = IPriceOracle(_oracle);
-        totalValue = _initialValue;
-    }
-
-    // Update total value based on oracle price
-    function updateValue() public {
-        uint256 price = oracle.getPrice();
-        uint256 lastUpdated = oracle.getLastUpdatedTime();
-
-        require(price > 0, "Invalid price");
-        require(lastUpdated > 0, "Invalid timestamp");
-        totalValue = totalValue * price / 1e18; // Adjust value based on price
-    }
-}
-```
-
-
-### Hint 1
-What happens if the oracle’s `lastUpdated` timestamp is far in the past? How could this affect the validity of the `price`?
-
-
-### Hint 2
-Consider enforcing stricter rules around the freshness of oracle data to ensure calculations are based on recent information.
-
-
-### Solution
-```solidity
-uint256 public constant MAX_DELAY = 1 hours; // Fix: Define maximum allowed delay
-
-function updateValue() public {
-    uint256 price = oracle.getPrice();
-    uint256 lastUpdated = oracle.getLastUpdatedTime();
-
-    require(price > 0, "Invalid price");
-    require(lastUpdated > 0, "Invalid timestamp");
-    require(block.timestamp - lastUpdated <= MAX_DELAY, "Price data too old"); // Fix: Enforce freshness
-
-    totalValue = totalValue * price / 1e18;
-}
-```
-
-
+- `require(block.timestamp - lastUpdated <= MAX_DELAY)` enforced before every use of the price, with `MAX_DELAY` set to match or be tighter than the feed's documented heartbeat interval
+- Protocol pauses or reverts all price-dependent operations and emits an event when the freshness check fails
+- Push-based oracle with on-chain freshness proofs guarantees updates within a bounded window, removing the need for a consumer-side staleness check

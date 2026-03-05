@@ -2,50 +2,24 @@
 
 ## TLDR
 
-Failing to check the return value of calls to `transferFrom` or `transfer` functions on ERC20 tokens can lead to unexpected behavior.
+Failing to check the return value of `transfer` or `transferFrom` on ERC20 tokens allows silent transfer failures to go undetected. Certain tokens return `false` instead of reverting on failure; ignoring the return value lets execution continue as if the transfer succeeded, leading to incorrect balance accounting or drained protocol value.
 
-For certain tokens, these functions may return `false` instead of reverting when there are insufficient tokens or if the transfer is unsuccessful. If the return value is ignored, the transaction might continue even if the transfer failed.
+## Detection Signals
 
-## Game
+**Discarded Return Value**
+- `token.transfer(recipient, amount)` as a bare statement with return value ignored
+- `token.transferFrom(from, to, amount)` with no bool capture or require check
 
-What in this token transfer contract can be risky?
+**Captured but Unchecked**
+- `bool success = token.transfer(...)` where `success` is never evaluated before the function returns
+- Return value stored in a local variable that is shadowed or unused
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Missing SafeERC20 Wrapper**
+- Raw interface call to `IToken.transfer` or `IERC20.transferFrom` without `SafeERC20` in import list
+- Protocol documents USDT or BNB support while using raw `transfer` calls that require a bool return
 
-interface IToken {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-}
+## False Positives
 
-contract UncheckedExternalCallGame {
-    IToken public token;
-
-    constructor(address _token) {
-        token = IToken(_token);
-    }
-
-    function transferTokens(address recipient, uint256 amount) public {
-        token.transfer(recipient, amount); 
-}
-```
-
-
-### Hint 1
-External calls can fail for various reasons, such as insufficient funds or other contract restrictions. Consider how you might verify that the `transfer` function succeeded.
-
-
-### Hint 2
-Think about using the return value of the `transfer` function to check if the external call was successful and handle the situation accordingly if it wasn’t.
-
-
-### Solution
-```solidity
-function transferTokens(address recipient, uint256 amount) public {
-    bool success = token.transfer(recipient, amount);
-    require(success, "Token transfer failed"); // Fix: Check the return value
-}
-```
-
-
+- `require(token.transfer(...), "failed")` explicitly enforces revert on false return
+- `SafeERC20.safeTransfer` or `SafeERC20.safeTransferFrom` used for all token operations
+- Token is a known fully-compliant ERC20 that always reverts on failure and the whitelist is enforced in tests

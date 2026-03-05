@@ -2,56 +2,24 @@
 
 ## TLDR
 
-The contract assumes a function call succeeded without verifying, potentially leading to state inconsistencies or incorrect balance assumptions if the call actually failed.
+The contract captures a failure signal from an external call but treats the failure path as a no-op, allowing execution to continue as if the call succeeded. This produces state inconsistencies and incorrect balance or permission assumptions when the external call actually failed.
 
-## Game
+## Detection Signals
 
-What's wrong with the assumptions made by this contracts author?
+**Empty Failure Branch**
+- `if (!success) { }` or `if (!success) { /* ignored */ }` with no revert, emit, or corrective action
+- `bool success = ext.doSomething(); if (!success) {}` pattern where the else path continues normally
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Suppressed Error with Continued Execution**
+- Failure condition acknowledged in a comment but not acted upon: `// ignore failure`
+- `try/catch` block with an empty `catch` body followed by state-altering code
 
-interface IExternalContract {
-    function doSomething() external returns (bool);
-}
+**Incorrect Fallback Logic**
+- Failure branch emits an event but does not revert, allowing the transaction to commit with partial state
+- Failure branch logs an error off-chain (event) while on-chain state reflects success
 
-contract FalsePositiveGame {
-    IExternalContract public externalContract;
+## False Positives
 
-    constructor(address _externalContract) {
-        externalContract = IExternalContract(_externalContract);
-    }
-
-    // Function that assumes success without verifying
-    function executeAction() public {
-        bool success = externalContract.doSomething();
-        if (!success) {
-            // Assume the action succeeded
-        }
-        // Continue execution assuming the external call succeeded
-    }
-}
-```
-
-
-### Hint 1
-Consider what would happen if `doSomething` returns `false`. How does `executeAction` handle this outcome?
-
-Does it account for failure explicitly, or does it continue regardless?
-
-
-### Hint 2
-Think about how you might use the `require` or `revert` statements to enforce stricter handling of failure cases.
-
-
-### Solution
-```solidity
-function executeAction() public {
-    bool success = externalContract.doSomething();
-    require(success, "External action failed"); // Fix: Explicitly require success
-}
-```
-
-
+- `require(success, "...")` enforces an immediate revert on the failure path
+- Failure branch explicitly undoes prior state changes and reverts: `balance -= amount; revert(...)`
+- Intentional degraded-mode logic where failure of the external call is a safe and documented operational outcome with correct state handling

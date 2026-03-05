@@ -39,19 +39,25 @@ contract VulnerableToken {
 
 ## Classifications
 
-#### [fv-sol-2-c1-token-decimals.md](fv-sol-2-c1-token-decimals.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-2-precision-errors/<filename>` to read any case file listed below.
 
-#### [fv-sol-2-c2-floating-point.md](fv-sol-2-c2-floating-point.md "mention")
+#### fv-sol-2-c1-token-decimals.md
 
-#### [fv-sol-2-c3-rounding.md](fv-sol-2-c3-rounding.md "mention")
+#### fv-sol-2-c2-floating-point.md
 
-#### [fv-sol-2-c4-division-by-zero.md](fv-sol-2-c4-division-by-zero.md "mention")
+#### fv-sol-2-c3-rounding.md
 
-#### [fv-sol-2-c5-time-based.md](fv-sol-2-c5-time-based.md "mention")
+#### fv-sol-2-c4-division-by-zero.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-2-c5-time-based.md
 
-## Mitigation Patterns
+#### fv-sol-2-c6-erc4626-rounding.md
+
+EIP-4626 rounding direction violations: preview/mint asymmetry, deposit/withdraw share asymmetry, mint/redeem asset asymmetry, share inflation via first-depositor attack.
+
+#### fv-sol-2-c7-special-token-accounting.md
+
+Fee-on-transfer tokens receive less than recorded; rebasing tokens (stETH, AMPL) change balance without transfer; stale cached balance exploitable via direct donation.
 
 ### FV-SOL-2-M1 Unit Testing on Edge Cases
 

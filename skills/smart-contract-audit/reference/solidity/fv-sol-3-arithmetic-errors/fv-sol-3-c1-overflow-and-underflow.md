@@ -2,66 +2,34 @@
 
 ## TLDR
 
-**Overflow and underflow** are common arithmetic errors that occur when values exceed or drop below their storage limits.
+Integer overflow and underflow occur when arithmetic results exceed or drop below the bounds of the integer type. In Solidity versions before 0.8.0, these conditions wrap silently without reverting. In 0.8.0 and later, the compiler inserts checked arithmetic by default, but `unchecked {}` blocks and inline assembly restore the wrapping behavior.
 
-In Solidity versions before 0.8.0, these errors could result in unexpected behavior without throwing an error.
+## Detection Signals
 
-However, starting with Solidity 0.8.0, these operations automatically revert on overflow or underflow. Nevertheless, it’s important to understand these errors, especially when working with older contracts or specific arithmetic cases where unchecked math is used for optimization.
+**Pre-0.8.0 Contracts Without SafeMath**
+- `pragma solidity ^0.7.x` or earlier with `+`, `-`, `*` applied to user-controlled values
+- No `using SafeMath for uintN` declaration on contracts performing balance or supply arithmetic
+- Arithmetic on `mapping` values (balances, allowances, shares) without overflow guards
 
-## Game
+**Unchecked Blocks in 0.8.0+ Contracts**
+- `unchecked { x += amount; }` where `amount` is caller-supplied or unbounded
+- `unchecked { balance -= withdrawal; }` without a prior `require(balance >= withdrawal)`
+- Loop accumulators inside `unchecked {}` with no iteration bound enforced
 
-What if a user added an amount to `addToBalance` that exceeds the `uint256` limit?
+**Multiplication Before Division Patterns**
+- `a * b / c` where `a * b` can overflow before the division reduces the result
+- Intermediate product assigned to same-width variable: `uint256 product = a * b` before `/ PRECISION`
+- No `mulDiv` or equivalent full-precision multiplication used for fixed-point math
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.7.0;
+**Balance and Supply Accounting**
+- Token mint/burn functions that add to or subtract from `totalSupply` without bounds
+- Reward accumulation: `rewards[user] += rate * elapsed` where `rate * elapsed` is unbounded
+- Share calculations: `shares * pricePerShare` with large values and no overflow check
 
-contract OverflowUnderflowGame {
-    uint256 public totalSupply = 1000;
-    mapping(address => uint256) public balances;
+## False Positives
 
-    function addToBalance(uint256 amount) public {
-        balances[msg.sender] += amount;
-    }
-
-    function subtractFromBalance(uint256 amount) public {
-        balances[msg.sender] -= amount;
-    }
-}
-```
-
-
-### Hint 1
-Solidity versions before 0.8.0, adding a large number to `balances[msg.sender]` might cause it to wrap around to zero or another small number, creating an overflow.
-
-
-### Hint 2
-The `SafeMath` library from OpenZeppelin can be used to prevent overflow and underflow in Solidity <0.8.0
-
-
-### Solution
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
-
-import "@openzeppelin/contracts/math/SafeMath.sol";
-
-contract OverflowUnderflowGame {
-    using SafeMath for uint256;
-
-    uint256 public totalSupply = 1000;
-    mapping(address => uint256) public balances;
-
-    function addToBalance(uint256 amount) public {
-        balances[msg.sender] = balances[msg.sender].add(amount); // Fix: SafeMath prevents overflow
-    }
-
-    function subtractFromBalance(uint256 amount) public {
-        balances[msg.sender] = balances[msg.sender].sub(amount); // Fix: SafeMath prevents underflow
-    }
-}
-
-```
-
-
+- Solidity 0.8.0 or later compiler version used with no `unchecked {}` wrapping the arithmetic
+- `unchecked {}` block where both operands are proven bounded (e.g., loop index `< 256` for a `uint8`)
+- SafeMath library (`SafeMath.add`, `SafeMath.sub`, `SafeMath.mul`) applied to all operations on the affected variables
+- Operands constrained by earlier `require` statements that cap values below overflow threshold
+- Fixed-point multiplication using a verified `mulDiv` implementation that handles intermediate overflow

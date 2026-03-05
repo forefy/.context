@@ -2,48 +2,27 @@
 
 ## TLDR
 
-Floating-point numbers can’t represent every decimal exactly. For example, `0.3` might be stored as `0.30000000000000004` in a system that uses floating-point arithmetic.
+Solidity has no native floating-point type. Contracts that perform division before multiplication on integer values silently truncate fractional parts, producing results that are systematically wrong — often rounding small values to zero entirely. The error compounds across repeated calculations and is especially damaging in reward distribution, interest accrual, and price computation where many small fractions must sum correctly.
 
-When you divide and multiply these imprecise values, the error compounds. For example, `(0.3 / 1000.0) * 1.0` could produce something like `0.00030000000000000004` instead of the expected `0.0003`.
+## Detection Signals
 
-This often occurs when dealing with fractional values or very large numbers, where small rounding errors can accumulate and lead to inaccurate calculations or financial discrepancies.
+**Division Before Multiplication**
+- Expression pattern `(a / b) * c` where `a`, `b`, `c` are `uint256` — the division truncates before the multiplication can recover precision
+- Intermediate variable stores `a / b` and that variable is later multiplied by another value
+- Reward or interest formula written as `rate / DENOMINATOR * principal` rather than `rate * principal / DENOMINATOR`
 
-## Game
+**Scaling Factor Absent**
+- No WAD (`1e18`), RAY (`1e27`), or equivalent scaling constant applied before division in financial formulas
+- Percentage or ratio computed as `numerator / denominator` with no preceding multiplication by a precision constant
+- Library like PRBMath, FixedPointMathLib, or ABDKMath64x64 not imported despite fractional arithmetic being present
 
-What is the result of `userReward`? can you tell?
+**Small Value Truncation to Zero**
+- `(userHoldings / totalHoldings) * reward` where `userHoldings < totalHoldings` — result is zero for minority holders
+- Fee calculated as `amount * basisPoints / 10000` where `amount` may be small enough that `amount * basisPoints < 10000`
+- Compound interest accumulator updated as `principal * rate / 1e18` where `principal * rate` underflows the denominator
 
-## Sections
-### Code
-```solidity
+## False Positives
 
-
-totalHoldings = 1000.0; // Total holdings
-userHoldings = 0.3;     // User's fractional holdings
-totalReward = 1.0;      // Total reward to be distributed
-
-// Calculate user's reward
-userReward = (userHoldings / totalHoldings) * totalReward; 
-```
-
-
-### Hint 1
-Floating-point calculations can produce small rounding errors. These errors accumulate over multiple calculations, making them especially problematic in systems with many users or repeated transactions. Consider how `userReward` might differ slightly each time due to these rounding issues
-
-
-### Hint 2
-Financial applications need exact values.
-
-Think about how a **scaling factor** could help you avoid floating-point precision issues, ensuring exact calculations by keeping everything in integer form.
-
-
-### Solution
-```solidity
-uint256 totalHoldings = 1000 * 10**18; // Fix: Representing 1000.0 with 18 decimal places
-uint256 userHoldings = 3 * 10**17;     // Fix 2: Representing 0.3 with 18 decimal places
-uint256 totalReward = 1 * 10**18;      // Fix 3: Representing 1.0 as 10^18 (scaled)
-
-uint256 userReward = (userHoldings * totalReward) / totalHoldings; // Result: 3 * 10^14
-// This represents 0.0003 Ether without precision errors.
-```
-
-
+- Multiplication is always performed before division: `a * c / b` pattern is consistent throughout the codebase
+- A fixed-point math library (PRBMath, FixedPointMathLib, DSMath) handles all fractional arithmetic
+- Values are guaranteed by protocol invariants to be large enough that truncation loss is bounded, documented, and acceptable (e.g., dust below 1 wei per operation)

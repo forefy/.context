@@ -2,57 +2,27 @@
 
 ## TLDR
 
-Occurs when code fails to respect predefined boundaries or intervals (e.g., epochs, time windows, thresholds)
+Occurs when code fails to correctly define exclusive versus inclusive boundaries at interval thresholds, causing values at the cutoff to fall into the wrong range, be double-counted, or be skipped entirely.
 
-## Game
+## Detection Signals
 
-Examine how `setRewardTier` assigns reward tiers based on the `score` value. Can you identify any boundary misalignments in the conditions that might cause scores on the boundary to be assigned incorrectly?
+**Mixed Inclusive/Exclusive Operators in Chained Conditions**
+- Adjacent if-else ranges mix `<` and `<=` without accounting for overlap at shared boundary values
+- A value satisfies two consecutive conditions simultaneously (e.g., `score == 100` matches both `score <= 100` and `score < 150` if the chain is written incorrectly)
+- Boundary constant appears on both sides of adjacent range checks without mutual exclusion
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Off-by-One in Loops and Epoch Windows**
+- Loop bound written as `i <= arr.length` instead of `i < arr.length`
+- Time window start or end expressed as `block.timestamp >= windowEnd` when `>` is required to exclude the boundary
+- Epoch or slot number checked with `>=` at both lower and upper bound of adjacent tiers
 
-contract BoundaryMisalignmentGame {
-    uint256 public rewardTier;
+**Tiered Threshold Logic**
+- Token amount or score thresholds use inconsistent operators across tiers
+- A tier boundary value is reachable by two different branches due to operator mismatch
+- Hardcoded boundary constants differ between the condition and the documented specification
 
-    // Function to assign a reward tier based on score
-    function setRewardTier(uint256 score) public {
-        if (score < 50) {
-            rewardTier = 1;
-        } else if (score <= 100) {
-            rewardTier = 2;
-        } else if (score < 150) {
-            rewardTier = 3;
-        } else {
-            rewardTier = 4;
-        }
-    }
-}
-```
+## False Positives
 
-
-### Hint 1
-Pay attention to how each boundary is defined and consider what happens at the cutoff points, especially around `100` and `150`.
-
-
-### Hint 2
-Think about how overlapping or missing ranges could lead to certain scores being assigned to the wrong tier or skipped entirely.
-
-
-### Solution
-```solidity
-function setRewardTier(uint256 score) public {
-    if (score < 50) {
-        rewardTier = 1;
-    } else if (score >= 50 && score < 100) { // Fix: Adjust range to avoid overlap
-        rewardTier = 2;
-    } else if (score >= 100 && score < 150) { // Fix: Define range explicitly
-        rewardTier = 3;
-    } else {
-        rewardTier = 4;
-    }
-}
-```
-
-
+- Each range uses explicit `>= lower && < upper` with no overlap between adjacent conditions
+- Boundary constants defined once and reused consistently across all comparison sites
+- Unit tests cover exact boundary values and confirm each lands in exactly one branch

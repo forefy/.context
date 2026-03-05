@@ -2,67 +2,26 @@
 
 ## TLDR
 
-**Cross-chain reentrancy** involves exploiting asynchronous transactions or inconsistencies between two blockchains that communicate with each other.
+Cross-chain reentrancy exploits the absence of replay protection and access control on bridge completion functions. An attacker triggers `completeTransfer` (or equivalent) from a manipulated or replayed cross-chain message, crediting balances that were never actually locked on the source chain. The asynchronous nature of cross-chain messaging makes state inconsistencies harder to detect and replay attacks easier to execute.
 
-In this type of vulnerability, an attacker leverages the delay or difference in state updates across chains to manipulate the state on one chain based on outdated or unverified information from another chain.
+## Detection Signals
 
-## Game
+**Unguarded Bridge Completion Functions**
+- `completeTransfer`, `finalizeDeposit`, `mintWrapped`, or equivalent functions callable by any address without `onlyTrustedRelayer` or equivalent access control
+- No check that `msg.sender` is an authorized bridge relayer, oracle, or trusted remote contract
+- No verification of a cryptographic proof, Merkle root, or signed attestation from the source chain
 
-Consider how an attacker might exploit this contract if they can control or manipulate the calls to `completeTransfer` through cross-chain messaging.
+**Missing Replay Protection**
+- No nonce, `messageId`, or transaction hash tracked in a `processedMessages` mapping
+- `completeTransfer` can be called multiple times with the same parameters
 
-How could an attacker use reentrant calls from one chain to the other to alter the `balances` in unintended ways?
+**State Increment Without Source-Chain Proof**
+- Direct `balances[user] += amount` or `token.mint(user, amount)` triggered solely by calldata values with no on-chain evidence of the source-chain lock
+- Emitting `TransferCompleted` before or without atomically marking the message as processed
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+## False Positives
 
-contract CrossChainBridge {
-    mapping(address => uint256) public balances;
-
-    event TransferInitiated(address indexed user, uint256 amount, string targetChain);
-    event TransferCompleted(address indexed user, uint256 amount);
-
-    // Function to start transferring funds to another chain
-    function initiateTransfer(uint256 amount, string memory targetChain) public {
-        require(balances[msg.sender] >= amount, "Insufficient balance");
-        balances[msg.sender] -= amount;
-        emit TransferInitiated(msg.sender, amount, targetChain);
-        // Assume the amount is now locked, awaiting confirmation from the target chain
-    }
-
-    // Function to receive funds back from the other chain
-    function completeTransfer(address user, uint256 amount) public {
-        balances[user] += amount;
-        emit TransferCompleted(user, amount);
-    }
-}
-```
-
-
-### Hint 1
-Cross-chain reentrancy often involves delayed state changes and trust assumptions about calls between chains.
-
-Look closely at `completeTransfer` and consider what happens if the function is called repeatedly or unexpectedly, especially if there’s no verification of the source
-
-
-### Hint 2
-Think about how an attacker could use `completeTransfer` to manipulate `balances` without sending actual funds from the other chain.
-
-Since `balances[user]` is updated directly in `completeTransfer`, consider what could happen if they initiate a transfer and then repeatedly trigger `completeTransfer` from the "other chain."
-
-
-### Solution
-```solidity
-function completeTransfer(address user, uint256 amount) public {
-    require(isTrustedSource(msg.sender), "Untrusted source"); // Fix: Example verification
-    require(!isProcessedTransaction(user, amount), "Already processed"); // Fix 2: Track processed transfers
-
-    balances[user] += amount;
-    markTransactionProcessed(user, amount); // Mark transaction as processed
-    emit TransferCompleted(user, amount);
-}
-
-```
-
-
+- Completion function restricted to a trusted relayer or verified bridge contract via `onlyOwner`, role-based access control, or signature verification
+- Each bridge message identified by a unique ID and tracked in a `processedMessages` or equivalent mapping that prevents replay
+- Amount credited is verified against a Merkle proof or signed attestation anchored to a finalized source-chain block
+- Source-chain lock is atomically verified and consumed in the same transaction as the destination-chain credit

@@ -2,83 +2,30 @@
 
 ## TLDR
 
-Exploiting the price calculation mechanism to cause an unusually high slippage rate
+Swap transactions published to the public mempool expose their parameters — token pair, input amount, and minimum output — before inclusion. MEV bots observe these parameters and sandwich the victim: a buy is inserted before the transaction to move the price up, and a sell is inserted after, extracting value from the slippage tolerance the victim granted.
 
-## Game
+## Detection Signals
 
-This contract allows users to execute token swaps on a DEX. This transactions are visible in the mempool. Umm.. what else?
+**Transparent Swap Parameters**
+- Swap function accepts `tokenIn`, `amountIn`, and `minAmountOut` directly as calldata with no obfuscation
+- No commit-reveal pattern: trade details are visible in the pending transaction before it mines
+- No private relay integration documented or enforced at the contract level
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Permissive or Hardcoded Slippage**
+- `minAmountOut` is zero or derived from a hardcoded constant rather than a caller-supplied tight bound
+- Slippage tolerance set to a percentage wide enough to make sandwiching profitable (e.g. >1% on liquid pairs)
+- `minAmountOut` computed from a stale off-chain price without deadline enforcement
 
-interface IDEX {
-    function swap(address tokenIn, address tokenOut, uint256 amountIn) external returns (uint256);
-    function getPrice(address tokenIn, address tokenOut) external view returns (uint256);
-}
+**No Commitment Verification**
+- No `mapping(address => bytes32) tradeCommitments` or equivalent on-chain hash commitment
+- Reveal step does not `require(hash(params) == commitment[msg.sender])`
+- Stale commitments not invalidated — no block number or timestamp bound on the commit
 
-contract FrontRunningGame {
-    IDEX public dex;
-    address public tokenOut;
+## False Positives
 
-    constructor(address _dex, address _tokenOut) {
-        dex = IDEX(_dex);
-        tokenOut = _tokenOut;
-    }
-
-    // Function to perform a swap without protection against front-running
-    function executeSwap(address tokenIn, uint256 amountIn, uint256 minAmountOut) public {
-        uint256 amountOut = dex.swap(tokenIn, tokenOut, amountIn);
-        require(amountOut >= minAmountOut, "Slippage too high");
-    }
-}
-```
-
-
-### Hint 1
-Consider how you might prevent front-runners from knowing the exact price or transaction parameters until execution. Is there a way to obfuscate the trade details?
-
-
-### Hint 2
-Using a two-step commit-reveal scheme can help protect users by preventing attackers from viewing the trade parameters in the mempool.
-
-
-### Solution
-```solidity
-contract FrontRunningGame {
-    IDEX public dex;
-    address public tokenOut;
-
-    struct Trade {
-        uint256 amountIn;
-        uint256 minAmountOut;
-    }
-
-    mapping(address => bytes32) public tradeCommitments;
-
-    constructor(address _dex, address _tokenOut) {
-        dex = IDEX(_dex);
-        tokenOut = _tokenOut;
-    }
-
-    // Fix step 1: User commits to a trade by submitting a hash
-    function commitTrade(bytes32 tradeHash) public {
-        tradeCommitments[msg.sender] = tradeHash;
-    }
-
-    // Fix step 2: User reveals trade details, which are checked against the committed hash
-    function revealTrade(address tokenIn, uint256 amountIn, uint256 minAmountOut) public {
-        // Fix step 3: Verify that the revealed parameters match the committed hash
-        require(tradeCommitments[msg.sender] == keccak256(abi.encodePacked(tokenIn, amountIn, minAmountOut)), "Invalid commitment");
-
-        uint256 amountOut = dex.swap(tokenIn, tokenOut, amountIn);
-        require(amountOut >= minAmountOut, "Slippage too high");
-
-        // Clear commitment after successful trade
-        delete tradeCommitments[msg.sender];
-    }
-}
-```
+- Commit-reveal scheme used: trade hash committed on-chain and verified at reveal time
+- Transactions submitted via private relay (Flashbots Protect, MEV Blocker) — not visible in public mempool
+- `minAmountOut` is a tightly calibrated caller-supplied parameter combined with a short deadline
+- Protocol operates on a sequencer with a private mempool where ordering is not publicly observable
 
 

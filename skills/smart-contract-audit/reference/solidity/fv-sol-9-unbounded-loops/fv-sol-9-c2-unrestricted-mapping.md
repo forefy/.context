@@ -2,74 +2,25 @@
 
 ## TLDR
 
-Solidity mappings do not provide a way to iterate over keys natively. However, if developers use an array to track mapping keys for iteration, looping through the keys can lead to unbounded loops if the array grows indefinitely
+Solidity mappings cannot be iterated natively, so developers often maintain a parallel array of keys. If this auxiliary array grows without restriction, any function that loops over it to aggregate or process mapping values will eventually exceed the block gas limit.
 
-## Game
+## Detection Signals
 
-If this auxiliary array grows without restriction, what will looping over it do?
+**Unbounded Key-Tracking Array**
+- A storage `address[]` or `uint256[]` array is appended to inside a public or externally callable function with no length cap
+- New keys are pushed when a mapping entry is first set, with no `require(arr.length < MAX)` guard
+- The array is used as the iteration source for an on-chain aggregation or processing function
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Full-Array Iteration Without Pagination**
+- `for (uint256 i = 0; i < users.length; i++)` iterates the key array inside a function called from a state-changing context
+- No start/end range parameters allow callers to paginate the iteration
+- Running total or aggregate is recomputed on every call rather than maintained incrementally
 
-contract UnrestrictedMappingGame {
-    mapping(address => uint256) public balances;
-    address[] public users;
+## False Positives
 
-    // Add or update a user's balance
-    function setBalance(address user, uint256 amount) public {
-        if (balances[user] == 0) {
-            users.push(user);
-        }
-        balances[user] = amount;
-    }
-
-    // Sum up all balances
-    function totalBalances() public view returns (uint256) {
-        uint256 total = 0;
-        for (uint256 i = 0; i < users.length; i++) {
-            total += balances[users[i]];
-        }
-        return total;
-    }
-}
-```
-
-
-### Hint 1
-Consider how you can limit the size of the `users` array to ensure predictable gas consumption for functions like `totalBalances`.
-
-
-### Hint 2
-Think about how precomputing or chunking operations might help avoid the need for full iteration in a single transaction.
-
-
-### Solution
-```solidity
-contract UnrestrictedMappingGame {
-    mapping(address => uint256) public balances;
-    address[] public users;
-
-    uint256 public maxUsers = 1000; // Fix: Restrict the maximum number of users
-
-    function setBalance(address user, uint256 amount) public {
-        if (balances[user] == 0) {
-            require(users.length < maxUsers, "User limit reached"); // Fix: Enforce user limit
-            users.push(user);
-        }
-        balances[user] = amount;
-    }
-
-    function totalBalances(uint256 start, uint256 end) public view returns (uint256) {
-        require(end > start && end <= users.length, "Invalid range");
-        uint256 total = 0;
-        for (uint256 i = start; i < end; i++) {
-            total += balances[users[i]];
-        }
-        return total;
-    }
-}
-```
+- Maximum key array length enforced unconditionally at insertion time
+- Aggregation uses a precomputed running total updated at insertion rather than iterating at read time
+- Iteration function accepts `start` and `end` parameters and callers are expected to chunk reads off-chain
+- Array is populated only by a privileged role with a known, protocol-bounded upper size
 
 

@@ -28,15 +28,45 @@ contract BadAccessControl {
 
 ## Classifications
 
-#### [fv-sol-4-c1-using-tx.origin-for-authorization.md](fv-sol-4-c1-using-tx.origin-for-authorization.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-4-bad-access-control/<filename>` to read any case file listed below.
 
-#### [fv-sol-4-c2-unrestricted-role-assignment.md](fv-sol-4-c2-unrestricted-role-assignment.md "mention")
+#### fv-sol-4-c1-using-tx.origin-for-authorization.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-4-c2-unrestricted-role-assignment.md
 
-### Lack of Multi-Signature for Crucial Operations (FV-SOL-4-C3)
+#### fv-sol-4-c3-lack-of-multi-signature-for-crucial-operations.md
 
-if a critical function (like transferring large funds or changing important contract settings) is controlled by a **single address** (usually the contract owner), it creates a **single point of failure**
+#### fv-sol-4-c4-signature-security-flaws.md
+
+Covers: signature malleability, `ecrecover` returning `address(0)`, signature replay via missing nonce.
+
+#### fv-sol-4-c5-callback-authorization-bypass.md
+
+Covers: flash loan callback spoofing, `onERC721Received` caller spoofing, ERC1155 unauthorized burn, ERC4626 missing allowance check, `setApprovalForAll` over-permission.
+
+#### fv-sol-4-c6-arbitrary-external-call.md
+
+Covers: user-supplied `target` + `calldata` enabling asset theft via crafted `transferFrom`.
+
+#### fv-sol-4-c7-erc1271-signature-delegation.md
+
+Covers: `isValidSignature` delegated to untrusted or user-set module.
+
+#### fv-sol-4-c8-arbitrary-storage-write.md
+
+#### fv-sol-4-c9-constructor-bypass-and-create2-squatting.md
+
+extcodesize returns zero during constructor execution, bypassing EOA checks; CREATE2 salt not bound to msg.sender allows address squatting.
+
+#### fv-sol-4-c10-commit-reveal-merkle-binding.md
+
+Commit-reveal not bound to msg.sender enables front-running; merkle second preimage attack; merkle proof not bound to caller allows replay.
+
+#### fv-sol-4-c11-hash-collision-and-encoding.md
+
+abi.encodePacked collision with multiple dynamic types; calldata malleability bypasses raw msg.data deduplication.
+
+Covers: assembly `sstore` with user-controlled slot, Solidity <0.6 array length assignment.
 
 ## Mitigation Patterns
 

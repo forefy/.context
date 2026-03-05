@@ -34,19 +34,31 @@ contract Vulnerable {
 
 ## Classifications
 
-#### [fv-sol-1-c1-single-function.md](fv-sol-1-c1-single-function.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-1-reentrancy/<filename>` to read any case file listed below.
 
-#### [fv-sol-1-c2-cross-function.md](fv-sol-1-c2-cross-function.md "mention")
+#### fv-sol-1-c1-single-function.md
 
-#### [fv-sol-1-c3-cross-contract.md](fv-sol-1-c3-cross-contract.md "mention")
+#### fv-sol-1-c2-cross-function.md
 
-#### [fv-sol-1-c4-cross-chain.md](fv-sol-1-c4-cross-chain.md "mention")
+#### fv-sol-1-c3-cross-contract.md
 
-#### [fv-sol-1-c5-dynamic.md](fv-sol-1-c5-dynamic.md "mention")
+#### fv-sol-1-c4-cross-chain.md
 
-#### [fv-sol-1-c6-read-only.md](fv-sol-1-c6-read-only.md "mention")
+#### fv-sol-1-c5-dynamic.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-1-c6-read-only.md
+
+#### fv-sol-1-c7-erc721-erc1155-callback.md
+
+Covers: `safeTransferFrom`/`safeMint` callback before state update, ERC1155 batch partial-state window, ERC1155 `totalSupply` inflation via post-mint increment.
+
+#### fv-sol-1-c8-erc777-hook-reentrancy.md
+
+Covers: `tokensToSend`/`tokensReceived` hooks on ERC20-style calls to ERC777 tokens.
+
+#### fv-sol-1-c9-transient-storage-reentrancy.md
+
+Covers: EIP-1153 `TSTORE` bypassing 2300-gas guard; transient mutex not cleared causing DoS in multicall.
 
 ## Mitigation Patterns
 

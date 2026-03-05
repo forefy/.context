@@ -40,7 +40,7 @@ Apply the checks-effects-interactions pattern strictly: mark nonces used and bur
 
 ---
 
-### Signature Validation and Replay (ref: no fv-sol equivalent — candidate for new entry)
+### Signature Validation and Replay (ref: fv-sol-4-c4, fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 
@@ -72,7 +72,7 @@ Use OpenZeppelin `EIP712` and `ECDSA` exclusively. Nonces must be part of every 
 
 ---
 
-### Order Validation and Matching Flaws (ref: no fv-sol equivalent — candidate for new entry)
+### Order Validation and Matching Flaws (ref: fv-sol-8-c5)
 
 **Protocol-Specific Preconditions**
 
@@ -135,7 +135,7 @@ Royalty calculations for ERC-1155 must sum all quantities across IDs first, then
 
 ---
 
-### NFT Transfer Standard Compliance (ref: no fv-sol equivalent — candidate for new entry)
+### NFT Transfer Standard Compliance (ref: fv-sol-6-c9)
 
 **Protocol-Specific Preconditions**
 

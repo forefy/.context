@@ -2,65 +2,23 @@
 
 ## TLDR
 
-The oracle fails to compound APR (Annual Percentage Rate) correctly over time, resulting in values that do not accurately reflect the cumulative growth intended
+Oracle price is used as a direct multiplier in interest or yield compounding logic without validation. An attacker who can influence the oracle can inflate or deflate the calculated interest in a single call, permanently distorting the cumulative value.
 
-## Game
+## Detection Signals
 
-What happens if the oracle reports incorrect values at the wrong moments?
+**Oracle-Dependent Compounding**
+- `oracle.getPrice()` return value multiplied directly into an interest or yield calculation with no prior sanity check
+- No `require(price > 0)` guard before the price is used in compounding arithmetic
+- No `lastPrice` or equivalent state variable stored to compare against the current reading
+- No maximum change check between consecutive price reads (e.g., `currentPrice <= lastPrice * 2 && currentPrice >= lastPrice / 2`)
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Missing Time-Weighted or Rate-Limited Input**
+- Compounding function callable by anyone with no access control, allowing repeated calls to amplify manipulation
+- No TWAP or time-weighted mechanism smoothing price inputs into the compounding calculation
+- Interest rate itself derived from or scaled by an oracle value with no independent governance-set cap
 
-interface IPriceOracle {
-    function getPrice() external view returns (uint256);
-}
+## False Positives
 
-contract CompoundingMechanismGame {
-    IPriceOracle public oracle;
-    uint256 public totalValue;
-    uint256 public interestRate = 5; // 5% annual interest
-
-    constructor(address _oracle, uint256 _initialValue) {
-        oracle = IPriceOracle(_oracle);
-        totalValue = _initialValue;
-    }
-
-    // Compound the value based on oracle price
-    function compound() public {
-        uint256 price = oracle.getPrice();
-        uint256 interest = (totalValue * interestRate * price) / (100 * 1e18); // Compounding logic
-        totalValue += interest;
-    }
-}
-```
-
-
-### Hint 1
-If an attacker can manipulate the oracle, how might they inflate or deflate the calculated `interest` in the `compound` function?
-
-
-### Hint 2
-Consider how to validate the oracle’s data to prevent reliance on potentially manipulated values.
-
-
-### Solution
-```solidity
-uint256 public lastPrice;
-
-function compound() public {
-    uint256 currentPrice = oracle.getPrice();
-    require(currentPrice > 0, "Invalid price"); // Fix: Check for valid oracle data
-    require(
-        currentPrice <= lastPrice * 2 && currentPrice >= lastPrice / 2,
-        "Unrealistic price change" // Fix: Sanity check for sudden changes
-    );
-
-    uint256 interest = (totalValue * interestRate * currentPrice) / (100 * 1e18);
-    totalValue += interest;
-    lastPrice = currentPrice; // Fix: Update lastPrice for future checks
-}
-```
-
-
+- Compounding uses a hardcoded or governance-set interest rate with no oracle input to the rate itself; oracle is used only for display or accounting in a separate path
+- Price is validated as non-zero and within a configured deviation band from `lastPrice` before compounding proceeds
+- Oracle is a manipulation-resistant source (e.g., Chainlink with full validity suite) and the compounding function enforces per-block or per-period rate limits

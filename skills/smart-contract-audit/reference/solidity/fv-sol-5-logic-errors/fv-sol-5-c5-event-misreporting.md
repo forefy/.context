@@ -2,55 +2,27 @@
 
 ## TLDR
 
-Failing to emit an event during a critical update like reward distribution, making it hard to track transactions or actions on-chain
+Events emit incorrect values — such as a cumulative balance instead of the current operation amount — causing off-chain indexers, monitoring systems, and oracles to record wrong data while on-chain state may be correct.
 
-## Game
+## Detection Signals
 
-The wrong balance might be logged.
+**Post-Update State Emitted Instead of Operation Delta**
+- Event parameter passes `balances[msg.sender]` (cumulative post-update value) when the deposit delta `msg.value` should be reported
+- State variable updated before the `emit`, and the emitted field reads the updated state rather than a pre-captured local variable
+- Event field named `amount` or `value` that actually emits a running total or accumulated balance
 
-Can you identify how this misreporting could happen?
+**Missing Emit on Critical State Change**
+- Role grant, ownership transfer, or privileged parameter update executed without emitting an event
+- Multiple code paths modify the same state variable but only some paths emit the corresponding event
+- Conditional logic causes the emit to be skipped on one branch (e.g., emit inside an `if` without a matching emit in the `else`)
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Wrong Event or Wrong Parameters**
+- Event emitted with arguments in wrong order (e.g., `emit Transfer(to, from, amount)` instead of `emit Transfer(from, to, amount)`)
+- Stale local variable captured before state update used in emit, reporting the pre-state when post-state is expected
+- Event emitted for every loop iteration using a per-item value when a single summary event was intended
 
-contract EventMisreportingGame {
-    uint256 public totalDeposits;
-    mapping(address => uint256) public balances;
+## False Positives
 
-    event DepositMade(address indexed user, uint256 amount, uint256 totalDeposits);
-
-    // Function to allow users to deposit and log the event
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-        totalDeposits += msg.value;
-        
-        emit DepositMade(msg.sender, balances[msg.sender], totalDeposits);
-    }
-}
-```
-
-
-### Hint 1
-Look carefully at the values emitted in the `DepositMade` event.
-
-Consider whether the event is showing the current deposit amount or the user’s total balance.
-
-
-### Hint 2
-Think about how you could adjust the parameters of `emit DepositMade` to reflect the accurate data intended for each transaction.
-
-
-### Solution
-```solidity
-function deposit() public payable {
-    balances[msg.sender] += msg.value;
-    totalDeposits += msg.value;
-    
-    // Fix: Emit the actual deposit amount (msg.value) rather than the total balance
-    emit DepositMade(msg.sender, msg.value, totalDeposits);
-}
-```
-
-
+- Emitted value is explicitly the operation delta (`msg.value` or the `amount` parameter) not the post-state balance
+- Local variable captures the value before state update and is passed to emit: `uint256 depositAmount = msg.value; balances[msg.sender] += depositAmount; emit Deposit(msg.sender, depositAmount);`
+- Event documented as intentionally emitting cumulative balance with explicit naming (e.g., `newBalance`)

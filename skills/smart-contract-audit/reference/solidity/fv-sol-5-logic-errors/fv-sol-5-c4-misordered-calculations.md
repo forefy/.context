@@ -2,47 +2,27 @@
 
 ## TLDR
 
-Errors from improper indexing or referencing in mappings, often due to incorrect key choices or updates
+Arithmetic operations applied in the wrong sequence produce incorrect results. Common cases include applying a bonus before a tax so the bonus is also taxed, computing interest before updating the principal, or applying a percentage to a post-adjusted value when the specification requires it on the pre-adjusted amount.
 
-## Game
+## Detection Signals
 
-Review the calculation order in `calculateReward`
+**Bonus or Premium Applied Before Percentage Deduction**
+- Bonus, incentive, or premium added to a base value before a tax or fee percentage is applied to the combined sum
+- Specification states tax applies only to the principal, but code computes tax on `principal + bonus`
+- Protocol fee deducted from `amount + reward` rather than from `amount` alone
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Incorrect Sequencing of Running Totals**
+- Cumulative counter or running balance updated before a per-item calculation that should use the pre-update value
+- Price impact or slippage applied before the fee deduction step rather than after
+- Interest accrual computed on a balance that already includes the current period's deposit
 
-contract LogicMisorderGame {
-    uint256 public finalReward;
-    uint256 public constant BONUS = 50;
-    uint256 public constant TAX_PERCENT = 10;
+**Compound Percentage Operations Applied Sequentially When Composition Is Required**
+- Two successive percentage reductions applied as independent multiplications rather than as `(1 - r1) * (1 - r2)`
+- Multiplication overflow possible because intermediate result exceeds type bounds before division
+- Division performed before multiplication in a single expression, losing precision
 
-    // Function to calculate the final reward based on balance with bonus and tax applied
-    function calculateReward(uint256 balance) public {
-        uint256 doubledBalance = balance * 2;
-        uint256 rewardWithBonus = doubledBalance + BONUS;
-        finalReward = rewardWithBonus - (rewardWithBonus * TAX_PERCENT / 100);
-    }
-}
-```
+## False Positives
 
-
-### Hint 1
-Think about whether the bonus should be taxed or only the user’s balance. Should the bonus be added before or after applying the tax?
-
-
-### Hint 2
-Consider how adding the bonus after applying the tax might better align with the intended logic of rewarding the user’s balance.
-
-
-### Solution
-```solidity
-function calculateReward(uint256 balance) public {
-    uint256 doubledBalance = balance * 2;
-    uint256 taxedBalance = doubledBalance - (doubledBalance * TAX_PERCENT / 100); // Fix: Apply tax first
-    finalReward = taxedBalance + BONUS; // Add bonus after tax
-}
-```
-
-
+- Order of operations explicitly matches the documented formula with a referenced specification
+- Tax applied to base amount only; bonus added to the already-taxed result
+- Unit tests verify boundary and midpoint values against expected formula output

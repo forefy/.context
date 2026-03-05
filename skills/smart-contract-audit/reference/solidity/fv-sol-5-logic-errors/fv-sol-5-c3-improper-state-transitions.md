@@ -2,53 +2,27 @@
 
 ## TLDR
 
-A contract that has a specific progression (e.g., setup, running, paused) may mistakenly allow state-changing functions to execute out of order, leading to potential exploitation
+A contract with a defined lifecycle (e.g., NotStarted, Active, Paused, Completed) allows state-modifying functions to execute without validating the current state, permitting out-of-order or repeated transitions that violate invariants and can be exploited.
 
-## Game
+## Detection Signals
 
-`startGame` and `completeGame` are intended to control the game’s progress through its stages. However, due to an issue with the conditional logic in `completeGame`, the game can behave strangely. Can you spot the missing check?
+**Missing Predecessor State Guard**
+- A transition function modifies `state` without a `require(state == ExpectedPredecessor)` guard
+- Terminal state (e.g., `Completed`, `Cancelled`) reachable directly from any state, not only from the valid predecessor
+- Function that advances lifecycle phase contains no state check at all
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Multiple Entry Points Without Mutual Exclusion**
+- Two or more functions can set the contract to the same state without checking for conflicts
+- Re-entrancy or repeated calls to an initializer move state backward or cycle it
+- `pause()` and `resume()` functions do not verify opposing states before toggling
 
-contract StateTransitionGame {
-    enum GameState { NotStarted, InProgress, Completed }
-    GameState public state;
+**Missing State Validation on Operational Functions**
+- Functions that should only execute in a specific phase (e.g., `claimReward` only during `Active`) lack a phase guard
+- Withdrawal, reward distribution, or settlement callable before the contract reaches the required state
+- State variable used as a flag is set but never checked by dependent functions
 
-    constructor() {
-        state = GameState.NotStarted;
-    }
+## False Positives
 
-    function startGame() public {
-        require(state == GameState.NotStarted, "Game already started or completed");
-        state = GameState.InProgress;
-    }
-
-    function completeGame() public {
-        state = GameState.Completed;
-    }
-}
-```
-
-
-### Hint 1
-Look at the condition in `completeGame`.
-
-Does it ensure that the game can only transition to `Completed` if it is currently `InProgress`?
-
-
-### Hint 2
-Consider how adding specific checks for each state transition might make the progression more controlled and prevent unexpected transitions.
-
-
-### Solution
-```solidity
-function completeGame() public {
-    require(state == GameState.InProgress, "Game must be in progress to complete"); // Fix: Check for InProgress state
-    state = GameState.Completed;
-}
-```
-
-
+- Every transition function has an explicit `require(state == PreviousState)` check
+- Only one valid predecessor state is permitted for each target state
+- State machine transitions are documented and tested with invalid-sequence inputs that confirm reversion

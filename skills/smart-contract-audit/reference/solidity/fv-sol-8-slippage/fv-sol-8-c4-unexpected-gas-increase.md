@@ -2,60 +2,28 @@
 
 ## TLDR
 
-Occurs when dynamic transaction fees or gas fees increase unexpectedly, eating into the user's transaction value and causing unintended slippage.
+When a swap wrapper forwards execution to an external DEX without a gas cap, an attacker or a malicious/upgraded DEX implementation can consume unbounded gas. This drives up transaction costs, can cause out-of-gas reverts for the user, or — in protocols that deduct gas costs from the output amount — constitutes a form of slippage that bypasses the stated minimum output check.
 
-## Game
+## Detection Signals
 
-During the transaction, the user expects a predictable gas cost. Would you say he can calm down and go eat a sandwich?
+**Unbounded External Call**
+- `dex.swap(tokenIn, tokenOut, amountIn)` called without a `{gas: N}` cap
+- Low-level `address(dex).call(...)` without gas limit parameter
+- No `gasleft()` check before or after the external call
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Missing Output Validation**
+- Return value of `dex.swap(...)` not stored or not validated with `require(amountOut > 0)`
+- `success` bool from low-level call not checked before decoding return data
+- No minimum output enforced after the external call returns
 
-interface IDEX {
-    function swap(address tokenIn, address tokenOut, uint256 amountIn) external returns (uint256);
-}
+**No Gas Cost Accounting**
+- Protocol deducts fees or calculates net output after the swap without accounting for gas consumed by external call
+- No refund mechanism when excess gas is consumed by an external DEX callback (e.g. `uniswapV3SwapCallback`)
+- Flash loan callbacks or hook callbacks inside the DEX not considered in gas budget
 
-contract GasIncreaseGame {
-    IDEX public dex;
-    address public tokenOut;
+## False Positives
 
-    constructor(address _dex, address _tokenOut) {
-        dex = IDEX(_dex);
-        tokenOut = _tokenOut;
-    }
-    
-    function executeSwap(address tokenIn, uint256 amountIn) public {
-        dex.swap(tokenIn, tokenOut, amountIn);
-    }
-}
-```
-
-
-### Hint 1
-Consider how you might limit the transaction’s gas cost or mitigate the impact of gas-heavy external calls.
-
-
-### Hint 2
-Timeouts or gas limit checks might help you detect and prevent excessive gas consumption during the transaction.
-
-
-### Solution
-```solidity
-function executeSwap(address tokenIn, uint256 amountIn) public {
-    uint256 gasLimit = gasleft() / 2; // Fix: Use only a portion of the remaining gas for the external call
-
-    (bool success, bytes memory returnData) = address(dex).call{gas: gasLimit}(
-        abi.encodeWithSelector(dex.swap.selector, tokenIn, tokenOut, amountIn)
-    );
-
-    require(success, "Swap failed or exceeded gas limit");
-
-    // Decode and validate the result
-    uint256 amountOut = abi.decode(returnData, (uint256));
-    require(amountOut > 0, "Invalid swap output");
-}
-```
-
-
+- Gas costs are paid by the protocol treasury and are not deducted from the user's output amount
+- Contract is a thin pass-through to a trusted, immutable router (e.g. Uniswap UniversalRouter) with known gas bounds
+- Protocol uses a fixed-fee model where output calculation is independent of actual gas consumed
+- MEV-protected relay handles gas optimization externally and the contract itself does not factor gas into output

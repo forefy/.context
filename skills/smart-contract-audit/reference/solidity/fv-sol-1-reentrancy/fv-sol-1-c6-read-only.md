@@ -2,65 +2,26 @@
 
 ## TLDR
 
-**Read-only reentrancy** exploits functions that only perform "view" operations (i.e., don’t directly change state) but still affect the contract's behavior based on inconsistent state.
+Read-only reentrancy occurs when a `view` function or an eligibility/price-check is called inside a state-modifying function after an external call. The view function returns stale or inconsistent state because the state update has not yet occurred, allowing a reentrant callback to pass checks it should fail or to read an artificially inflated or deflated value.
 
-While such functions don’t modify storage, they may still provide inaccurate or exploitable information if they rely on external contract calls that can reenter and manipulate state elsewhere.
+## Detection Signals
 
-## Game
+**View Function Called After External Call in the Same Transaction**
+- Sequence: external call (e.g., ETH send) → callback re-enters → `view` function consulted before the state update in the original frame completes
+- `getPrizeEligibility()`, `isEligible()`, `getPrice()`, `totalAssets()`, or any `view` that reads a state variable is callable from a reentrant callback while the original function's state update is pending
+- Protocols that call an external price oracle or vault share-price function during a callback window where the pool's own state is transiently inconsistent
 
-Think about what would happen if `msg.sender` is a contract that re-enters `getPrizeEligibility` via a fallback function during the call to `claimPrize`
+**Eligibility or Access Check Not Committed Before Interaction**
+- `require(getPrizeEligibility())` or `require(balances[x] >= threshold)` evaluated, then an external call issued, then the flag or balance updated — the view check can be re-evaluated in a reentrant callback before the update lands
+- `prizeClaimed`, `hasClaimed[user]`, or equivalent guard booleans set after the external call rather than before
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**DeFi-Specific: Price or Share Manipulation via Read-Only Reentry**
+- A DEX or lending protocol's `getPrice()`, `totalSupply()`, or `totalAssets()` read from a callback during a flash loan or liquidity removal, when pool reserves or vault balances are mid-update
+- `lpToken.balanceOf(pool)` or `pool.getReserves()` called from a contract that receives the liquidity callback — returns values from an inconsistent intermediate state
 
-contract ReadOnlyReentrancyGame {
-    mapping(address => uint256) public balances;
-    bool public prizeClaimed = false;
+## False Positives
 
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
-    }
-
-    function getPrizeEligibility() public view returns (bool) {
-        // Checks if the user has a balance and the prize is not yet claimed
-        return (balances[msg.sender] >= 1 ether && !prizeClaimed);
-    }
-
-    function claimPrize() public {
-        require(getPrizeEligibility(), "Not eligible for prize");
-        prizeClaimed = true;
-        (bool success, ) = msg.sender.call{value: 1 ether}("");
-        require(success, "Transfer failed");
-    }
-}
-
-```
-
-
-### Hint 1
-Notice that `getPrizeEligibility` is a view function, meaning it doesn’t directly modify state.
-
-However, read-only reentrancy can happen if `msg.sender` can re-enter the view function during `claimPrize` to get outdated state information
-
-
-### Hint 2
-Think about whether `balances[msg.sender]` is updated _before_ the external call. If `dynamicPayout` is reentered, would the balance deduction prevent repeated calls, or is there a way to exploit this order?
-
-
-### Solution
-```solidity
-function claimPrize() public {
-    require(balances[msg.sender] >= 1 ether, "Insufficient balance");
-    require(!prizeClaimed, "Prize already claimed");
-
-    // Fix: Set prizeClaimed to true immediately to prevent reentrancy
-    prizeClaimed = true;
-
-    (bool success, ) = msg.sender.call{value: 1 ether}("");
-    require(success, "Transfer failed");
-}
-```
-
-
+- All guard flags and accounting state committed before the external call (`prizeClaimed = true` before `.call{value:}("")`)
+- `nonReentrant` applied to both the state-modifying function and any function that the callback could re-enter to read stale state
+- View function reads only immutable values or values that are not affected by the pending state update
+- Protocol uses a TWAP or delayed oracle that is not susceptible to within-transaction state manipulation

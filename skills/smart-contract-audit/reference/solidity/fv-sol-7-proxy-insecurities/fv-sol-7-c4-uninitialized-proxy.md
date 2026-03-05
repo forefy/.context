@@ -2,51 +2,33 @@
 
 ## TLDR
 
-If the initializer function isn’t called during deployment, it may leave critical variables in an unprotected state
+Proxy contracts that use `initialize()` instead of constructors for setup can be left in an uninitialized state if the initializer is never called, or can be re-initialized if the initializer lacks a one-time-use guard. Either condition allows an attacker to set critical ownership or configuration variables to their own address.
 
-Same goes for accidentally allowing initializer functions to be called again in the proxy pattern which can result in re-initializing the contract, doing so gaining ability to modify data.
+## Detection Signals
 
-## Game
+**No Zero-Address Check on Implementation Before delegatecall**
+- `fallback` forwards calls via `delegatecall` without verifying `implementation != address(0)`
+- Proxy deployed with implementation address not yet set, calls silently succeed or misbehave
 
-This proxy has a constructor to initialize the implementation address, but if the proxy is deployed without properly initializing this address, it could end up with an uninitialized state.
+**initialize() Not Protected Against Replay**
+- `initialize` function uses no `initializer` modifier or equivalent initialized flag
+- `initialized` flag is stored at a slot that can be overwritten by delegatecall storage collision
+- Implementation contract's `initialize` is callable directly (not only through the proxy)
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Implementation Contract Missing disableInitializers in Constructor**
+- Implementation constructor does not call `_disableInitializers()`
+- Direct calls to the implementation's `initialize` can set an attacker-controlled owner on the implementation itself, enabling delegatecall-based exploits (e.g., selfdestruct via implementation takeover)
 
-contract Proxy {
-    address public implementation;
+**Non-Atomic Proxy Deployment and Initialization**
+- Proxy deployed in one transaction, `initialize()` called in a separate transaction
+- Gap between deployment and initialization exploitable by front-running
 
-    // Constructor to set the implementation address
-    constructor(address _implementation) {
-        implementation = _implementation;
-    }
+**Re-initialization Possible in Upgrade**
+- V2 implementation uses `initializer` modifier instead of `reinitializer(2)`, resetting already-initialized state on upgrade
 
-    // Fallback function to forward calls to the implementation contract
-    fallback() external payable {
-        (bool success, ) = implementation.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
-    }
-}
-```
+## False Positives
 
-
-### Hint 1
-Consider what could happen if the `implementation` address is not properly set before `delegatecall` is used. How can you ensure that the proxy is correctly initialized?
-
-
-### Hint 2
-Look into adding a guard that checks if `implementation` has a valid address before proceeding with any calls.
-
-
-### Solution
-```solidity
-fallback() external payable {
-    require(implementation != address(0), "Implementation not initialized"); // Fix: Ensure implementation is set
-    (bool success, ) = implementation.delegatecall(msg.data);
-    require(success, "Delegatecall failed");
-}
-```
-
-
+- `initialize` guarded by OpenZeppelin `Initializable.initializer` modifier and called atomically in the proxy constructor via `data` parameter
+- `_disableInitializers()` called in the implementation's constructor preventing direct initialization
+- Proxy deployment and initialization are a single atomic transaction (init calldata passed to proxy constructor)
+- `reinitializer(N)` used with a correctly incrementing version number for each upgrade

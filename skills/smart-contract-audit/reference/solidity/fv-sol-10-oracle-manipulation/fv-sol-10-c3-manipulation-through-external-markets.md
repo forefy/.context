@@ -2,69 +2,24 @@
 
 ## TLDR
 
-Manipulating prices in less liquid markets to impact the oracle's reported price, as some oracles aggregate prices from external exchanges
+Oracles that aggregate prices from low-liquidity external markets (DEXes, AMMs) can be temporarily skewed within a single block or flash loan transaction. A protocol using such a price without smoothing or secondary validation executes collateral, liquidation, or swap logic at the manipulated value.
 
-## Game
+## Detection Signals
 
-You’ve stumbled upon a contract using an on-chain oracle that directly fetches prices from a decentralized exchange (DEX).
+**Spot Price Oracle from DEX**
+- Oracle call resolves to a DEX reserve ratio or AMM pool spot price (e.g., Uniswap `getReserves`, `slot0`) without a TWAP
+- No block-level or time-weighted averaging applied before the price is consumed
+- `collateral` or equivalent accounting value computed directly from a single `getPrice()` call with no smoothing
+- Oracle interface accepts a `token` address argument and returns a single instantaneous value — classic sign of a spot-price aggregator
 
-But what if someone manipulates the DEX price for a brief window? Can the system withstand sudden external price shifts?
+**No Flash-Loan or Single-Block Resistance**
+- Price accepted within the same transaction as a swap or liquidity operation — no delay or snapshot mechanism
+- No reentrancy guard or same-block protection on the price-consuming function
+- No deviation check against a secondary non-AMM oracle (e.g., Chainlink) to reject manipulated spot readings
+- `adjustCollateral` or equivalent function has no cooldown between calls
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+## False Positives
 
-interface IPriceOracle {
-    function getPrice(address token) external view returns (uint256);
-}
-
-contract MarketManipulationGame {
-    IPriceOracle public oracle;
-    address public token;
-    uint256 public collateral;
-
-    constructor(address _oracle, address _token, uint256 _initialCollateral) {
-        oracle = IPriceOracle(_oracle);
-        token = _token;
-        collateral = _initialCollateral;
-    }
-
-    // Function to adjust collateral value based on oracle price
-    function adjustCollateral() public {
-        uint256 price = oracle.getPrice(token);
-        require(price > 0, "Invalid price");
-        collateral = collateral * price / 1e18; // Adjust collateral based on price
-    }
-}
-```
-
-
-### Hint 1
-If the price from the DEX oracle can be temporarily manipulated, what impact could this have on `collateral`?
-
-
-### Hint 2
-Consider mechanisms to validate the price data or to smooth out sudden price changes over time.
-
-
-### Solution
-```solidity
-uint256 public lastValidPrice;
-
-function adjustCollateral() public {
-    uint256 price = oracle.getPrice(token);
-    require(price > 0, "Invalid price");
-
-    // Fix: Cross-check with last valid price to ensure no sudden manipulation
-    require(
-        price <= lastValidPrice * 105 / 100 && price >= lastValidPrice * 95 / 100,
-        "Price deviation too large"
-    );
-
-    collateral = collateral * price / 1e18;
-    lastValidPrice = price; // Fix: Update last valid price
-}
-```
-
-
+- Oracle source is Chainlink, Pyth, or another non-AMM feed that is not susceptible to single-block DEX manipulation
+- Protocol uses a TWAP with a window of 30 minutes or longer, making single-block or flash-loan manipulation economically infeasible
+- Deviation check against a secondary price source rejects outlier readings before they affect accounting

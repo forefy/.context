@@ -32,14 +32,14 @@
 
 ## Knowledge Base References
 
-For detailed vulnerability patterns, see:
-- `reference/vyper/fv-vyp-1-reentrancy/` - Reentrancy attack patterns
-- `reference/vyper/fv-vyp-2-integer-overflow/` - Overflow/underflow issues
-- `reference/vyper/fv-vyp-3-access-control/` - Access control vulnerabilities
-- `reference/vyper/fv-vyp-4-external-calls/` - External call safety
-- `reference/vyper/fv-vyp-5-timestamp-dependencies/` - Timestamp manipulation
-- `reference/vyper/fv-vyp-6-weak-randomness/` - Random number generation
-- `reference/vyper/fv-vyp-7-front-running/` - MEV and front-running
-- `reference/vyper/fv-vyp-8-division-precision/` - Fixed-point math issues
-- `reference/vyper/fv-vyp-9-denial-of-service/` - DoS vulnerabilities
-- `reference/vyper/fv-vyp-10-upgradeability/` - Upgrade pattern security
+For detailed vulnerability patterns, read the relevant README then drill into case files:
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-1-reentrancy/README.md` - Reentrancy attack patterns
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-2-integer-overflow/README.md` - Overflow/underflow issues
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-3-access-control/README.md` - Access control vulnerabilities
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-4-external-calls/README.md` - External call safety
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-5-timestamp-dependencies/README.md` - Timestamp manipulation
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-6-weak-randomness/README.md` - Random number generation
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-7-front-running/README.md` - MEV and front-running
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-8-division-precision/README.md` - Fixed-point math issues
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-9-denial-of-service/README.md` - DoS vulnerabilities
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-10-upgradeability/README.md` - Upgrade pattern security

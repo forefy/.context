@@ -21,17 +21,23 @@ contract OverflowExample {
 
 ## Classifications
 
-#### [fv-sol-3-c1-overflow-and-underflow.md](fv-sol-3-c1-overflow-and-underflow.md "mention")
+Run `cat $SKILL_DIR/reference/solidity/fv-sol-3-arithmetic-errors/<filename>` to read any case file listed below.
 
-#### [fv-sol-3-c2-sign-extension.md](fv-sol-3-c2-sign-extension.md "mention")
+#### fv-sol-3-c1-overflow-and-underflow.md
 
-#### [fv-sol-3-c3-truncation-in-type-casting.md](fv-sol-3-c3-truncation-in-type-casting.md "mention")
+#### fv-sol-3-c2-sign-extension.md
 
-#### [fv-sol-3-c4-misuse-of-environment-variables.md](fv-sol-3-c4-misuse-of-environment-variables.md "mention")
+#### fv-sol-3-c3-truncation-in-type-casting.md
 
-#### [quick-patterns.md](quick-patterns.md "mention")
+#### fv-sol-3-c4-misuse-of-environment-variables.md
 
-## Mitigation Patterns
+#### fv-sol-3-c5-assembly-arithmetic.md
+
+Assembly `div`/`mul`/`sub` silent overflow and division-by-zero; narrow-type arithmetic overflow before upcast in `unchecked` blocks.
+
+#### fv-sol-3-c6-assembly-memory-calldata-pitfalls.md
+
+mstore8 dirty bytes, scratch space corruption between assembly blocks, dirty higher-order bits, returndatasize-as-zero misuse, calldataload out-of-bounds, free memory pointer corruption.
 
 ### Update Solidity Version (FV-SOL-3-M1)
 

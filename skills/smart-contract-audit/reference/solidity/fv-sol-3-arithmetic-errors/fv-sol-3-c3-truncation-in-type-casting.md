@@ -2,49 +2,34 @@
 
 ## TLDR
 
-When casting from a larger integer type to a smaller one, data can be truncated, resulting in a different value than intended
+Downcasting from a wider integer type to a narrower one silently drops the high-order bits. Any value larger than the target type's maximum is truncated to its low-order bits, producing a different value with no revert or warning. This affects both explicit casts and implicit narrowing in storage assignments.
 
-For example, assigning a `uint256` value to a `uint8` variable without validating that it fits
+## Detection Signals
 
-## Game
+**Explicit Downcast Without Bounds Check**
+- `uint8(x)`, `uint16(x)`, `uint32(x)`, `uint128(x)` where `x` is `uint256` or wider
+- No preceding `require(x <= type(uintN).max)` before the cast
+- Downcast result stored directly to state variable or emitted in event
 
-Someone did a crazy downcast on this code.
+**Return Value Downcast**
+- External call return value cast to smaller type: `uint16(token.balanceOf(user))`
+- Solidity ABI decoder target variable narrower than the ABI-declared return type
+- `bytes32` to `address` cast where upper bytes may be non-zero
 
-## Sections
-### Code
-```solidity
-pragma solidity ^0.8.0;
+**Packed Struct / Storage Slot Truncation**
+- Struct fields of mixed widths where a wider computed value is assigned to a narrower field
+- Bit-shifting followed by narrowing cast: `uint8(x >> 8)` applied to potentially large `x`
+- Storage packing via explicit cast in setter function without validation
 
-contract TruncationGame {
-    uint256 public totalPoints;
+**Intermediate Accumulator Overflow**
+- Loop accumulating values into `uint32` or `uint64` variable where sum may exceed type max
+- Fee or reward calculation result assigned to a `uint128` state variable without a cap check
+- Price or rate derived from division stored in `uint96` without checking divisor constraint
 
-    // Function to add points based on a reward calculation
-    function addPoints(uint256 reward) public {
-        // Assume reward is calculated externally and cast to uint16
-        uint16 truncatedReward = uint16(reward);
-        totalPoints += truncatedReward;
-    }
-}
+## False Positives
 
-```
-
-
-### Hint 1
-What value will `truncatedReward` actually hold?
-
-
-### Hint 2
-Consider what happens if `reward` is a large number, such as `70000`, and is then cast to `uint16`
-
-
-### Solution
-```solidity
-function addPoints(uint256 reward) public {
-    require(reward <= type(uint16).max, "Reward exceeds uint16 range"); // Fix: Safe to cast after check
-    uint16 truncatedReward = uint16(reward); 
-    totalPoints += truncatedReward;
-}
-
-```
-
-
+- OpenZeppelin `SafeCast` library used: `SafeCast.toUint16(x)` reverts on truncation
+- `require(x <= type(uintN).max)` or equivalent bound check immediately precedes the cast
+- Value is produced by a modulo operation that guarantees it fits: `x % 256` cast to `uint8`
+- Constant or literal value that provably fits the target type at compile time
+- Compiler-level type constraint (e.g., function parameter already declared `uint16`) prevents wider input

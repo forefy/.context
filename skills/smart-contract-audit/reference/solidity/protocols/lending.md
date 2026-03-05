@@ -136,7 +136,7 @@ Expose a `minAmountOut` and `deadline` parameter from every user-facing entry po
 
 ---
 
-### Oracle Manipulation and Flash Loan Price Attacks (ref: fv-sol-10)
+### Oracle Manipulation and Flash Loan Price Attacks (ref: fv-sol-10, fv-sol-10-c5, fv-sol-10-c6, fv-sol-10-c7)
 
 **Protocol-Specific Preconditions**
 
@@ -451,7 +451,7 @@ Add a post-mint assertion: `totalSupplyShares after mint == totalSupplyShares be
 
 ---
 
-### Vault Share Inflation / First Depositor Attack (no fv-sol equivalent)
+### Vault Share Inflation / First Depositor Attack (ref: fv-sol-2-c6)
 
 **Protocol-Specific Preconditions**
 
@@ -514,7 +514,7 @@ Maintain a dedicated integration test for each external protocol that runs again
 
 ---
 
-### ERC-4626 Vault Compliance (no fv-sol equivalent)
+### ERC-4626 Vault Compliance (ref: fv-sol-2-c6)
 
 **Protocol-Specific Preconditions**
 
@@ -574,7 +574,7 @@ Establish a standard internal `_safeTransfer` library that (1) verifies code exi
 
 ---
 
-### Signature and Replay Vulnerabilities (no fv-sol equivalent)
+### Signature and Replay Vulnerabilities (ref: fv-sol-4-c4, fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 

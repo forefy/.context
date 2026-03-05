@@ -295,7 +295,7 @@ Surge Finance's `userCollateralRatioMantissa` calculation used token pairs with 
 
 ---
 
-### Signature and Message Replay Attacks (no fv-sol equivalent — candidate for new entry)
+### Signature and Message Replay Attacks (ref: fv-sol-4-c4, fv-sol-4-c10, fv-sol-4-c11)
 
 **Protocol-Specific Preconditions**
 - EIP-4337 UserOperation hash does not include `chainId`, making the same user operation valid on any EVM chain
