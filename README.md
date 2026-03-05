@@ -1,12 +1,15 @@
 # AI Agent Skills for Security Auditing
 
 <p align="center">
-<a href="https://github.com/forefy/.context/edit/main/skills/smart-contract-security-audit.md"><img alt="Contribute" title="Contribute" src="https://img.shields.io/badge/Contribute-blue?logo=github"></a>
-<img alt=".context GitHub repo size" title=".context GitHub repo size" src="https://img.shields.io/github/languages/code-size/forefy/.context">
-<img alt=".context GitHub commit activity" title=".context GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/forefy/.context">
-<img alt="GitHub last commit" title="GitHub last commit" src="https://img.shields.io/github/last-commit/forefy/.context">
-<a href="https://twitter.com/forefy"><img alt="Forefy Twitter" title="Forefy Twitter" src="https://img.shields.io/twitter/follow/forefy.svg?logo=twitter"></a>
+  <a href="https://github.com/forefy/.context/issues/new/choose"><img alt="Issues" title="Issues" src="https://img.shields.io/github/issues-raw/forefy/.context"></a>
+  <img alt=".context GitHub repo size" title=".context GitHub repo size" src="https://img.shields.io/github/languages/code-size/forefy/.context">
+  <img alt=".context GitHub commit activity" title=".context GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/forefy/.context">
+  <img alt="GitHub last commit" title="GitHub last commit" src="https://img.shields.io/github/last-commit/forefy/.context">
+  <a href="https://twitter.com/forefy"><img alt="Forefy Twitter" title="Forefy Twitter" src="https://img.shields.io/twitter/follow/forefy.svg?logo=twitter"></a>
+</p>
 
+<p align="center">
+ <a href="https://t.me/forefy_t" title="forefy Telegram">Telegram DM</a>
 </p>
 
 ## Quick Start
