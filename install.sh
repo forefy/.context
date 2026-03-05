@@ -6,11 +6,12 @@ echo "Security Audit Skills Installer"
 echo ""
 
 echo "Select your platform:"
-echo "1) Claude Code"
+echo "1) Claude Code [default]"
 echo "2) Copilot CLI"
 echo "3) GitHub Copilot (VSCode)"
 echo ""
-read -p "Choice [1-3]: " choice </dev/tty
+read -p "Choice [1-3] (Enter for default): " choice </dev/tty
+choice="${choice:-1}"
 
 echo ""
 echo "Select install location:"
@@ -42,7 +43,7 @@ CONTEXT_DIR="$INSTALL_BASE/.context"
 
 if [ -d "$CONTEXT_DIR" ]; then
   echo "Updating existing installation at $CONTEXT_DIR..."
-  cd "$CONTEXT_DIR" && git pull --quiet && cd - > /dev/null
+  (cd "$CONTEXT_DIR" && git pull --quiet)
 else
   echo "Installing to $CONTEXT_DIR..."
   if ! git clone https://github.com/forefy/.context "$CONTEXT_DIR" > /dev/null 2>&1; then
