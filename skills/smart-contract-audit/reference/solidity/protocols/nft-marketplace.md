@@ -411,3 +411,66 @@ NFTX's `_sendForReceiver` had a code path for non-contract receivers that fell t
 **Remediation Notes**
 
 All code paths in non-void functions must have explicit return statements. Low-level calls must check `success` unconditionally. Order validation invariants must apply to all order types without conditional carve-outs.
+
+### ERC721 and ERC1155 Type Confusion in Dual-Standard Marketplace (ref: pashov-104)
+
+**Protocol-Specific Preconditions**
+
+- The marketplace handles both ERC-721 and ERC-1155 tokens through a shared `buy`, `fill`, or `execute` function that dispatches on a type flag in the order struct
+- ERC-721 orders accept a `quantity` field with no requirement that it equals 1
+- `price * quantity` payment calculation is performed before type dispatch, allowing a `quantity = 0` order to yield zero required payment
+- Settlement proceeds to execute the transfer without validating the payment amount against the actual token type being transferred
+
+**Detection Heuristics**
+
+- Find the shared execution function and check whether ERC-721 order branches include `require(quantity == 1)`
+- Verify that `price * quantity` cannot yield zero for an ERC-721 order where `quantity` is caller-controlled
+- Check that the type dispatch happens before any payment calculation, not after
+- Verify separate code paths exist for ERC-721 and ERC-1155, or that the shared path validates type-specific invariants
+
+**False Positives**
+
+- ERC-721 branches enforce `require(quantity == 1)` unconditionally before any arithmetic
+- Payment and transfer logic is fully separated between ERC-721 and ERC-1155 code paths with no shared arithmetic
+- `quantity` is not a user-supplied field for ERC-721 orders; it is hardcoded to 1 in the order construction
+
+**Notable Historical Findings**
+
+TreasureDAO suffered a zero-payment NFT theft in 2022 where the shared marketplace fill function accepted ERC-1155-style `quantity` parameters for ERC-721 orders. Setting `quantity = 0` caused the `price * quantity` calculation to yield zero, allowing an attacker to transfer any listed NFT without payment. The fix required adding explicit `require(quantity == 1)` for ERC-721 order types.
+
+**Remediation Notes**
+
+Add `require(quantity == 1)` as the first check in all ERC-721 settlement branches. Prefer fully separate code paths for ERC-721 and ERC-1155 to eliminate cross-type confusion at the cost of some code duplication. Any shared arithmetic over `quantity` must be gated behind a type check.
+
+---
+
+### EIP-2981 Royalty Signaled But Never Enforced (ref: pashov-107)
+
+**Protocol-Specific Preconditions**
+
+- The NFT contract or marketplace implements `royaltyInfo(uint256 tokenId, uint256 salePrice)` and returns true for `supportsInterface(0x2a55205a)` (EIP-2981)
+- The marketplace settlement function does not call `royaltyInfo()` or does not route the royalty portion of proceeds to the returned receiver address
+- Royalty recipients depend on on-chain enforcement rather than platform-level enforcement for payment
+
+**Detection Heuristics**
+
+- Locate the settlement or transfer execution function. Search for any call to `royaltyInfo(tokenId, salePrice)` and a subsequent payment to the returned receiver address
+- Check whether `supportsInterface(0x2a55205a)` returns true; if so, trace whether `royaltyInfo` is ever consumed in settlement
+- Verify whether the protocol's documentation accurately represents royalty enforcement as on-chain or platform-dependent
+- For marketplace contracts that process arbitrary NFT contracts, confirm the settlement flow queries and respects `royaltyInfo` for any EIP-2981-compliant token
+
+**False Positives**
+
+- Royalties are explicitly set to zero and documented as such; enforcement of zero royalties is a no-op
+- The protocol documents that EIP-2981 is implemented for display purposes only and royalty enforcement is handled at the platform layer
+- Settlement code calls `royaltyInfo()` and forwards the royalty amount to the royalty receiver before forwarding remaining proceeds to the seller
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+In the settlement function, call `IERC2981(tokenAddress).royaltyInfo(tokenId, salePrice)` when `supportsInterface(0x2a55205a)` returns true, transfer the returned royalty amount to the returned receiver address, and forward only the remaining proceeds to the seller. If royalties are intentionally not enforced on-chain, remove the `royaltyInfo` implementation and return false for `supportsInterface(0x2a55205a)` to avoid misleading on-chain signals.
+
+---

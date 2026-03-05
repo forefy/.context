@@ -46,6 +46,8 @@ contract Vulnerable {
 
 #### [fv-sol-1-c6-read-only.md](fv-sol-1-c6-read-only.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### FV-SOL-1-M1 Checks-Effects-Interactions

@@ -436,3 +436,30 @@ GoGoPool found that minipool creation signatures lacked sufficient validation, a
 
 **Remediation Notes**
 Use OpenZeppelin's `ECDSA` library for all signature recovery. Include `block.chainid`, `address(this)`, and a per-signer nonce in all EIP-712 domain separators and message hashes. Increment or mark nonces as consumed atomically within the same transaction that validates the signature. For staking protocols operating across multiple chains, verify that operator key registration or delegation signatures are chain-specific.
+
+### Staking Reward Front-Run by New Depositor (ref: pashov-144)
+
+**Protocol-Specific Preconditions**
+- Reward distribution uses a `rewardPerToken` accumulator pattern (Synthetix-style) where `rewardPerTokenStored` is updated by dividing pending rewards by total supply
+- The stake deposit function increments `_balances[user]` before calling `updateReward(user)` or the equivalent checkpoint function
+- A new depositor's balance is recorded at the pre-update `rewardPerTokenStored` value, meaning the user is credited for rewards that accrued before they staked
+
+**Detection Heuristics**
+1. Locate the stake deposit function. Check whether `_balances[user] += amount` appears before or after the `updateReward(user)` call.
+2. Verify that `rewardPerTokenPaid[user]` is set to the current `rewardPerTokenStored` value after the checkpoint update, not before.
+3. Simulate a deposit immediately before a large reward notification: confirm the depositor does not receive a share of rewards that accrued before their deposit.
+4. Check for the same ordering issue in delegation or restaking functions where a balance change precedes a reward checkpoint.
+5. Verify that `notifyRewardAmount` or reward distribution cannot be called in the same transaction as a deposit to create a front-run opportunity.
+
+**False Positives**
+- `updateReward(account)` is called as the first statement of the stake function, before any balance mutation, via a modifier or inline call
+- `rewardPerTokenPaid[user]` is set to `rewardPerTokenStored` atomically at the start of every deposit, making the user's baseline always current before their balance increases
+- The reward accumulator design does not use a per-user paid checkpoint and instead uses a different mechanism that is not susceptible to this ordering issue
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Apply an `updateReward(account)` modifier or function as the unconditional first step in every stake, withdraw, and getReward function. The modifier must read `rewardPerToken()`, store it in `rewardPerTokenPaid[account]`, and compute the user's pending rewards before any balance change occurs. OpenZeppelin's `StakingRewards` reference implementation places `updateReward` as a modifier to ensure ordering is enforced syntactically.
+
+---

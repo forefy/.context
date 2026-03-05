@@ -602,3 +602,119 @@ Astaria had two signature-related highs: strategy signatures were forgeable beca
 **Remediation Notes**
 
 Use OpenZeppelin's `EIP712` base contract for domain separator construction; it correctly includes all four required fields and uses the current `block.chainid`, which prevents cross-chain replay even after a hard fork. Always use `SignatureChecker.isValidSignatureNow` rather than raw `ecrecover` to handle both EOA and EIP-1271 contract wallet signers correctly.
+
+### Depeg of Pegged or Wrapped Asset Breaking Collateral Valuation (ref: pashov-13)
+
+**Protocol-Specific Preconditions**
+
+The lending protocol accepts pegged or wrapped assets as collateral (stETH, wstETH, WBTC, rETH, USDC-pegged stablecoins) and prices them using the underlying asset's oracle or assumes a fixed 1:1 exchange rate. No independent price feed exists for the derivative asset itself. During a depeg event, the collateral's actual market value diverges from the assumed value, overstating collateral backing and allowing undercollateralized borrows to persist or new ones to be opened.
+
+**Detection Heuristics**
+
+- Find all oracle price lookups for collateral assets and identify any that use the underlying asset's feed rather than a feed for the derivative itself (for example, an ETH/USD feed used to price stETH collateral).
+- Identify hardcoded 1:1 ratios or assumptions such as `stETHPrice = ETHPrice` in collateral valuation or LTV computation.
+- Check whether a configurable depeg threshold exists that triggers protective measures (LTV reduction, borrowing pause) when the derivative's price diverges from the peg beyond a tolerance.
+- Verify that protocol documentation explicitly identifies the depeg assumption and its accepted risk level.
+
+**False Positives**
+
+- An independent price feed exists for the derivative asset (such as a dedicated stETH/USD feed) and is used in all collateral valuations.
+- A configurable depeg tolerance triggers automatic LTV reduction or pool pause when the derivative/underlying ratio deviates beyond a defined threshold.
+- Protocol documentation explicitly acknowledges and accepts depeg risk as a known limitation.
+
+**Notable Historical Findings**
+
+Wise Lending's farm exit assumed stETH redeems 1:1 with ETH, overstating position value when closing a farm during a period of stETH depeg. Notional Leveraged Vaults assumed Pendle PTs redeem at exactly 1.0 post-maturity, causing mispriced collateral and incorrect health factor calculations when redemption rates diverged.
+
+**Remediation Notes**
+
+Use a dedicated price feed for each derivative asset rather than assuming parity with the underlying. For assets where no on-chain feed exists, implement a deviation circuit breaker that compares a freshly queried exchange rate (from the protocol itself, such as `stETH.getPooledEthByShares(1e18)`) against the assumed value and pauses or adjusts LTV when the deviation exceeds a configured threshold.
+
+---
+
+### Small Positions Unliquidatable Due to Insufficient Incentive (ref: pashov-41)
+
+**Protocol-Specific Preconditions**
+
+Liquidation rewards are proportional to the collateral seized, meaning positions below a threshold USD size pay out a liquidation bonus insufficient to cover the gas cost of the liquidation transaction. No minimum position size is enforced at borrow time. Liquidators operating rationally skip these dust positions, allowing them to accumulate unchecked bad debt as collateral values decline.
+
+**Detection Heuristics**
+
+- Compute the minimum collateral value at which the liquidation bonus exceeds the estimated gas cost of a liquidation transaction at current gas prices. Verify the protocol enforces a minimum borrow size above this threshold.
+- Check whether a minimum position size (`minBorrowAmount`, `dustThreshold`) is validated in `borrow` or `openPosition` entry points.
+- Verify whether the protocol operates a liquidation bot that handles dust positions regardless of profitability.
+- Review the protocol's bad debt socialization mechanism: is there an insurance fund, are losses haircut across depositors, or does bad debt accumulate indefinitely?
+
+**False Positives**
+
+- A minimum position size is enforced at borrow time set materially above the gas-cost break-even point for liquidation.
+- The protocol operates a keeper network or liquidation bot that processes all undercollateralized positions regardless of profit.
+- A socialized bad debt mechanism (insurance fund or depositor haircut) bounds the protocol's exposure to unliquidatable positions.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Enforce a minimum borrow size at origination that exceeds the gas cost of liquidation by a comfortable safety margin, accounting for gas price variability. When dust positions do accumulate (for example, through collateral value decline), implement a bad debt socialization mechanism or a protocol-operated liquidation that clears positions without requiring external liquidator incentive.
+
+---
+
+### Self-Liquidation Profit Extraction (ref: pashov-43)
+
+**Protocol-Specific Preconditions**
+
+The liquidation function does not prevent the borrower from liquidating their own position using a second address or a flash loan. The liquidation bonus or discount makes it profitable to deliberately allow a position to become slightly undercollateralized, liquidate it from a second address, and capture the incentive net of repayment cost.
+
+**Detection Heuristics**
+
+- Find the liquidation function and check for `require(msg.sender != borrower)` or equivalent that blocks self-liquidation.
+- Compute whether the liquidation incentive minus the cost of being undercollateralized by the minimum threshold yields a net positive profit for the position owner.
+- Check whether a flash loan can be used to fund the liquidation repayment, making capital requirements for self-liquidation effectively zero.
+- Verify whether a liquidation penalty or fee applied to the borrower (not just a bonus to the liquidator) closes the profit window.
+
+**False Positives**
+
+- `require(msg.sender != borrower)` is present and validated for all liquidation entry points.
+- The liquidation incentive is small enough (below gas cost threshold) that self-liquidation is net-negative after gas.
+- A liquidation penalty charged to the borrower's collateral exceeds any discount or bonus the borrower would capture as liquidator.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Add `require(msg.sender != borrower)` to all liquidation functions. If `onBehalf` or proxy liquidation patterns are used, validate that neither the caller nor any direct beneficiary of the liquidation is the borrower. Calibrate the liquidation incentive to be large enough to attract liquidators in adverse conditions but small enough that self-liquidation is never profitable.
+
+---
+
+### Accrued Interest Omitted from Health Factor Calculation (ref: pashov-147)
+
+**Protocol-Specific Preconditions**
+
+The protocol's health factor or loan-to-value ratio is computed using the principal debt balance without first applying outstanding accrued interest. The health factor formula reads `collateralValue / principalDebt` rather than `collateralValue / (principalDebt + accruedInterest)`. Positions that are technically insolvent when interest is included appear healthy, delaying liquidations and accumulating bad debt.
+
+**Detection Heuristics**
+
+- Locate the health factor or LTV computation function. Check whether it calls an interest accrual function (`accrueInterest()`, `updateIndex()`) before reading the debt balance, or whether it reads a cached principal directly.
+- Verify that `getDebt(user)` or equivalent returns the principal plus accrued interest, not principal only.
+- Check whether the borrow index (interest multiplier) is applied to the stored debt shares before the health check compares against collateral value.
+- Simulate a position that is healthy by principal alone but insolvent when interest is added; confirm the protocol's health check correctly identifies it as insolvent.
+
+**False Positives**
+
+- `getDebt()` already incorporates accrued interest through share-times-index multiplication before being returned.
+- Interest accrual (`accrueInterest()`) is called unconditionally as the first statement of every health check function.
+- The protocol compounds interest on every state-changing interaction, meaning the stored debt balance is always current.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Call interest accrual before any health factor or LTV check: place `accrueInterest()` at the top of `getHealthFactor()` and all liquidation trigger functions. Ensure `getDebt()` multiplies stored debt shares by the current borrow index rather than returning raw principal. Add an integration test that deposits collateral, borrows at the health limit, advances time to accrue interest, and confirms the position is correctly identified as liquidatable.
+
+---

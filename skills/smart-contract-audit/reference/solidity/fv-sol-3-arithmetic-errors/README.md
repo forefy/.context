@@ -29,6 +29,8 @@ contract OverflowExample {
 
 #### [fv-sol-3-c4-misuse-of-environment-variables.md](fv-sol-3-c4-misuse-of-environment-variables.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Update Solidity Version (FV-SOL-3-M1)

@@ -376,3 +376,159 @@ UXD Protocol's `PerpDepository.rebalance` approved `PerpDepository` for user tok
 - Use `SafeERC20.forceApprove(spender, amount)` which handles the zero-reset automatically
 - Never accept a spender address as a user-supplied parameter; hardcode or restrict to a registry of audited contracts
 - Revoke approvals (`forceApprove(spender, 0)`) immediately after single-use operations rather than relying on exact consumption
+
+### validateUserOp Signature Replay via Missing nonce or chainId (ref: pashov-21)
+
+**Protocol-Specific Preconditions**
+- The smart account's `validateUserOp` constructs the signature digest manually rather than delegating to `entryPoint.getUserOpHash(userOp)`
+- The manually constructed digest omits `userOp.nonce` or `block.chainid` or both
+- The same signed user operation can be replayed on the same chain (if nonce is omitted) or on any other EVM chain where the same account contract is deployed (if chainId is omitted)
+
+**Detection Heuristics**
+- Find all `validateUserOp` implementations. Check whether signature verification uses `entryPoint.getUserOpHash(userOp)` as the digest or builds a custom hash
+- If a custom hash is built, confirm it includes `userOp.nonce` and `block.chainid` explicitly
+- Test cross-chain replay: sign a user operation on testnet and attempt replay on mainnet using the same account address
+- Check whether the domain separator or any wrapper hash includes `address(this)` to bind signatures to the specific account contract instance
+
+**False Positives**
+- Signature digest is derived exclusively from `entryPoint.getUserOpHash(userOp)`, which the EntryPoint constructs to include sender, nonce, and chainId
+- A custom digest explicitly includes `userOp.nonce`, `block.chainid`, and `address(this)` with documented deviations from the standard hash format
+- The account is deployed only on a single chain with no cross-chain functionality
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Use `entryPoint.getUserOpHash(userOp)` as the canonical hash for signature verification in `validateUserOp`. This function includes the nonce, chain ID, and sender address in its encoding, covering all replay vectors. If a custom hash is required for protocol-specific reasons, include `abi.encode(userOp.nonce, block.chainid, address(this))` in the digest and test cross-chain and same-chain replay scenarios explicitly.
+
+---
+
+### Banned Opcode in Validation Phase Causing Simulation-Execution Divergence (ref: pashov-100)
+
+**Protocol-Specific Preconditions**
+- The `validateUserOp` or `validatePaymasterUserOp` function reads environment-dependent values including `block.timestamp`, `block.number`, `block.coinbase`, `block.prevrandao`, or `block.basefee`
+- ERC-7562 prohibits these opcodes in the validation phase because their values during bundler simulation differ from their values at execution time
+- Validation logic that passes during simulation may fail during on-chain execution if the environment value changes between the two, or the bundler may reject the user operation entirely before it reaches the chain
+
+**Detection Heuristics**
+- Search for `block.timestamp`, `block.number`, `block.coinbase`, `block.prevrandao`, and `block.basefee` references inside `validateUserOp` and `validatePaymasterUserOp` function bodies
+- Check whether signature expiry or permit deadline validation uses `block.timestamp` in the validation phase rather than deferring to the execution phase
+- Verify whether the entity is staked under ERC-7562's reputation system, which relaxes some opcode restrictions for staked entities
+- Confirm that any time-based validity checks are performed in `execute` or `executeBatch`, not in `validateUserOp`
+
+**False Positives**
+- All uses of banned opcodes are confined to the execution phase (`execute`, `executeBatch`) and not the validation phase
+- The entity (paymaster or account factory) is staked under the ERC-7562 reputation system with sufficient stake, which permits relaxed opcode access under staked entity rules
+- The contract is not an ERC-4337 account and the validation/execution distinction does not apply
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Move all environment-dependent checks (deadlines, block number comparisons, fee checks) from `validateUserOp` and `validatePaymasterUserOp` into the execution phase. If a time-bound validity check is necessary at the validation stage, implement it using a user-provided timestamp parameter included in the signed payload rather than reading `block.timestamp` directly.
+
+---
+
+### Paymaster Gas Penalty Undercalculation Draining Deposit (ref: pashov-108)
+
+**Protocol-Specific Preconditions**
+- The paymaster prefund calculation does not account for the 10% penalty charged by the EntryPoint on unused execution gas (`postOpUnusedGasPenalty`)
+- User operations specify a large `executionGasLimit` relative to actual execution gas consumption
+- The paymaster's deposit is drained at a rate proportional to the gap between the requested gas limit and actual consumption, making operations unprofitable over time
+
+**Detection Heuristics**
+- Locate the prefund calculation in `validatePaymasterUserOp` and check whether it includes a term for `postOpUnusedGasPenalty` (approximately 10% of `executionGasLimit - actualGasUsed`)
+- Compute the worst-case penalty: if `executionGasLimit` is large and actual usage is small, calculate how much deposit is lost per operation beyond direct execution cost
+- Verify whether the paymaster's on-chain deposit is monitored and topped up at a rate that accounts for penalty-inclusive drain
+- Check whether there is a maximum `executionGasLimit` that the paymaster accepts to bound worst-case penalty exposure
+
+**False Positives**
+- The prefund formula explicitly adds the unused-gas penalty: `requiredPrefund += executionGasLimit * PENALTY_BPS / BASIS_POINTS` or equivalent
+- The paymaster applies conservative overestimation in its prefund calculation that covers worst-case penalty at any execution gas limit it accepts
+- The paymaster enforces a maximum accepted `executionGasLimit` that bounds the penalty to an acceptable level
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Update the prefund calculation to explicitly include the unused-gas penalty: add `executionGasLimit * PENALTY_BPS / BASIS_POINTS` (where `PENALTY_BPS` is the EntryPoint's configured penalty rate) to the required prefund. Enforce a maximum acceptable `executionGasLimit` in validation to bound worst-case deposit drain. Monitor the paymaster's EntryPoint deposit and set top-up thresholds that account for penalty-inclusive expenditure.
+
+---
+
+### Paymaster ERC-20 Payment Deferred to postOp Without Pre-Validation (ref: pashov-122)
+
+**Protocol-Specific Preconditions**
+- The paymaster sponsors user operations by collecting ERC-20 payment from the user but defers the actual token transfer to the `postOp` phase via `safeTransferFrom` rather than locking tokens during `validatePaymasterUserOp`
+- Between validation and execution, the user can revoke the ERC-20 allowance granted to the paymaster
+- The paymaster's EntryPoint deposit is debited for the operation cost even when `postOp` fails to collect the ERC-20 payment, resulting in a net loss per such operation
+
+**Detection Heuristics**
+- Find `validatePaymasterUserOp` and check whether it transfers or escrows any tokens, or merely records the payment intent
+- Locate the `postOp` handler and check whether `safeTransferFrom` is the primary payment collection mechanism
+- Assess whether a user can front-run `postOp` by calling `token.approve(paymaster, 0)` between validation and execution to revert the transfer
+- Verify whether a failed `postOp` causes the EntryPoint to still debit the paymaster's deposit
+
+**False Positives**
+- Tokens are locked or transferred from the user's account during `validatePaymasterUserOp`, making the allowance irrevocable by the time `postOp` executes
+- The paymaster uses an ERC-20 permit (EIP-2612) where the signed approval is consumed atomically and cannot be revoked between validation and execution
+- `postOp` is used only for refunding excess payment, not for the primary collection; the primary payment occurs during validation
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Transfer or lock ERC-20 payment tokens during `validatePaymasterUserOp` rather than deferring to `postOp`. One approach is to call `token.transferFrom(user, address(this), maxCost)` during validation and refund any excess in `postOp`. Alternatively, use an EIP-2612 signed permit included in the `paymasterAndData` field and consume it atomically during validation, eliminating the window for allowance revocation.
+
+---
+
+### validateUserOp Missing EntryPoint Caller Restriction (ref: pashov-150)
+
+**Protocol-Specific Preconditions**
+- `validateUserOp` is declared `public` or `external` with no `require(msg.sender == address(_entryPoint))` guard or equivalent `onlyEntryPoint` modifier
+- An attacker can call `validateUserOp` directly with a crafted `UserOperation`, causing signature validation to execute in an untrusted context and potentially advancing nonces or triggering state changes intended to occur only under EntryPoint control
+- The same issue may affect `execute` and `executeBatch`, which should be callable only by the EntryPoint after validation
+
+**Detection Heuristics**
+- Confirm `validateUserOp` has an `onlyEntryPoint` modifier or an inline `require(msg.sender == address(_entryPoint))` as its first statement
+- Check `execute` and `executeBatch` for the same restriction; these functions execute arbitrary calldata and must be equally protected
+- Verify the `_entryPoint` address is set correctly in the constructor or initializer and is immutable
+- Test direct calls to `validateUserOp` from an unauthorized address; the call should revert with an access control error
+
+**False Positives**
+- `validateUserOp` carries an `onlyEntryPoint` modifier that validates `msg.sender` against the stored EntryPoint address
+- `execute` and `executeBatch` are equally restricted to the EntryPoint
+- The function is declared `internal` and can only be reached through the EntryPoint's call path
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Add `require(msg.sender == address(_entryPoint), "only EntryPoint")` or an equivalent modifier as the first statement of `validateUserOp`, `execute`, and `executeBatch`. Use OpenZeppelin's `BaseAccount` or `SimpleAccount` as a reference implementation, which applies the `onlyEntryPoint` modifier consistently across all protected functions.
+
+---
+
+### Counterfactual Wallet Address Takeover via Incomplete CREATE2 Salt (ref: pashov-163)
+
+**Protocol-Specific Preconditions**
+- The account factory's `createAccount` function deploys smart accounts using CREATE2 but derives the salt from an incomplete set of initialization parameters, omitting the owner address or other security-critical fields
+- An attacker can call `createAccount` with a different owner while producing the same CREATE2 salt, deploying a wallet they control at the address a legitimate user intended as their counterfactual account
+- The legitimate user may have pre-funded this counterfactual address, configured it as a beneficiary in other contracts, or signed user operations targeting it
+
+**Detection Heuristics**
+- Locate the CREATE2 salt derivation in the factory's `createAccount` function. Verify the salt incorporates all initialization parameters that determine account ownership, including the owner address
+- Check whether an attacker can produce the same salt as a legitimate user by supplying different parameters
+- Verify that the factory reverts or returns the existing address without redeployment if the account already exists
+- Confirm that the initializer is called atomically within the `createAccount` call, not in a subsequent transaction
+
+**False Positives**
+- The CREATE2 salt is derived as `keccak256(abi.encodePacked(owner, salt))` or equivalent, binding the deployed address to the owner
+- The factory includes a check to prevent overwriting an existing account at the target address
+- The initializer is called atomically in the deployment transaction, so no window exists between deployment and initialization
+
+**Notable Historical Findings**
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+Derive the CREATE2 salt as `keccak256(abi.encodePacked(owner, userSalt))` where `owner` is a required parameter that fully determines the deployed account's access control. Call the initializer atomically within the `createAccount` deployment by passing the encoded initializer calldata to the proxy constructor. For existing factories, verify the salt derivation in the source code against the deployed bytecode to confirm no parameters are omitted.
+
+---

@@ -48,6 +48,8 @@ contract Caller {
 
 #### [fv-sol-7-c4-uninitialized-proxy.md](fv-sol-7-c4-uninitialized-proxy.md "mention")
 
+#### [quick-patterns.md](quick-patterns.md "mention")
+
 ## Mitigation Patterns
 
 ### Validate Addresses Being Called (FV-SOL-7-M1)

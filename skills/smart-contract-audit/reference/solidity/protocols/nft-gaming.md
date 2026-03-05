@@ -364,3 +364,207 @@ In AI Arena, the `reRoll` function accepted a user-supplied `fighterType` parame
 **Remediation Notes**
 
 Validate `fighterType` against the token's on-chain `dendroidBool` field before applying any type-specific logic. Enforce explicit range checks on all numeric attributes at the point of minting and re-rolling. Require a server-signed message authorizing the specific attribute set for any mint function where the caller supplies trait inputs; this prevents brute-force selection by making the authorized output opaque until claim time.
+
+### ERC721Consecutive Balance Corruption with Single-Token Batch (ref: pashov-2)
+
+**Protocol-Specific Preconditions**
+
+The gaming or NFT contract inherits OpenZeppelin `ERC721Consecutive` and calls `_mintConsecutive(to, 1)` to mint individual tokens during a batch or claim phase. The contract runs on a version of OpenZeppelin prior to 4.8.2. Downstream game logic, access control, or marketplace integrations rely on `balanceOf` to determine ownership status or gate game actions.
+
+**Detection Heuristics**
+
+- Locate all `_mintConsecutive` call sites and check whether any call with a batch size of 1 exists.
+- Confirm the OpenZeppelin library version in `package.json` or `foundry.toml`; any version below 4.8.2 is affected.
+- Check whether any downstream function (`balanceOf`, `tokensOfOwner`, or similar) is used to gate game mechanics or reward eligibility.
+- If batch minting is mixed with single-token claims, verify the code paths use different base minting functions for the two cases.
+
+**False Positives**
+
+- The contract uses OpenZeppelin version 4.8.2 or later, which patches this behavior.
+- All batch mints use a minimum size of 2 tokens.
+- The contract uses standard `ERC721._mint` rather than `ERC721Consecutive._mintConsecutive`.
+- No game or protocol logic depends on `balanceOf` returning a correct value immediately after minting.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Upgrade to OpenZeppelin 4.8.2 or later. When a batch size of 1 is a valid use case, use the standard `_mint` function rather than `_mintConsecutive`, as the consecutive batch mechanism requires at least two tokens to correctly increment the balance mapping.
+
+---
+
+### Missing onERC1155BatchReceived Causes Token Lock (ref: pashov-14)
+
+**Protocol-Specific Preconditions**
+
+A gaming contract holds or receives ERC-1155 tokens representing in-game items, equipment, or currencies. The contract implements `onERC1155Received` to handle individual transfers but does not implement `onERC1155BatchReceived`, or its implementation returns an incorrect selector. Settlement, reward distribution, or bulk crafting operations use `safeBatchTransferFrom` to send multiple item types in one transaction.
+
+**Detection Heuristics**
+
+- Search for `onERC1155Received` implementations and verify whether `onERC1155BatchReceived` is also present and returns `this.onERC1155BatchReceived.selector`.
+- Check whether the contract inherits `ERC1155Holder` from OpenZeppelin, which implements both callbacks correctly.
+- Identify all code paths that call `safeBatchTransferFrom` toward this contract; any such call will revert if the batch callback is missing or incorrect.
+- Verify the return value of `onERC1155BatchReceived` equals `0xbc197c81` rather than a custom or hardcoded value.
+
+**False Positives**
+
+- The contract inherits OpenZeppelin `ERC1155Holder`, which provides both callbacks with correct selectors.
+- The protocol exclusively uses single-item `safeTransferFrom` and never calls `safeBatchTransferFrom` toward this contract.
+- The contract is itself an ERC-1155 token contract, which inherits the batch receiver interface by default.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Inherit `ERC1155Holder` from OpenZeppelin rather than implementing receiver callbacks manually. If implementing callbacks manually, verify both `onERC1155Received` and `onERC1155BatchReceived` are present and return their respective correct selectors (`0xf23a6e61` and `0xbc197c81`).
+
+---
+
+### ERC1155 URI Missing id Substitution (ref: pashov-19)
+
+**Protocol-Specific Preconditions**
+
+The contract implements ERC-1155 `uri(uint256 id)` and returns a fully resolved, token-specific URL or a static base URL without the literal `{id}` placeholder required by EIP-1155. NFT metadata clients and marketplaces call `uri(id)` and expect to perform client-side substitution of the literal string `{id}` with the zero-padded hexadecimal token ID. A static or fully resolved return collapses distinct tokens to a single metadata record or causes parsing failures.
+
+**Detection Heuristics**
+
+- Read the `uri()` implementation and verify the returned string contains the literal substring `{id}`.
+- If the contract returns a per-ID resolved URL, verify this is explicitly documented as a deviation from EIP-1155's substitution-based metadata standard.
+- Check whether `uri()` returns an empty string for any valid token ID, which causes metadata to be unavailable.
+- Confirm that marketplaces and game frontends integrating with this contract are tested against the actual `uri()` output format.
+
+**False Positives**
+
+- The contract returns a string containing the literal `{id}` placeholder per EIP-1155 specification.
+- Per-ID on-chain metadata is returned directly and the deviation from the substitution standard is explicitly documented in the interface specification.
+- The contract is intentionally off-specification and all downstream clients are built to handle the custom format.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Return a string containing the literal `{id}` substring as required by EIP-1155: for example, `"https://game.example/metadata/{id}.json"`. Clients will substitute the lowercase hex representation of the token ID, zero-padded to 64 characters. If per-ID resolution is needed on-chain, document the deviation and verify all consuming clients handle it explicitly.
+
+---
+
+### ERC1155 Fungible and Non-Fungible Token ID Collision (ref: pashov-65)
+
+**Protocol-Specific Preconditions**
+
+The gaming contract uses a single ERC-1155 deployment to represent both fungible resources (currencies, consumables) and unique items (characters, legendary equipment) under different token IDs. No enforcement exists at the contract level to prevent minting additional copies of an ID intended to be supply-1. Multiple mintings to different users for the same NFT-designated ID are possible.
+
+**Detection Heuristics**
+
+- Identify all mint functions and check whether they enforce `require(totalSupply(id) + amount <= maxSupply(id))` or equivalent before minting.
+- For IDs designated as unique items, verify `maxSupply[id] == 1` is set and enforced.
+- Check whether fungible and non-fungible ID ranges are disjoint by design and whether the boundary is validated in mint functions.
+- Verify that role or access tokens represented as ERC-1155 IDs are non-transferable if their uniqueness underpins access control.
+
+**False Positives**
+
+- `require(totalSupply(id) + amount <= maxSupply(id))` is enforced with `maxSupply = 1` for all NFT-designated IDs.
+- Fungible and non-fungible token IDs occupy explicitly separated and enforced ranges.
+- Role tokens are non-transferable via an override in `_beforeTokenTransfer` that reverts on non-mint/burn operations.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Define an immutable maximum supply per token ID at mint time using a `maxSupply[id]` mapping set in a single authorized function. Enforce `require(totalSupply(id) + amount <= maxSupply[id])` in all mint paths. For NFT IDs, set `maxSupply[id] = 1` and verify this is set before any mint of that ID can occur. Separate ID namespaces for fungible and non-fungible tokens using explicit range checks.
+
+---
+
+### ERC721Enumerable Index Corruption on Burn or Transfer (ref: pashov-81)
+
+**Protocol-Specific Preconditions**
+
+The gaming contract inherits `ERC721Enumerable` for on-chain enumeration of token ownership (for example, to list all fighters, characters, or items owned by an address). A custom override of `_beforeTokenTransfer` (OpenZeppelin v4) or `_update` (OpenZeppelin v5) is present for game logic such as attribute updates, staking locks, or cooldown enforcement. The override does not call `super._beforeTokenTransfer` or `super._update` as its first statement, preventing the enumerable index from being updated on transfer or burn.
+
+**Detection Heuristics**
+
+- Find all `_beforeTokenTransfer` and `_update` overrides in contracts inheriting `ERC721Enumerable`. Verify each calls `super._beforeTokenTransfer(from, to, tokenId, batchSize)` or `super._update(to, tokenId, auth)` before any other logic.
+- After simulating a transfer or burn, verify `tokenOfOwnerByIndex(previousOwner, ...)` no longer returns the transferred token ID.
+- Check that `totalSupply()` decrements correctly after a burn operation.
+- Verify that `_ownedTokens` and `_allTokens` are consistent after a sequence of mint, transfer, and burn operations.
+
+**False Positives**
+
+- The contract's override unconditionally calls `super` as its first statement.
+- The contract does not inherit `ERC721Enumerable` and uses an alternative enumeration mechanism.
+- The override is only reached on mint paths and the enumerable data structures are independently correct for transfer and burn.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Place `super._beforeTokenTransfer(from, to, tokenId, batchSize)` (or `super._update(to, tokenId, auth)` in OZ v5) as the unconditional first statement of any override. Never rely on compiler-enforced super call ordering in multi-inheritance graphs; be explicit. Add integration tests that verify `tokenOfOwnerByIndex`, `tokenByIndex`, and `totalSupply` return consistent values after a full sequence of mint, transfer, and burn operations.
+
+---
+
+### ERC721A Lazy Ownership Uninitialized in Batch Range (ref: pashov-116)
+
+**Protocol-Specific Preconditions**
+
+The gaming contract uses ERC721A or `ERC721Consecutive` for gas-efficient batch minting, which writes ownership for only the first token in a minted batch and lazily resolves subsequent token IDs by scanning backward. Access control logic elsewhere in the game checks `nft.ownerOf(tokenId) == msg.sender` for freshly minted tokens in the middle of a batch range. Before any transfer of a mid-batch token, `ownerOf` may return `address(0)` depending on implementation version, causing the access check to fail.
+
+**Detection Heuristics**
+
+- Identify all `ownerOf(tokenId) == msg.sender` or `ownerOf(tokenId) == address(0)` checks on contracts using ERC721A or `ERC721Consecutive`.
+- Verify whether `ownerOf` is called on tokens immediately after a batch mint without an intervening transfer that would initialize the packed slot.
+- Check whether the contract's ERC721A version resolves mid-batch ownership correctly or requires a transfer to trigger lazy initialization.
+- Test access control functions with token IDs in the middle of a batch range that have never been transferred.
+
+**False Positives**
+
+- The contract uses standard OpenZeppelin `ERC721`, which writes `_owners[tokenId]` individually per mint.
+- An explicit transfer or initialization step is always called before any `ownerOf`-dependent logic executes.
+- The ERC721A version used correctly resolves mid-batch ownership through its backward scan without returning `address(0)`.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+When using ERC721A or `ERC721Consecutive`, avoid relying on `ownerOf` returning correct values for mid-batch tokens before any transfer has occurred. Use the explicit packed ownership initialization provided by ERC721A if per-token ownership reads are needed immediately post-mint. For access control over freshly minted tokens, read the batch owner from the minting record rather than querying `ownerOf` per token ID.
+
+---
+
+### NFT Staking Records msg.sender Instead of ownerOf (ref: pashov-126)
+
+**Protocol-Specific Preconditions**
+
+An NFT staking contract records the depositor for each staked token using `depositor[tokenId] = msg.sender` without verifying that `msg.sender` is the actual owner. The NFT transfer succeeds because `msg.sender` holds operator approval for the owner, but the depositor mapping credits the operator rather than the owner. Reward claims, unstaking rights, and in-game privileges are tied to the depositor mapping.
+
+**Detection Heuristics**
+
+- Find all staking deposit functions that call `nft.transferFrom(msg.sender, address(this), tokenId)` or `nft.safeTransferFrom` and then assign `depositor[tokenId] = msg.sender`.
+- Check whether `nft.ownerOf(tokenId)` is read before the transfer and used as the depositor rather than `msg.sender`.
+- Verify that approved operators (non-owners) cannot call the deposit function and be credited as the depositor.
+- Test the deposit function when called from an approved-but-not-owner address to confirm the recorded depositor is the actual token owner.
+
+**False Positives**
+
+- The deposit function includes `require(nft.ownerOf(tokenId) == msg.sender)`, preventing non-owners from staking.
+- The deposit function reads `nft.ownerOf(tokenId)` before the transfer and stores that address rather than `msg.sender`.
+- The staking contract is designed to allow operator deposits and credits the operator intentionally for protocol-specific reasons.
+
+**Notable Historical Findings**
+
+No specific historical incidents cited in source.
+
+**Remediation Notes**
+
+Replace `depositor[tokenId] = msg.sender` with `depositor[tokenId] = nft.ownerOf(tokenId)` called before the transfer executes, or add `require(nft.ownerOf(tokenId) == msg.sender)` to prevent approved operators from initiating deposits on behalf of owners. The latter approach is stricter and eliminates the operator deposit path entirely.
+
+---
