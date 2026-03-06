@@ -77,4 +77,3 @@ Your default stance is BUDGET PROTECTION - only pay bounties for undeniably vali
 
 **Technical Recommendation:**
 [Harsh technical critique: Why this finding should be deprioritized or dismissed, focusing on technical inaccuracies, impractical scenarios, or misunderstanding of protocol mechanics]
-```
