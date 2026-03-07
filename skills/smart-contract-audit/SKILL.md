@@ -94,7 +94,7 @@ Reference `$SKILL_DIR/reference/` directory for vulnerability patterns organized
 - `$SKILL_DIR/reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
 
 Three-layer reading order for Solidity/EVM audits:
-1. Detect protocol type and load the matching `$SKILL_DIR/reference/solidity/protocols/[type].md` — this is the primary checklist
+1. Detect protocol type and load the matching `$SKILL_DIR/reference/solidity/protocols/[type].md` - this is the primary checklist
 2. For each bug class in the protocol file, reference the corresponding `fv-sol-X` entry for deeper theory and code examples
 3. Apply quick tricks from `$SKILL_DIR/SOLIDITY-CHECKS.md` throughout
 

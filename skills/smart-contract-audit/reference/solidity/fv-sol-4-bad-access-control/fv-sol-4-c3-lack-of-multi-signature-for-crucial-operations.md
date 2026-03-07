@@ -2,7 +2,7 @@
 
 ## TLDR
 
-When a single address controls a critical operation — such as draining contract funds, upgrading implementation logic, or changing protocol parameters — that address is a single point of failure. Compromise, loss, or coercion of that one key results in irreversible protocol damage with no recourse.
+When a single address controls a critical operation - such as draining contract funds, upgrading implementation logic, or changing protocol parameters - that address is a single point of failure. Compromise, loss, or coercion of that one key results in irreversible protocol damage with no recourse.
 
 ## Detection Heuristics
 

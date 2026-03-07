@@ -9,7 +9,7 @@ Three related token behaviors break standard balance accounting assumptions: fee
 **Fee-on-Transfer**
 - `balances[user] += amount` after `transferFrom(..., amount)` without a before/after balance check
 - Protocol claims to support "any ERC20" or lists PAXG, STA, or other known deflationary tokens
-- Share issuance formula `shares = amount * totalShares / totalAssets` — inflated numerator if `amount` exceeds actual receipt
+- Share issuance formula `shares = amount * totalShares / totalAssets` - inflated numerator if `amount` exceeds actual receipt
 
 **Rebasing Token**
 - State variable (e.g., `totalAssets`, `_reserves`) accumulates deposit amounts for tokens like stETH, AMPL, or aTokens

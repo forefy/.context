@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Solidity performs integer division with truncation (floor rounding toward zero), which silently discards fractional remainders. In contracts that distribute funds, accrue rewards, or compute fees across many users or iterations, these per-operation losses accumulate into meaningful discrepancies — either funds become permanently stuck, or repeated operations allow users to extract slightly more than they contributed.
+Solidity performs integer division with truncation (floor rounding toward zero), which silently discards fractional remainders. In contracts that distribute funds, accrue rewards, or compute fees across many users or iterations, these per-operation losses accumulate into meaningful discrepancies - either funds become permanently stuck, or repeated operations allow users to extract slightly more than they contributed.
 
 ## Detection Heuristics
 
@@ -17,9 +17,9 @@ Solidity performs integer division with truncation (floor rounding toward zero),
 - Protocol claims ERC4626 compliance but `previewWithdraw` and `previewRedeem` both round the same direction
 
 **Accumulated Dust**
-- `totalFunds` decremented by a rounded `allocation` value across many calls — final state leaves unclaimable residue
+- `totalFunds` decremented by a rounded `allocation` value across many calls - final state leaves unclaimable residue
 - No reconciliation or sweep function for remainder dust in distribution contracts
-- Sum of all per-user allocations computed independently and then compared to total — verify they can diverge
+- Sum of all per-user allocations computed independently and then compared to total - verify they can diverge
 
 **Fee Calculation Precision Loss**
 - `fee = amount * feeBps / 10000` where `amount` values can be small enough to round the fee to zero

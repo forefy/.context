@@ -19,8 +19,8 @@ curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | b
 ```
 
 - The installer will prompt for your agent harness and install location:
-  - **Global** — skills installed to `~/.claude/skills/`
-  - **Current project** — skills installed to `.claude/skills/`
+  - **Global** - skills installed to `~/.claude/skills/`
+  - **Current project** - skills installed to `.claude/skills/`
 - Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
 
 You can also use `npx skills add forefy/.context` but vercel's skills registry is less optimal

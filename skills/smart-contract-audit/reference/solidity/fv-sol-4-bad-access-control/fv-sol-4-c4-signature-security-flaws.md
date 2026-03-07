@@ -8,7 +8,7 @@ Signature-based authentication is vulnerable to three related issues: malleabili
 
 **Signature Malleability**
 - Raw `ecrecover` without `require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0)`
-- Both `(v, r, s)` and `(v', r, s')` recover the same address — bypasses signature-based deduplication
+- Both `(v, r, s)` and `(v', r, s')` recover the same address - bypasses signature-based deduplication
 - Deduplication based on `(r, s)` bytes rather than a message hash nullifier
 
 **ecrecover Returns address(0)**

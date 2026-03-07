@@ -2,7 +2,7 @@
 
 ## TLDR
 
-The upgrade lifecycle — initialization, authorization, and execution ordering — has several critical failure modes including re-initialization via wrong modifier, permanent loss of upgrade capability when UUPS logic is dropped, race conditions between upgrade and configuration, missing access control on `_authorizeUpgrade`, front-runnable non-atomic initialization, and admin routing confusion in transparent proxies.
+The upgrade lifecycle - initialization, authorization, and execution ordering - has several critical failure modes including re-initialization via wrong modifier, permanent loss of upgrade capability when UUPS logic is dropped, race conditions between upgrade and configuration, missing access control on `_authorizeUpgrade`, front-runnable non-atomic initialization, and admin routing confusion in transparent proxies.
 
 ## Detection Heuristics
 
@@ -29,7 +29,7 @@ The upgrade lifecycle — initialization, authorization, and execution ordering 
 - `initialize()` broadcasted in separate transaction after proxy deployment
 
 **Admin Routing Confusion**
-- `ProxyAdmin` not a dedicated contract — admin is same EOA used for protocol operations
+- `ProxyAdmin` not a dedicated contract - admin is same EOA used for protocol operations
 - Admin calls protocol functions directly instead of through `ProxyAdmin`
 
 ## False Positives
@@ -37,6 +37,6 @@ The upgrade lifecycle — initialization, authorization, and execution ordering 
 - `reinitializer(version)` with correctly incrementing versions for V2+
 - `_authorizeUpgrade` has `onlyOwner` or equivalent governance gate
 - `upgradeToAndCall()` bundles upgrade + init atomically
-- Init calldata passed in proxy constructor — atomic initialization
+- Init calldata passed in proxy constructor - atomic initialization
 - Dedicated `ProxyAdmin` contract used exclusively for admin operations
 - OZ upgrades plugin validates storage layout and upgrade compatibility in CI

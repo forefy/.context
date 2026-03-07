@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Index protocols hold a basket of ERC-20 components and issue a single token representing proportional ownership. Every operation—mint, redeem, rebalance—must iterate over all components and price each independently, compounding per-token rounding error and gas exposure. The attack surface is unusually broad: each component carries its own decimal precision, fee-on-transfer behavior, callback potential, and oracle dependency, and any single component anomaly can cascade to corrupt the entire basket's invariants.
+Index protocols hold a basket of ERC-20 components and issue a single token representing proportional ownership. Every operation-mint, redeem, rebalance-must iterate over all components and price each independently, compounding per-token rounding error and gas exposure. The attack surface is unusually broad: each component carries its own decimal precision, fee-on-transfer behavior, callback potential, and oracle dependency, and any single component anomaly can cascade to corrupt the entire basket's invariants.
 
 ---
 
@@ -292,7 +292,7 @@ Caviar's batch buy computed royalties on `totalPrice / count` for each item, sys
 
 ---
 
-### Signature Replay Attacks (no fv-sol equivalent — candidate for new entry)
+### Signature Replay Attacks (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Off-chain private-sale signatures lack a nonce, meaning if the seller re-acquires the NFT the old buyer signature becomes replayable
@@ -367,7 +367,7 @@ Foundation's `_getCreatorPaymentInfo` iterated an unbounded creator-recipients a
 - Recipients are guaranteed to be EOAs and the token list is fully audited for standard revert behavior
 
 **Notable Historical Findings**
-OpenLeverage's `doTransferOut` used `payable.transfer()`, making the entire withdrawal path unusable for smart contract wallets and multisigs—a critical gap in a protocol where DAO treasuries are common users. Endaoment's token transfer functions silently returned `false` on failure rather than reverting, causing the protocol to update internal accounting as if the transfer succeeded while the tokens never moved. Aave's push-payment pattern for ETH deposits meant that a single non-payable contract address in the recipient set could permanently prevent all ETH deposits from being redeemed.
+OpenLeverage's `doTransferOut` used `payable.transfer()`, making the entire withdrawal path unusable for smart contract wallets and multisigs-a critical gap in a protocol where DAO treasuries are common users. Endaoment's token transfer functions silently returned `false` on failure rather than reverting, causing the protocol to update internal accounting as if the transfer succeeded while the tokens never moved. Aave's push-payment pattern for ETH deposits meant that a single non-payable contract address in the recipient set could permanently prevent all ETH deposits from being redeemed.
 
 **Remediation Notes**
 - Replace `payable.transfer()` and `send()` with `(bool success, ) = recipient.call{value: amount}("")` and require success

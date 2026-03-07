@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Assembly `create(v, offset, size)` and `create2(v, offset, size, salt)` return `address(0)` on failure — insufficient ETH balance, address collision, or init code revert. Unlike the high-level `new Contract()` syntax, these opcodes do not revert automatically on failure.
+Assembly `create(v, offset, size)` and `create2(v, offset, size, salt)` return `address(0)` on failure - insufficient ETH balance, address collision, or init code revert. Unlike the high-level `new Contract()` syntax, these opcodes do not revert automatically on failure.
 
 If the code does not check for the zero return value, `address(0)` is stored or used in subsequent logic. Calls to `address(0)` succeed as no-ops (no deployed code) or interact with precompiles, silently corrupting state.
 

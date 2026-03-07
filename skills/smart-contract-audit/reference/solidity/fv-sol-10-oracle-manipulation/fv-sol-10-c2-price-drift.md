@@ -9,7 +9,7 @@ An oracle price that drifts gradually from reality causes cumulative accounting 
 **Stateless Price Validation**
 - `totalValue` multiplied by oracle price each call with no stored reference price to detect gradual drift
 - No `lastValidPrice` or equivalent state variable tracking the previously accepted price
-- Price accepted as valid on the sole condition `price > 0` — any non-zero value passes
+- Price accepted as valid on the sole condition `price > 0` - any non-zero value passes
 
 **Unchecked Incremental Price Updates**
 - Percentage-band check (e.g., `price <= lastValidPrice * 105/100 && price >= lastValidPrice * 95/100`) absent between consecutive oracle reads

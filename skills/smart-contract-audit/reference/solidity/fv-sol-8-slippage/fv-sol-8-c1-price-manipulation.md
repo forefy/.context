@@ -13,7 +13,7 @@ Relying solely on a DEX's own spot price to validate or derive swap parameters a
 
 **Missing Output Validation**
 - `amountOut` not checked against a caller-supplied or oracle-derived minimum
-- `require(amountOut > 0)` is the only post-swap guard — accepts any non-zero output
+- `require(amountOut > 0)` is the only post-swap guard - accepts any non-zero output
 - `amountOutMinimum` absent from swap call parameters
 
 **No Deviation Bound**

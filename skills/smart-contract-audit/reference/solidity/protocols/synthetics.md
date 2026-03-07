@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Synthetic asset protocols allow users to mint token representations of external price feeds against pooled collateral, creating debt positions denominated in the value of the synthetic rather than the underlying. The debt pool model — where all minters share proportional exposure to the total synthetic supply — means that individual position accounting errors and oracle inaccuracies aggregate across the entire system rather than being isolated to a single user. Price feed manipulation for any collateral or synthetic asset has a multiplied impact because it affects both minting eligibility and debt pool valuation simultaneously.
+Synthetic asset protocols allow users to mint token representations of external price feeds against pooled collateral, creating debt positions denominated in the value of the synthetic rather than the underlying. The debt pool model - where all minters share proportional exposure to the total synthetic supply - means that individual position accounting errors and oracle inaccuracies aggregate across the entire system rather than being isolated to a single user. Price feed manipulation for any collateral or synthetic asset has a multiplied impact because it affects both minting eligibility and debt pool valuation simultaneously.
 
 The architectural dependency on oracle accuracy is more severe than in lending protocols because synthetics have no direct backing asset to recover in a liquidation; the only backstop is the collateral ratio and the ability to burn synthetic tokens at the correct price. This makes rounding errors in debt calculations, incorrect fee accrual in the global debt ledger, and access control gaps on synthetic minting all critical-severity issues. Auction mechanisms used for liquidation must be resistant to griefing that would prevent the protocol from closing undercollateralized positions before collateral value drops further.
 
@@ -19,7 +19,7 @@ Functions that modify collateral parameters, oracle addresses, or synthetic mint
 
 **Detection Heuristics**
 - Identify all `external` and `public` functions that modify balances, collateral ratios, oracle addresses, or minting permissions and verify they carry appropriate access control modifiers.
-- Check for missing ownership verification in collateral NFT withdrawal functions — the function should confirm `msg.sender == depositor[tokenId]`.
+- Check for missing ownership verification in collateral NFT withdrawal functions - the function should confirm `msg.sender == depositor[tokenId]`.
 - Assess admin powers: can the owner directly drain collateral, swap oracle contracts, or add arbitrary strategy contracts without a timelock?
 - Check if approval or allowance is validated before transfers executed on behalf of other users in synthetic minting or redemption flows.
 - Review whether critical admin operations require a timelock, multi-sig, or DAO governance delay.
@@ -142,7 +142,7 @@ Mint a fixed quantity of dead shares (e.g., `1000`) to `address(1)` on the first
 
 ---
 
-### Frontrunning and MEV Exploitation (no fv-sol equivalent — candidate for new entry)
+### Frontrunning and MEV Exploitation (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 Two-step operations where an approval or authorization transaction is separate from the protected action allow frontrunners to intercept the asset between steps. Reward claims, yield harvests, and accumulated fees can be frontrun by the current owner before a pending transfer completes. Deployment and initialization sequences that set access controls in a transaction separate from contract creation create a window for unauthorized minting or configuration. Liquidation transactions visible in the mempool reveal profitable positions allowing competing liquidators to race.
@@ -278,7 +278,7 @@ Use OpenZeppelin `SafeERC20` or Solmate's `safeTransfer` for all ERC-20 token in
 Contract explicitly casts values to narrower integer types (`uint16`, `uint96`, `uint128`) without range checking, silently truncating reward values or staking amounts. User-supplied expiration timestamps accept `type(uint256).max` as input, which cannot be safely stored in smaller timestamp types used by other protocol components. Solidity 0.8 overflow protection is bypassed by `unchecked` blocks in hot paths where adversarial inputs are possible.
 
 **Detection Heuristics**
-- Search for explicit narrowing casts: `uint16(x)`, `uint96(x)`, `uint128(x)`, `int128(x)` — verify the value is range-checked before casting.
+- Search for explicit narrowing casts: `uint16(x)`, `uint96(x)`, `uint128(x)`, `int128(x)` - verify the value is range-checked before casting.
 - Check if `unchecked` blocks contain arithmetic that could overflow or underflow with adversarial inputs that reach that code path.
 - Look for sentinel values like `type(uint256).max` for expiration or amount fields that could cause unexpected behavior when passed to functions using smaller integer types.
 - Verify that timestamp values stored in smaller types (uint32, uint40, uint48) will not overflow within the realistic operational lifetime of the protocol.

@@ -8,12 +8,12 @@ Contracts that use `block.timestamp` for fund release, access control, or random
 
 **Exact or Tight Timestamp Comparisons**
 - `require(block.timestamp >= unlockTime)` where `unlockTime` was set as `block.timestamp + N` with small N (seconds to minutes)
-- `if (block.timestamp == deadline)` — exact equality comparison against a stored timestamp
+- `if (block.timestamp == deadline)` - exact equality comparison against a stored timestamp
 - Lock duration under 15 minutes where miner drift represents a non-trivial fraction of the intended window
 
 **Timestamp as Unique Identifier or Seed**
 - `block.timestamp` used as a seed for pseudo-randomness: `keccak256(abi.encode(block.timestamp, ...))`
-- `block.timestamp` used as a unique nonce or ID in a mapping — two transactions in the same block share the same timestamp
+- `block.timestamp` used as a unique nonce or ID in a mapping - two transactions in the same block share the same timestamp
 - `tokenId = block.timestamp` or similar ID assignment
 
 **Timestamp-Dependent Access Control**

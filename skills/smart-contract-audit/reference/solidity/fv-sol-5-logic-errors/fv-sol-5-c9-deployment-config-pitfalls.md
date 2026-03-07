@@ -49,4 +49,4 @@ Key patterns:
 - `_disableInitializers()` in implementation constructor
 - Per-chain config file with addresses looked up by `block.chainid`
 - Deployment script reads back and asserts every configured immutable value
-- `CREATE2` used — nonce-independent, pre-computed addresses correct regardless of intermediate reverts
+- `CREATE2` used - nonce-independent, pre-computed addresses correct regardless of intermediate reverts

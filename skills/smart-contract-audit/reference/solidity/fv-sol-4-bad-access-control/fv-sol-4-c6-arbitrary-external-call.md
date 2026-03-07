@@ -12,15 +12,15 @@ When a contract executes `target.call{value: v}(data)` where `target` or `data` 
 - Selector filtering absent, bypassable, or only applied to `data[0:4]` without validating the full calldata layout
 
 **Token Allowance Drain**
-- Contract holds ERC20 `approve` allowances or NFT custody — attacker crafts calldata to call `transferFrom` or `safeTransferFrom` on the token contract with the vulnerable contract as `from`
+- Contract holds ERC20 `approve` allowances or NFT custody - attacker crafts calldata to call `transferFrom` or `safeTransferFrom` on the token contract with the vulnerable contract as `from`
 - Contract previously called `token.approve(address(this), type(uint256).max)` and exposes a generic call executor
 
 **Privilege Escalation via Trusted Caller**
-- Target contract grants special permissions to the calling contract's address — arbitrary call lets attacker invoke those privileged functions through the trusted intermediary
+- Target contract grants special permissions to the calling contract's address - arbitrary call lets attacker invoke those privileged functions through the trusted intermediary
 
 ## False Positives
 
 - Target restricted to a hardcoded address or a governance-approved whitelist
 - Function selector restricted to a known-safe enumerated set before execution
 - Contract holds no token approvals and no asset custody, removing economic impact
-- Only `delegatecall` variant present — covered separately in fv-sol-7, not this class
+- Only `delegatecall` variant present - covered separately in fv-sol-7, not this class

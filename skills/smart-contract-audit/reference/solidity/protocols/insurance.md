@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-On-chain insurance protocols pool capital from coverage providers, underwrite risk against defined trigger conditions, and pay out claims via smart contract execution with no human intermediary. The attack surface spans three interacting systems: vault accounting (EIP-4626 share math, deposit/withdrawal queues), oracle-driven trigger conditions (price depegs, protocol hacks, parametric events), and staking or reward distribution that incentivizes capital providers over long epochs. Because insurance payouts must be reliable under adversarial conditions—including the very events they insure against—precision errors, oracle manipulation, and queue deadlocks carry outsized severity compared to typical DeFi protocols.
+On-chain insurance protocols pool capital from coverage providers, underwrite risk against defined trigger conditions, and pay out claims via smart contract execution with no human intermediary. The attack surface spans three interacting systems: vault accounting (EIP-4626 share math, deposit/withdrawal queues), oracle-driven trigger conditions (price depegs, protocol hacks, parametric events), and staking or reward distribution that incentivizes capital providers over long epochs. Because insurance payouts must be reliable under adversarial conditions-including the very events they insure against-precision errors, oracle manipulation, and queue deadlocks carry outsized severity compared to typical DeFi protocols.
 
 ---
 

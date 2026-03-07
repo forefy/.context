@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Derivatives protocols — perpetuals, options, and leveraged trading venues — operate through continuous mark-to-market accounting, funding rate mechanisms, and real-time margin calculations that depend on accurate and fresh price data. Their state is unusually complex: open interest, funding rates, and fee accumulators are updated on every trade, and any arithmetic imprecision in these paths accumulates into systemic undercollateralization. The combination of high leverage and oracle dependency makes price manipulation and stale-price exploitation categorically more severe than in spot protocols, since a small price deviation can immediately render large positions undercollateralized or force incorrect liquidations.
+Derivatives protocols - perpetuals, options, and leveraged trading venues - operate through continuous mark-to-market accounting, funding rate mechanisms, and real-time margin calculations that depend on accurate and fresh price data. Their state is unusually complex: open interest, funding rates, and fee accumulators are updated on every trade, and any arithmetic imprecision in these paths accumulates into systemic undercollateralization. The combination of high leverage and oracle dependency makes price manipulation and stale-price exploitation categorically more severe than in spot protocols, since a small price deviation can immediately render large positions undercollateralized or force incorrect liquidations.
 
 The settlement and liquidation paths introduce additional surface area: vault share accounting for collateral deposits, withdrawal queue mechanics that can be griefed to lock user funds, and cross-margin position tracking that can desynchronize from the underlying collateral state if balance updates are applied out of order. Funding rate calculations that depend on a time-weighted skew between long and short open interest are particularly sensitive to manipulation, since they affect all open positions continuously rather than at discrete settlement events.
 
@@ -74,7 +74,7 @@ Protocol implements a funding rate mechanism based on market price versus oracle
 - Check if market price fed into funding rate is derived from a single trade or a small sample rather than a volume-weighted accumulation.
 - Verify cumulative funding rate logic uses `cumulativeRate[index] + instantRate` written to `index + 1`, not overwriting `index`.
 - Look for unbounded growth in pool or insurance funding rate calculations without a `MAX_FUNDING_RATE` cap.
-- Check if funding settlement is atomic across all markets in a single loop — this blocks with gas limit growth.
+- Check if funding settlement is atomic across all markets in a single loop - this blocks with gas limit growth.
 - Verify that validators or keepers cannot selectively delay order matching to profit from funding rate timing.
 
 **False Positives**
@@ -153,7 +153,7 @@ Protocol performs token swaps via Uniswap, Curve, or Balancer on behalf of users
 - Search for `exchange`, `exchange_underlying`, `swapExactTokensForTokens`, `exactInputSingle` calls and verify the minimum output argument is not `0`.
 - Check if user-facing functions propagate a `minOut` parameter through to internal swap wrappers.
 - Look for missing `deadline` fields in Uniswap router parameter structs.
-- Identify public functions that accept both `amountOutMinimum` and `account` — this pattern exposes third-party accounts to frontrunning.
+- Identify public functions that accept both `amountOutMinimum` and `account` - this pattern exposes third-party accounts to frontrunning.
 - Verify `calculateMinOut` does not compute division before multiplication which truncates to zero for small amounts.
 
 **False Positives**
@@ -203,7 +203,7 @@ Store failed withdrawal amounts in a per-user claimable mapping rather than sile
 Protocol integrates Chainlink price feeds for margin calculations, liquidation thresholds, and funding rate computation without validating staleness, round completeness, or circuit breaker bounds. Using the deprecated `latestAnswer()` omits the round metadata needed for any validation. On L2 chains, the protocol does not check the sequencer uptime feed, allowing stale prices during sequencer downtime when `block.number` does not increment reliably.
 
 **Detection Heuristics**
-- Search for `latestAnswer()` calls — this is deprecated and provides no staleness or round completeness data.
+- Search for `latestAnswer()` calls - this is deprecated and provides no staleness or round completeness data.
 - Search for `latestRoundData()` calls and verify `updatedAt` is compared against `block.timestamp` with a per-feed heartbeat threshold.
 - Verify `answeredInRound >= roundId` to ensure the round is complete before using the price.
 - Check for `minAnswer`/`maxAnswer` aggregator circuit breaker validation to detect price floor/ceiling clamps.
@@ -250,7 +250,7 @@ Use `maxWithdraw` and `maxDeposit` to check vault availability before calling `w
 
 ---
 
-### Fee-on-Transfer Token Incompatibility (no fv-sol equivalent — candidate for new entry)
+### Fee-on-Transfer Token Incompatibility (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 Protocol accepts ERC-20 tokens for position collateral, pool deposits, or trade settlement and assumes the `amount` specified in `transferFrom` equals the amount received by the contract. Fee-on-transfer tokens such as PAXG, STA, or tokens with dormant fee switches (USDT, USDC) deliver less than the nominal transfer amount. Internal accounting credits the full `amount`, creating phantom balance that is not backed by actual holdings.
@@ -303,13 +303,13 @@ Mint a minimum quantity of dead shares to a burn address on the first deposit to
 
 ---
 
-### Cross-Chain Messaging Failures (no fv-sol equivalent — candidate for new entry)
+### Cross-Chain Messaging Failures (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 Protocol uses LayerZero, Wormhole, or a similar messaging layer to synchronize position state, bridge collateral, or relay funding operations across chains. The protocol assumes address symmetry (same address on both chains) without accounting for account abstraction wallets or multisigs. LayerZero's default blocking delivery model means a single malformed or oversized message permanently blocks all subsequent messages on that pathway. Amount parameters do not account for dust removal applied by the OFT layer before minimum amount checks.
 
 **Detection Heuristics**
-- Check if LayerZero `_send` calls validate the `_toAddress` length — an oversized payload causes the destination to run out of gas inside the try-catch, triggering the blocking failure mode.
+- Check if LayerZero `_send` calls validate the `_toAddress` length - an oversized payload causes the destination to run out of gas inside the try-catch, triggering the blocking failure mode.
 - Look for cross-chain NFT bridges where burn-on-source and mint-on-destination are not atomically guaranteed and no retry or recovery mechanism exists.
 - Check if cross-chain operations hard-code `msg.sender` as the destination address without allowing the user to specify a different destination for non-EVM or AA wallet use cases.
 - Verify amount parameters account for OFT dust removal before applying minimum amount checks.

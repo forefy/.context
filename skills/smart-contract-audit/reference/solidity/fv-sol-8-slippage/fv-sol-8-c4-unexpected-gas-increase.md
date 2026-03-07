@@ -2,7 +2,7 @@
 
 ## TLDR
 
-When a swap wrapper forwards execution to an external DEX without a gas cap, an attacker or a malicious/upgraded DEX implementation can consume unbounded gas. This drives up transaction costs, can cause out-of-gas reverts for the user, or — in protocols that deduct gas costs from the output amount — constitutes a form of slippage that bypasses the stated minimum output check.
+When a swap wrapper forwards execution to an external DEX without a gas cap, an attacker or a malicious/upgraded DEX implementation can consume unbounded gas. This drives up transaction costs, can cause out-of-gas reverts for the user, or - in protocols that deduct gas costs from the output amount - constitutes a form of slippage that bypasses the stated minimum output check.
 
 ## Detection Heuristics
 

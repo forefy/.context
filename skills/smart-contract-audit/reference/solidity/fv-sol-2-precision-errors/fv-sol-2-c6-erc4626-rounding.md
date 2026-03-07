@@ -4,10 +4,10 @@
 
 EIP-4626 mandates specific rounding directions on every conversion function to prevent share-price manipulation and round-trip profit extraction. The invariant is: the vault must favor itself over the user at every step.
 
-- `previewDeposit` / `convertToShares` (deposit path): round down — issue fewer shares
-- `previewMint` (mint path): round up — charge more assets
-- `previewWithdraw` (withdraw path): round up — burn more shares
-- `previewRedeem` / `convertToAssets` (redeem path): round down — return fewer assets
+- `previewDeposit` / `convertToShares` (deposit path): round down - issue fewer shares
+- `previewMint` (mint path): round up - charge more assets
+- `previewWithdraw` (withdraw path): round up - burn more shares
+- `previewRedeem` / `convertToAssets` (redeem path): round down - return fewer assets
 
 Violations allow attackers to cycle deposit→redeem repeatedly for net profit, or to extract more assets than deposited.
 
@@ -20,12 +20,12 @@ Violations allow attackers to cycle deposit→redeem repeatedly for net profit, 
 
 **Deposit/Withdraw Share Asymmetry**
 - `_convertToShares` uses `Rounding.Floor` for withdraw path
-- `withdraw(a)` burns fewer shares than `deposit(a)` minted — cycling manufactures free shares
+- `withdraw(a)` burns fewer shares than `deposit(a)` minted - cycling manufactures free shares
 - `convertToShares` and `previewWithdraw` return identical values without rounding distinction
 
 **Mint/Redeem Asset Asymmetry**
 - `_convertToAssets` uses `Rounding.Ceil` in `redeem` and `Rounding.Floor` in `mint`
-- `redeem(s)` returns more assets than `mint(s)` costs — cycling yields net profit
+- `redeem(s)` returns more assets than `mint(s)` costs - cycling yields net profit
 - `previewRedeem` and `previewMint` both round in the user's favor
 
 **Share Inflation via Rounding**

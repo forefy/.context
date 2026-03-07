@@ -24,5 +24,5 @@ Results from conditions in if-else chains where more specific cases are tested a
 ## False Positives
 
 - Most restrictive conditions checked first in descending threshold order
-- Single comparison with no chained else-if — only one branch possible
+- Single comparison with no chained else-if - only one branch possible
 - Coverage tests confirm all branches reachable with distinct input classes
