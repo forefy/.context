@@ -8,7 +8,7 @@ External callback functions (`onFlashLoan`, `onERC721Received`, `onERC1155Receiv
 
 **Flash Loan Callback**
 - `onFlashLoan` does not verify `msg.sender == address(lendingPool)`
-- Initiator, token, or amount parameters unchecked — callable directly without a real flash loan
+- Initiator, token, or amount parameters unchecked - callable directly without a real flash loan
 - State changes or fund transfers triggered solely by caller-supplied parameters
 
 **ERC721 onERC721Received Spoofing**
@@ -23,7 +23,7 @@ External callback functions (`onFlashLoan`, `onERC721Received`, `onERC1155Receiv
 - `withdraw(assets, receiver, owner)` or `redeem(shares, receiver, owner)` where `msg.sender != owner` but no `_spendAllowance` call present
 
 **ERC1155 setApprovalForAll Over-Permission**
-- Protocol requires `setApprovalForAll(protocol, true)` for deposits — operator can transfer any token ID at full balance, not just the deposited amount
+- Protocol requires `setApprovalForAll(protocol, true)` for deposits - operator can transfer any token ID at full balance, not just the deposited amount
 
 ## False Positives
 

@@ -10,10 +10,10 @@ Oracles that aggregate prices from low-liquidity external markets (DEXes, AMMs) 
 - Oracle call resolves to a DEX reserve ratio or AMM pool spot price (e.g., Uniswap `getReserves`, `slot0`) without a TWAP
 - No block-level or time-weighted averaging applied before the price is consumed
 - `collateral` or equivalent accounting value computed directly from a single `getPrice()` call with no smoothing
-- Oracle interface accepts a `token` address argument and returns a single instantaneous value — classic sign of a spot-price aggregator
+- Oracle interface accepts a `token` address argument and returns a single instantaneous value - classic sign of a spot-price aggregator
 
 **No Flash-Loan or Single-Block Resistance**
-- Price accepted within the same transaction as a swap or liquidity operation — no delay or snapshot mechanism
+- Price accepted within the same transaction as a swap or liquidity operation - no delay or snapshot mechanism
 - No reentrancy guard or same-block protection on the price-consuming function
 - No deviation check against a secondary non-AMM oracle (e.g., Chainlink) to reject manipulated spot readings
 - `adjustCollateral` or equivalent function has no cooldown between calls

@@ -20,7 +20,7 @@ Governance protocols derive authority from token-weighted or NFT-weighted voting
 
 - Find `_writeCheckpoint` or `_writeCheckpoint`-equivalent implementations. Check the same-block branch: does it assign `newVotes` directly (`cp.votes = newVotes`) or does it add a delta?
 - Trace every call site that invokes `_writeCheckpoint` and determine whether two of them can fire in the same transaction (e.g., `_afterTokenTransfer` called twice via `transferFrom` + `delegate`).
-- Verify that the storage reference in the same-block branch is a `storage` pointer, not a `memory` copy — a common Solidity footgun where the update does not persist.
+- Verify that the storage reference in the same-block branch is a `storage` pointer, not a `memory` copy - a common Solidity footgun where the update does not persist.
 - Check `getPastVotes` binary search edge cases: multiple checkpoints sharing the same `fromBlock` value produce ambiguous results.
 
 **False Positives**
@@ -60,7 +60,7 @@ Governance tokens are available on external lending markets or DEXes. Voting pow
 
 **Notable Historical Findings**
 
-Dexe received a high-severity finding where an attacker bypassed the protocol's direct-vote flash loan check by depositing tokens, delegating to a slave contract, having the slave vote, then undelegating and withdrawing in one transaction — the check applied to the voter account but not the delegatee. A second Dexe finding showed that `ERC721Power::totalPower` was not recalculated before the proposal snapshot, letting an attacker destroy the denominator and manufacture artificially low quorum. PartyDAO allowed any participant to contribute to an ETH crowdfund using a flash loan and then control the resulting party's governance.
+Dexe received a high-severity finding where an attacker bypassed the protocol's direct-vote flash loan check by depositing tokens, delegating to a slave contract, having the slave vote, then undelegating and withdrawing in one transaction - the check applied to the voter account but not the delegatee. A second Dexe finding showed that `ERC721Power::totalPower` was not recalculated before the proposal snapshot, letting an attacker destroy the denominator and manufacture artificially low quorum. PartyDAO allowed any participant to contribute to an ETH crowdfund using a flash loan and then control the resulting party's governance.
 
 **Remediation Notes**
 
@@ -165,7 +165,7 @@ Replace `totalSupply()` calls in quorum and threshold calculations with `getPast
 
 - Find `proposeBySigs` or equivalent signature-based proposal submission functions. Check whether a `require(totalVotingPower >= proposalThreshold())` or equivalent guard exists after the loop over signers.
 - Verify that the threshold is read at the proposal's snapshot block, not at the time of transaction execution.
-- Check if any signer can unilaterally cancel a pending proposal — a high-severity variant where the `cancel()` function checks only that the caller is among the original signers.
+- Check if any signer can unilaterally cancel a pending proposal - a high-severity variant where the `cancel()` function checks only that the caller is among the original signers.
 
 **False Positives**
 
@@ -191,7 +191,7 @@ The governance contract enforces a maximum number of token IDs delegated to any 
 **Detection Heuristics**
 
 - Find the `MAX_DELEGATES` constant and the `delegate()` function. Check whether a minimum balance (`MIN_DELEGATION_BALANCE`) is enforced.
-- Check whether the delegation limit check uses `ownerToTokenCount[owner]` or `balanceOf(owner)` — count-based limits are more easily exhausted with dust than balance-based limits.
+- Check whether the delegation limit check uses `ownerToTokenCount[owner]` or `balanceOf(owner)` - count-based limits are more easily exhausted with dust than balance-based limits.
 - Verify that `_moveAllDelegates` or equivalent does not allow an attacker to atomically move hundreds of dust positions to a victim in one transaction.
 
 **False Positives**
@@ -237,7 +237,7 @@ Add `require(_unlockTime <= block.timestamp + stakingSettings.maxStakeBonusTime,
 
 ---
 
-### Governance Parameter Manipulation and Veto Loss (no fv-sol equivalent — candidate for new entry)
+### Governance Parameter Manipulation and Veto Loss (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 

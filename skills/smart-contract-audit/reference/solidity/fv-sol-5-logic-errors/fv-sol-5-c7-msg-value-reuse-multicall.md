@@ -2,7 +2,7 @@
 
 ## TLDR
 
-`msg.value` is a global that persists for the entire transaction. Reading it inside a loop or inside `delegatecall`-based multicall credits the full original ETH value on every iteration — a single payment appears as N payments.
+`msg.value` is a global that persists for the entire transaction. Reading it inside a loop or inside `delegatecall`-based multicall credits the full original ETH value on every iteration - a single payment appears as N payments.
 
 This also applies to `delegatecall` multicall: each sub-call executes in the same context and sees the same `msg.value`, so calling a payable function N times via multicall charges ETH once but credits N times.
 
@@ -18,6 +18,6 @@ This also applies to `delegatecall` multicall: each sub-call executes in the sam
 
 - `msg.value` captured to local variable before loop: `uint256 remaining = msg.value`
 - `remaining -= cost` enforced per iteration
-- Multicall uses `call` (not `delegatecall`) — separate context, `msg.value` is 0
-- Function is `nonpayable` — `msg.value` always 0
+- Multicall uses `call` (not `delegatecall`) - separate context, `msg.value` is 0
+- Function is `nonpayable` - `msg.value` always 0
 - Single-item loop (length enforced as 1)

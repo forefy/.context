@@ -2,7 +2,7 @@
 
 ## TLDR
 
-`ERC721._transfer()` and the low-level `transferFrom()` do not check whether the recipient contract implements `IERC721Receiver`. Sending an NFT to a contract that lacks the receiver interface permanently locks the token — it can never be recovered.
+`ERC721._transfer()` and the low-level `transferFrom()` do not check whether the recipient contract implements `IERC721Receiver`. Sending an NFT to a contract that lacks the receiver interface permanently locks the token - it can never be recovered.
 
 `safeTransferFrom()` and `_safeMint()` trigger `onERC721Received()` on the recipient and revert if the return value is not the expected selector. Using the unsafe variants on user-supplied or unknown recipient addresses silently locks tokens.
 

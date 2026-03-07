@@ -13,7 +13,7 @@ ERC-1271 allows smart contract accounts to validate signatures by implementing `
 
 **Module Registry Without Approval Gate**
 - Module address stored in a mutable state variable with no timelock or multisig approval requirement before activation
-- No whitelist of audited modules — arbitrary user-deployed contracts accepted
+- No whitelist of audited modules - arbitrary user-deployed contracts accepted
 
 **Return Value Not Validated**
 - Caller of `isValidSignature` treats any non-reverting response as valid without checking the exact `bytes4` return value equals `0x1626ba7e`

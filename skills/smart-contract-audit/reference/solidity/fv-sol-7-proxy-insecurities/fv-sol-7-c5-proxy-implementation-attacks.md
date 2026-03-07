@@ -2,14 +2,14 @@
 
 ## TLDR
 
-Implementation contracts are not just storage targets — they are execution contexts with their own attack surface. Vulnerabilities include immutable variable context mismatch across proxies, arbitrary delegatecall exposed in the implementation, incomplete assembly fallback propagation, minimal proxy (EIP-1167) destruction when implementation is killed, and metamorphic contract substitution via CREATE2 and selfdestruct.
+Implementation contracts are not just storage targets - they are execution contexts with their own attack surface. Vulnerabilities include immutable variable context mismatch across proxies, arbitrary delegatecall exposed in the implementation, incomplete assembly fallback propagation, minimal proxy (EIP-1167) destruction when implementation is killed, and metamorphic contract substitution via CREATE2 and selfdestruct.
 
 ## Detection Heuristics
 
 **Immutable Context Mismatch**
 - `immutable` variables in implementation for addresses, chain IDs, or other per-deployment config
 - Multiple proxies pointing to same implementation with different expected configurations
-- `immutable` set in implementation constructor (not `initialize`) — same value forced everywhere
+- `immutable` set in implementation constructor (not `initialize`) - same value forced everywhere
 
 **Arbitrary Delegatecall**
 - `target.delegatecall(data)` where `target` is caller-supplied or role-controlled but unbounded
@@ -18,8 +18,8 @@ Implementation contracts are not just storage targets — they are execution con
 
 **Assembly Proxy Propagation**
 - Custom fallback with `delegatecall` but no `returndatacopy`
-- No `switch result case 0 { revert(...) }` — swallowed failures
-- `calldatacopy` absent — implementation receives empty calldata
+- No `switch result case 0 { revert(...) }` - swallowed failures
+- `calldatacopy` absent - implementation receives empty calldata
 
 **Minimal Proxy Destruction**
 - `Clones.clone(impl)` where implementation has `selfdestruct` or unprotected `initialize`
@@ -36,6 +36,6 @@ Implementation contracts are not just storage targets — they are execution con
 
 - Per-proxy config in `initialize()` via storage variables, no `immutable` for deployment-specific values
 - Delegatecall targets hardcoded as `immutable` verified library addresses
-- OZ `Proxy.sol` used — complete calldata/returndata propagation correct by default
+- OZ `Proxy.sol` used - complete calldata/returndata propagation correct by default
 - `_disableInitializers()` in implementation constructor prevents direct initialization
 - Post-Dencun deployment: `selfdestruct` no longer destroys code mid-tx

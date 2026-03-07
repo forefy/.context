@@ -64,7 +64,7 @@ Apply the checks-effects-interactions pattern strictly: mark nonces used and bur
 
 **Notable Historical Findings**
 
-Golom's `validateOrder` passed the ecrecover return directly into an equality check against `o.signer` without a zero-address guard, allowing invalid signatures to authenticate against uninitialized order structs. Golom also hardcoded the chain ID in the domain separator at deploy time, making all signed orders replayable on forked networks. Taiko's `withdraw()` function signed over only the recipient and amount with no nonce, enabling the same signature to be submitted repeatedly to drain accumulated balance. Nouns DAO's `cancelSig` was incomplete due to signature malleability — a transformed `s` value produced a distinct bytes signature that the cancellation mechanism did not recognize.
+Golom's `validateOrder` passed the ecrecover return directly into an equality check against `o.signer` without a zero-address guard, allowing invalid signatures to authenticate against uninitialized order structs. Golom also hardcoded the chain ID in the domain separator at deploy time, making all signed orders replayable on forked networks. Taiko's `withdraw()` function signed over only the recipient and amount with no nonce, enabling the same signature to be submitted repeatedly to drain accumulated balance. Nouns DAO's `cancelSig` was incomplete due to signature malleability - a transformed `s` value produced a distinct bytes signature that the cancellation mechanism did not recognize.
 
 **Remediation Notes**
 
@@ -104,7 +104,7 @@ Enforce seller/buyer inequality as an explicit require at the top of all matchin
 
 ---
 
-### ERC-1155 Quantity Accounting Errors (ref: no fv-sol equivalent — candidate for new entry)
+### ERC-1155 Quantity Accounting Errors (ref: no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 
@@ -166,7 +166,7 @@ Use `safeTransferFrom` for all ERC-721 transfers to untrusted addresses. When im
 
 ---
 
-### Excess ETH Not Refunded (ref: no fv-sol equivalent — candidate for new entry)
+### Excess ETH Not Refunded (ref: no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 
@@ -178,7 +178,7 @@ Use `safeTransferFrom` for all ERC-721 transfers to untrusted addresses. When im
 
 - Search for `payable` functions with `require(msg.value >= ...)` and confirm a refund path exists
 - Audit batch execution loops: after the loop, verify that any ETH remainder is returned to `msg.sender`
-- Look for `rescueETH` or admin-only ETH withdrawal functions — their presence signals awareness of the accumulation issue without actually fixing it for users
+- Look for `rescueETH` or admin-only ETH withdrawal functions - their presence signals awareness of the accumulation issue without actually fixing it for users
 - Check bridge fee functions to ensure `msg.value - fee` is refunded after the bridging call
 
 **False Positives**

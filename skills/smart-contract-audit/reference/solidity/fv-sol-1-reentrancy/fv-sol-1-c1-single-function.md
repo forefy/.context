@@ -12,8 +12,8 @@ A single function performs an external call before updating its own state. An at
 - `.call{value:}("")` targeting `msg.sender` or any caller-controlled address before the corresponding accounting update
 
 **External Call Vectors That Enable Callback**
-- `.call{value:}("")` — forwards all remaining gas, allows arbitrary re-entry
-- `payable(x).transfer()` or `.send()` — 2300-gas limit, but not a reliable guard post-Cancun
+- `.call{value:}("")` - forwards all remaining gas, allows arbitrary re-entry
+- `payable(x).transfer()` or `.send()` - 2300-gas limit, but not a reliable guard post-Cancun
 - Any low-level call to a user-supplied or caller-derived address before state is finalized
 
 **Missing or Insufficient Guards**

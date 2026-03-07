@@ -250,7 +250,7 @@ Nouns Builder had at least five simultaneous voting-power exploits including dou
 - Reward token address is the same as the staking token address, creating circular accounting that inflates reported reward balances
 
 **Detection Heuristics**
-- In `rewardPerToken()`, look for `if (totalSupply() == 0) return rewardPerTokenStored` — this is correct for per-token rate but rewards emitted during that window are lost; check whether there is a recovery or queuing mechanism
+- In `rewardPerToken()`, look for `if (totalSupply() == 0) return rewardPerTokenStored` - this is correct for per-token rate but rewards emitted during that window are lost; check whether there is a recovery or queuing mechanism
 - Find all `setRewardWeight`, `setRewardRate`, `notifyRewardAmount` functions; verify each one calls `updateReward(address(0))` or equivalent before changing the parameter
 - In epoch-based claim functions, check whether `toEpoch <= currentEpoch` is asserted
 - Search for `extraRewards.push(rewardToken)` without a duplicate-check loop; also check `rewardToken != stakingToken`
@@ -438,7 +438,7 @@ Reserve Protocol had multiple oracle-related findings: `lotPrice()` returned the
 
 ---
 
-### Signature and Hash Verification Issues (no fv-sol equivalent — candidate for new entry)
+### Signature and Hash Verification Issues (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - `ecrecover` is called without checking whether the returned address is `address(0)`; an invalid signature with non-standard `v` value returns `address(0)`, and if a hat or governance role is owned by `address(0)` (burned/unassigned), the check passes

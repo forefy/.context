@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Events emit incorrect values — such as a cumulative balance instead of the current operation amount — causing off-chain indexers, monitoring systems, and oracles to record wrong data while on-chain state may be correct.
+Events emit incorrect values - such as a cumulative balance instead of the current operation amount - causing off-chain indexers, monitoring systems, and oracles to record wrong data while on-chain state may be correct.
 
 ## Detection Heuristics
 

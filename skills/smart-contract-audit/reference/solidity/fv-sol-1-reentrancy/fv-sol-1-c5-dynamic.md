@@ -16,7 +16,7 @@ Dynamic reentrancy arises when the target of an external call is a user-supplied
 - `nonReentrant` applied only to the function with the explicit guard, while the dynamically-called target can re-enter through an unprotected sibling
 
 **Delegatecall With Dynamic Target**
-- `address(target).delegatecall(data)` where `target` is caller-supplied — grants the target full write access to the contract's storage layout
+- `address(target).delegatecall(data)` where `target` is caller-supplied - grants the target full write access to the contract's storage layout
 - Proxy or router patterns that forward arbitrary `(target, calldata)` pairs from untrusted input
 
 ## False Positives

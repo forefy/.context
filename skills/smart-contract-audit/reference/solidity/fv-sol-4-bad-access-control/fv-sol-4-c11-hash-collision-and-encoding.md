@@ -20,8 +20,8 @@ Two encoding bugs allow attackers to produce colliding hashes or bypass deduplic
 
 ## False Positives
 
-- `abi.encode()` used instead of `abi.encodePacked` — includes length prefixes, no boundary collision possible
+- `abi.encode()` used instead of `abi.encodePacked` - includes length prefixes, no boundary collision possible
 - Only one dynamic type argument present (no collision possible with a single dynamic argument)
-- All arguments are fixed-size types (`address`, `uint256`, `bytes32`) — calldata is non-malleable
+- All arguments are fixed-size types (`address`, `uint256`, `bytes32`) - calldata is non-malleable
 - Deduplication hashes decoded parameters rather than raw calldata: `keccak256(abi.encode(decodedA, decodedB))`
 - Nonce-based replay protection makes calldata-level uniqueness irrelevant

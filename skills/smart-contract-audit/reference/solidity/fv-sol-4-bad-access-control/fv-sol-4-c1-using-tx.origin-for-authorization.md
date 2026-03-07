@@ -12,7 +12,7 @@
 - `tx.origin` compared against any stored address to gate privileged operations
 
 **Combination Patterns That Still Fail**
-- `tx.origin` used as a fallback when `msg.sender` check fails — still exploitable via phishing
+- `tx.origin` used as a fallback when `msg.sender` check fails - still exploitable via phishing
 - `tx.origin` used to set an owner or beneficiary address during initialization, then later compared for authorization
 
 ## False Positives

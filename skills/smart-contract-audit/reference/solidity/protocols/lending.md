@@ -19,7 +19,7 @@ Lending protocols maintain a dual-ledger of supply shares (representing deposito
 
 **Detection Heuristics**
 
-- Find every external call (token transfer, ETH `call`, swap router interaction) and check whether any accounting variable — share balance, borrow balance, liquidity index — is read before the call and written after it
+- Find every external call (token transfer, ETH `call`, swap router interaction) and check whether any accounting variable - share balance, borrow balance, liquidity index - is read before the call and written after it
 - Check that all state-mutating functions share a reentrancy lock; a guard on `deposit` alone does not protect `borrow` if an attacker can reenter through a callback
 - For Balancer and Curve LP collateral oracles, check whether the consuming contract calls `VaultReentrancyLib.ensureNotInVaultContext` or the Curve equivalent before reading `virtual_price` or BPT supply
 - Search for `receive()` and `fallback()` functions in contracts that hold ETH positions; any ETH send before share accounting is a reentrancy surface
@@ -46,7 +46,7 @@ Apply `nonReentrant` to every external-facing function that modifies supply or b
 
 - Share-to-asset and asset-to-share conversions involve division by a dynamic index (liquidityIndex, borrowIndex) that grows over time; truncation at each operation compounds across the life of a pool
 - Collateral value calculations combine token amounts from pools with different decimals (USDC at 6, WETH at 18) against oracle feeds that may return 8 or 18 decimal prices
-- Rounding direction in ERC-4626-style vaults must favor the protocol: shares minted on deposit should round down, assets owed on withdraw should round up — inverting this direction allows users to extract value over many operations
+- Rounding direction in ERC-4626-style vaults must favor the protocol: shares minted on deposit should round down, assets owed on withdraw should round up - inverting this direction allows users to extract value over many operations
 - Interest accrual formulas that use linear approximations instead of compound formulas accumulate material divergence from expected values at high utilization over long periods
 
 **Detection Heuristics**
@@ -110,7 +110,7 @@ For `onBehalf` parameters, require that the caller is either the position owner 
 
 - Position open, close, and liquidation flows perform DEX swaps (Uniswap, Curve, Balancer) where the minimum output is hardcoded, set to zero, or calculated from a potentially stale oracle price
 - Reward token harvests swap externally claimed rewards (CRV, AURA, CVX) without user-configurable slippage, making these transactions predictable MEV targets
-- Protocols using UniswapV3 may rely on `sqrtPriceLimitX96` for price control, which causes partial fills rather than reverts when the limit is reached — leaving residual tokens in the contract
+- Protocols using UniswapV3 may rely on `sqrtPriceLimitX96` for price control, which causes partial fills rather than reverts when the limit is reached - leaving residual tokens in the contract
 - `block.timestamp` passed as a deadline provides no protection; validators or searchers can hold transactions and execute them at a later, disadvantageous block
 
 **Detection Heuristics**
@@ -338,7 +338,7 @@ For protocols where accrual functions are permissionless, guard them with a mini
 
 **Detection Heuristics**
 
-- In `executeRepay`, verify: (1) debt shares are reduced, (2) cache is updated with the new `debtShares`, and then (3) `updateInterestRates` is called — not (1) update rates, (2) reduce shares
+- In `executeRepay`, verify: (1) debt shares are reduced, (2) cache is updated with the new `debtShares`, and then (3) `updateInterestRates` is called - not (1) update rates, (2) reduce shares
 - In `executeWithdraw`, the same ordering applies to supply shares
 - In `executeLiquidationCall`, verify that `updateInterestRates` is called after the last token transfer (including fee transfers to treasury), not before
 - For all admin setter functions touching rate model or reserve factor, verify `updateState` is called first

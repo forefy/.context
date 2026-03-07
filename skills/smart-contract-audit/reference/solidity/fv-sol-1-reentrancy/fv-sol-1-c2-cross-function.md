@@ -22,7 +22,7 @@ Multiple functions within the same contract share a state variable. One function
 
 ## False Positives
 
-- CEI followed in every function that touches the shared state variable — no function leaves state stale during an external call
+- CEI followed in every function that touches the shared state variable - no function leaves state stale during an external call
 - `nonReentrant` applied to all functions that read or write the shared state variable
 - Shared variable is written atomically at the start of each function before any interaction (checks-effects pattern, not checks-interactions)
 

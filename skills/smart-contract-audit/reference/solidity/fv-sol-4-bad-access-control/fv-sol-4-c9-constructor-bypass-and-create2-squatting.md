@@ -15,7 +15,7 @@ Two related patterns allow attackers to bypass access controls that assume `msg.
 - `salt` is user-supplied without incorporating `msg.sender` into the salt derivation
 - Factory function calls `Create2.deploy(0, salt, bytecode)` where salt is a raw user-provided `bytes32`
 - Account abstraction wallets where the counterfactual address is used for fund custody before deployment
-- `initialize(owner)` called as a separate transaction after `Create2.deploy` — owner address squattable by a front-runner who deploys first
+- `initialize(owner)` called as a separate transaction after `Create2.deploy` - owner address squattable by a front-runner who deploys first
 
 ## False Positives
 
@@ -23,4 +23,4 @@ Two related patterns allow attackers to bypass access controls that assume `msg.
 - Access protected by alternative mechanism: signed permit, merkle proof, or prior-block deposit that a constructor-context call cannot satisfy
 - Salt binds to deployer: `keccak256(abi.encodePacked(msg.sender, userSalt))`
 - Factory restricts deployment to whitelisted callers only
-- Owner set via constructor argument embedded in `creationCode` — different owner produces a different deterministic address
+- Owner set via constructor argument embedded in `creationCode` - different owner produces a different deterministic address

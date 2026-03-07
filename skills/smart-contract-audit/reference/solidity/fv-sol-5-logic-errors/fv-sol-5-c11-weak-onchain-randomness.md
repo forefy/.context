@@ -4,7 +4,7 @@
 
 Randomness derived from on-chain values is manipulable by validators/miners or predictable by any caller, making it unsuitable for games, lotteries, NFT trait generation, or any outcome where a participant can gain an advantage by knowing the result in advance.
 
-- `block.prevrandao` (formerly `block.difficulty`): validator-influenceable on PoS — validators can choose to reveal or withhold their block proposal to get a favorable value
+- `block.prevrandao` (formerly `block.difficulty`): validator-influenceable on PoS - validators can choose to reveal or withhold their block proposal to get a favorable value
 - `blockhash(block.number - 1)`: visible to the tx sender before inclusion; miners could reorder
 - `block.timestamp`, `block.coinbase`: influenceable by block proposer
 
@@ -22,5 +22,5 @@ A commit-reveal scheme provides genuine randomness only when the reveal is bound
 
 - Chainlink VRF v2+ with minimum 3-block confirmation delay
 - Commit-reveal with verifiably future block hash and economic penalty (slashing) for non-reveal
-- Outcome has no economic value — randomness manipulation unprofitable
+- Outcome has no economic value - randomness manipulation unprofitable
 - Off-chain randomness with on-chain verification (e.g., DRAND, VDF proof)

@@ -9,7 +9,7 @@ Several widely-used tokens deviate from the ERC20 spec in ways that break standa
 - **Max-approval revert** (some tokens): `approve(type(uint256).max)` reverts.
 - **Missing/incorrect events**: custom `transfer()`/`transferFrom()` not emitting `Transfer`, or `approve()` not emitting `Approval`. Off-chain indexers and integrations break silently.
 
-All of these are silent integration failures — no revert, wrong state, or broken tooling.
+All of these are silent integration failures - no revert, wrong state, or broken tooling.
 
 ## Detection Heuristics
 

@@ -23,7 +23,7 @@ A second variant causes `totalSupply` inflation: if `totalSupply[id]` is increme
 
 **ERC1155 totalSupply Inflation**
 - `totalSupply[id]` incremented after `_mint` callback fires
-- During `onERC1155Received`, supply is stale-low — inflates share in any supply-dependent formula
+- During `onERC1155Received`, supply is stale-low - inflates share in any supply-dependent formula
 - Affected: OZ ERC1155Supply before version 4.3.2 (CVE GHSA-9c22-pwxw-p6hx)
 
 ## False Positives

@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Real world asset tokenization protocols bridge off-chain assets — treasuries, real estate, private credit — onto a blockchain as permissioned tokens backed by off-chain legal structures. The security model diverges from pure DeFi protocols in that it depends on correct enforcement of KYC/AML restrictions, oracle-reported NAV values, and administrative key management for the custodial bridge. Token transfer restrictions must hold across every balance-changing operation including mint, burn, transfer, ERC4626 deposit/redeem, and cross-chain bridge operations; a single unchecked code path bypasses the compliance layer entirely.
+Real world asset tokenization protocols bridge off-chain assets - treasuries, real estate, private credit - onto a blockchain as permissioned tokens backed by off-chain legal structures. The security model diverges from pure DeFi protocols in that it depends on correct enforcement of KYC/AML restrictions, oracle-reported NAV values, and administrative key management for the custodial bridge. Token transfer restrictions must hold across every balance-changing operation including mint, burn, transfer, ERC4626 deposit/redeem, and cross-chain bridge operations; a single unchecked code path bypasses the compliance layer entirely.
 
 The off-chain backing introduces oracle trust assumptions that differ from price-feed oracles: NAV values are reported by authorized administrators rather than decentralized feeds, creating a privileged role that can misrepresent asset value. Smart contract risk is therefore dominated by access control correctness, restriction bypass through approval-based token transfers, and the interaction of permissioned token semantics with standard DeFi primitives that were not designed with transfer restrictions in mind.
 
@@ -15,10 +15,10 @@ The off-chain backing introduces oracle trust assumptions that differ from price
 ### Access Control Bypass (ref: fv-sol-4)
 
 **Protocol-Specific Preconditions**
-Privileged functions — deposit, claim, mint, propose, execute — use a user-supplied address parameter (receiver, beneficiary, collateral holder) for validation rather than `msg.sender`. Alternative public entry points exist that internally invoke access-controlled logic without re-applying the guard. Role-based modifiers are missing on at least one critical state-changing function. Protocols with KYC-gated tokens often validate the token recipient instead of the caller, creating a systematic bypass surface.
+Privileged functions - deposit, claim, mint, propose, execute - use a user-supplied address parameter (receiver, beneficiary, collateral holder) for validation rather than `msg.sender`. Alternative public entry points exist that internally invoke access-controlled logic without re-applying the guard. Role-based modifiers are missing on at least one critical state-changing function. Protocols with KYC-gated tokens often validate the token recipient instead of the caller, creating a systematic bypass surface.
 
 **Detection Heuristics**
-Enumerate all external and public functions that modify balances, loans, reward state, or governance. Check that `msg.sender` is compared directly to the authorized party — not to a function-argument address. Trace all internal functions that touch restricted logic and verify every entry point applies the same guard. Look for `depositReward`-style functions callable with zero amounts that still reset `periodFinish` or `rewardRate` without any role check.
+Enumerate all external and public functions that modify balances, loans, reward state, or governance. Check that `msg.sender` is compared directly to the authorized party - not to a function-argument address. Trace all internal functions that touch restricted logic and verify every entry point applies the same guard. Look for `depositReward`-style functions callable with zero amounts that still reset `periodFinish` or `rewardRate` without any role check.
 
 **False Positives**
 Functions intentionally permissionless by design (e.g., anyone may trigger liquidation of an undercollateralized position). Cases where receiver-address validation is sufficient because only the holder economically benefits. Functions protected by a proxy-layer access control that does not appear in the implementation contract.
@@ -27,14 +27,14 @@ Functions intentionally permissionless by design (e.g., anyone may trigger liqui
 In Astaria, `commitToLien` validated the collateral holder's address as the receiver rather than verifying the caller, allowing any party to open a loan against another user's NFT collateral without consent. Separately, a missing `onlyOwner` check on `depositReward` in Zivoe allowed anyone to call the function with a zero reward amount, extending `periodFinish` and diluting the reward rate for existing stakers at no cost. In Ondo Finance, `KYCRegistry` was susceptible to signature replay, and `setPendingRedemptionBalance` could cause a user's cash token to be silently lost through an unchecked state transition.
 
 **Remediation Notes**
-Validate `msg.sender` directly against the owner, approved operator, or authorized role — never a caller-supplied address. On reward distribution functions, enforce a role guard and a non-zero reward amount check together. Apply modifiers consistently to every overload and internal entry point, not only to the canonical external function. For KYC-gated protocols, decouple identity verification from the operation's authorization check.
+Validate `msg.sender` directly against the owner, approved operator, or authorized role - never a caller-supplied address. On reward distribution functions, enforce a role guard and a non-zero reward amount check together. Apply modifiers consistently to every overload and internal entry point, not only to the canonical external function. For KYC-gated protocols, decouple identity verification from the operation's authorization check.
 
 ---
 
 ### Blacklist and Pause Mechanism DoS (ref: fv-sol-9)
 
 **Protocol-Specific Preconditions**
-Protocol integrates with USDC, USDT, or a permissioned RWA token whose issuer maintains a blocklist or pause switch. A critical operation — liquidation, withdrawal settlement, reward claim — iterates over user addresses and must push tokens to each one. A single blacklisted or sanctioned address in the loop causes the entire transaction to revert. Protocols built for regulated markets are disproportionately affected because compliance-driven blocking is expected behavior, not an edge case.
+Protocol integrates with USDC, USDT, or a permissioned RWA token whose issuer maintains a blocklist or pause switch. A critical operation - liquidation, withdrawal settlement, reward claim - iterates over user addresses and must push tokens to each one. A single blacklisted or sanctioned address in the loop causes the entire transaction to revert. Protocols built for regulated markets are disproportionately affected because compliance-driven blocking is expected behavior, not an edge case.
 
 **Detection Heuristics**
 Identify every loop that transfers tokens to addresses derived from user-supplied or protocol-maintained lists. Confirm whether the token in scope has a pause or blacklist function at the contract or issuer level. Check whether liquidation and auction settlement paths have try/catch wrappers or skip-and-escrow logic. Look for admin-controlled operations that require all users to have exited before the admin can proceed (e.g., `withdrawExcessRewards` guarded by `totalUsersDeposited == 0`).
@@ -50,7 +50,7 @@ Replace push-payment patterns with pull-payment (credit-then-claim) for any func
 
 ---
 
-### Cross-Chain Bridge Vulnerabilities (ref: no fv-sol equivalent — candidate for new entry)
+### Cross-Chain Bridge Vulnerabilities (ref: no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 Protocol bridges tokenized assets or messages across chains using Optimism-style withdrawal flows, Axelar's interchain gateway, or a custom bridge. Gas buffer calculations for withdrawal finalization do not account for all intermediate opcodes between the check and the external call. Cross-chain message receivers validate only that `msg.sender` is the bridge contract, without verifying the origin-chain sender address. Token decimal representations differ between chains and are not normalized during bridging. Failed cross-chain operations have no replay mechanism, permanently stranding funds.
@@ -72,7 +72,7 @@ Perform all state mutations before the gas check; place the check immediately be
 ### Denial of Service via Unbounded Operations (ref: fv-sol-9)
 
 **Protocol-Specific Preconditions**
-Contract maintains user-controlled arrays — delegation lists, deposit queues, withdrawal queues — that grow without a meaningful economic cost gate. Iteration over these arrays occurs within a single transaction during settlement, reward distribution, or epoch processing. An attacker can inflate the array at negligible cost (dust deposits, 1-wei delegations), causing legitimate operations to exhaust the block gas limit. Soft caps (e.g., `MAX_DELEGATES = 1024`) are too high to prevent griefing when the minimum value per entry is 1 wei.
+Contract maintains user-controlled arrays - delegation lists, deposit queues, withdrawal queues - that grow without a meaningful economic cost gate. Iteration over these arrays occurs within a single transaction during settlement, reward distribution, or epoch processing. An attacker can inflate the array at negligible cost (dust deposits, 1-wei delegations), causing legitimate operations to exhaust the block gas limit. Soft caps (e.g., `MAX_DELEGATES = 1024`) are too high to prevent griefing when the minimum value per entry is 1 wei.
 
 **Detection Heuristics**
 Find all loops iterating over storage arrays and check whether the array length is bounded by a hard economic constraint. Verify that cancelled, zero-value, or processed entries are pruned and not iterated over in perpetuity. Calculate the gas cost at the array's theoretical maximum size and compare to the block gas limit. For delegation patterns, compute the minimum cost to fill the array to its cap and compare to the expected damage.
@@ -151,7 +151,7 @@ Implement a force-close or admin-bypass path for every protocol state that can b
 Lending or lien-based protocol computes debt for the liquidation trigger using a different formula (without discount) than the internal debt update function uses (with discount). Liquidation does not atomically mark the position as liquidated, allowing re-entry or repeated calls. The auction settlement path is separate from the liquidation trigger, and the no-bid case leaves lien accounting in a corrupt state. External dependencies (NFT burn, oracle read, Seaport order validation) can silently fail or revert within the liquidation path.
 
 **Detection Heuristics**
-Compare the debt value passed to the liquidation function with the value that will be used in the internal `updateDebt` modifier — verify they both include or both exclude the same discounts and accrued interest. Confirm that the liquidation function sets an `isLiquidated` flag before creating an auction. Check the no-bid auction settlement path for uncleaned lien data, uncorrected public vault accounting, and unupdated slope/yIntercept values. Verify that any call to an external contract within the liquidation path is wrapped in try/catch or that its failure cannot permanently block the position.
+Compare the debt value passed to the liquidation function with the value that will be used in the internal `updateDebt` modifier - verify they both include or both exclude the same discounts and accrued interest. Confirm that the liquidation function sets an `isLiquidated` flag before creating an auction. Check the no-bid auction settlement path for uncleaned lien data, uncorrected public vault accounting, and unupdated slope/yIntercept values. Verify that any call to an external contract within the liquidation path is wrapped in try/catch or that its failure cannot permanently block the position.
 
 **False Positives**
 Protocols where the discount profile is always zero (`NoDiscountProfile`) and no other profiles are deployed. Protocols intentionally supporting partial liquidations where multiple calls to the same position are expected. External call failures caught and handled gracefully by the protocol's existing architecture.
@@ -173,7 +173,7 @@ Protocol accepts user-specified token addresses or maintains a whitelist that co
 Search for `transferFrom` calls where `amount` is used in accounting without a before/after `balanceOf` check. Look for `approve` calls not preceded by a zero-approval reset when the token could be USDT. Check for reentrancy guards on functions that transfer tokens to user-controlled addresses and could be re-entered via ERC-777 hooks. Verify that zero-value transfers do not revert for all tokens in scope. For rebasing tokens, assess whether internal accounting diverges from actual balances over time.
 
 **False Positives**
-Protocols explicitly restricted to a whitelist of known standard tokens (WETH, canonical stablecoins) with no upgrade path that could introduce non-standard behavior. Protocols already using the balance-before/after measurement pattern. `safeTransfer` usage from OpenZeppelin (handles non-returning tokens but does not handle fee-on-transfer — this distinction matters).
+Protocols explicitly restricted to a whitelist of known standard tokens (WETH, canonical stablecoins) with no upgrade path that could introduce non-standard behavior. Protocols already using the balance-before/after measurement pattern. `safeTransfer` usage from OpenZeppelin (handles non-returning tokens but does not handle fee-on-transfer - this distinction matters).
 
 **Notable Historical Findings**
 In Axelar's interchain token service, fee-on-transfer tokens produced accounting discrepancies because the protocol recorded the transferred amount rather than the received amount, allowing cumulative drain of other users' balances. In Astaria, USDT approval calls without prior zero-reset caused Seaport auction settlements to revert for USDT vaults. Axelar's flow limit logic for ERC-777 tokens was broken because the callback path allowed re-entry that bypassed the limit counter update.

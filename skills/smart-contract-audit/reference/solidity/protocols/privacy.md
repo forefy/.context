@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Privacy protocols maintain shielded state—balances, notes, commitments—that must remain consistent with the underlying token balances they represent. The key security invariant is that the public contract state never leaks information about individual users while still enforcing economic correctness: every withdrawal must correspond to a valid prior deposit, and the aggregate shielded balance must equal the aggregate deposited tokens. This dual requirement—cryptographic correctness and economic soundness—means that standard DeFi vulnerabilities (reentrancy, oracle manipulation, rounding) interact with privacy-specific concerns (proof malleability, nullifier handling, commitment ordering) in ways that are often more severe than in transparent protocols.
+Privacy protocols maintain shielded state-balances, notes, commitments-that must remain consistent with the underlying token balances they represent. The key security invariant is that the public contract state never leaks information about individual users while still enforcing economic correctness: every withdrawal must correspond to a valid prior deposit, and the aggregate shielded balance must equal the aggregate deposited tokens. This dual requirement-cryptographic correctness and economic soundness-means that standard DeFi vulnerabilities (reentrancy, oracle manipulation, rounding) interact with privacy-specific concerns (proof malleability, nullifier handling, commitment ordering) in ways that are often more severe than in transparent protocols.
 
 ---
 
@@ -84,7 +84,7 @@ Reserve Protocol's `_anyDepeggedInPool` function measured Curve pool balance rat
 - The front-running window exists but has no exploitable consequence because parameters are fixed by governance regardless of caller
 
 **Notable Historical Findings**
-Unlock Protocol's `PublicLock.initialize()` was `public` with no access control and no deployer check, allowing an attacker to front-run any deployment and claim the lock's creator role—effectively taking over the economic parameters of the newly deployed lock. Timeswap's pool initialization was front-runnable: an attacker could observe a pending `mint` transaction and insert their own `mint` with extreme asset/collateral ratios at minimal cost, permanently distorting the initial interest rate for the affected pool. Reserve Protocol suffered from multiple initialization-adjacent vulnerabilities where early users could manipulate the stakeRate and basketsNeeded/supply ratio by calling `issue` followed by `melt` before other participants entered.
+Unlock Protocol's `PublicLock.initialize()` was `public` with no access control and no deployer check, allowing an attacker to front-run any deployment and claim the lock's creator role-effectively taking over the economic parameters of the newly deployed lock. Timeswap's pool initialization was front-runnable: an attacker could observe a pending `mint` transaction and insert their own `mint` with extreme asset/collateral ratios at minimal cost, permanently distorting the initial interest rate for the affected pool. Reserve Protocol suffered from multiple initialization-adjacent vulnerabilities where early users could manipulate the stakeRate and basketsNeeded/supply ratio by calling `issue` followed by `melt` before other participants entered.
 
 **Remediation Notes**
 - Call `_disableInitializers()` in every upgradeable implementation's constructor and deploy through a factory that initializes atomically
@@ -150,7 +150,7 @@ Isomorph's `withdrawFromGauge` burned the deposit NFT and sent the underlying AM
 
 ---
 
-### Missing Event Emissions After Sensitive Actions (no fv-sol equivalent — candidate for new entry)
+### Missing Event Emissions After Sensitive Actions (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Administrative parameter changes (fee rates, scanner registration, whitelist modifications) execute silently without emitting events
@@ -197,7 +197,7 @@ Forta Protocol's scanner registration and configuration functions executed witho
 - Timelock provides a delay window sufficient for detecting and cancelling erroneous transfers
 
 **Notable Historical Findings**
-Beanstalk's diamond proxy used a single-step `transferOwnership` for the contract owner role, which controls the ability to add and remove diamond facets; a single erroneous transaction could have permanently locked the entire protocol's upgradeability. Boot Finance had no ownership transfer pattern at all—the owner address was immutable and the protocol had no path for governance succession. Reserve Protocol discovered that a `transferOwnership` flow without confirmation could leave the `StRSR` contract permanently unusable if ownership was transferred to a contract that could not call `acceptOwnership`.
+Beanstalk's diamond proxy used a single-step `transferOwnership` for the contract owner role, which controls the ability to add and remove diamond facets; a single erroneous transaction could have permanently locked the entire protocol's upgradeability. Boot Finance had no ownership transfer pattern at all-the owner address was immutable and the protocol had no path for governance succession. Reserve Protocol discovered that a `transferOwnership` flow without confirmation could leave the `StRSR` contract permanently unusable if ownership was transferred to a contract that could not call `acceptOwnership`.
 
 **Remediation Notes**
 - Use OpenZeppelin's `Ownable2Step` instead of `Ownable` for all protocol contracts with meaningful admin functions
@@ -209,7 +209,7 @@ Beanstalk's diamond proxy used a single-step `transferOwnership` for the contrac
 ### Operations Blocked During Pause or Freeze (ref: fv-sol-9)
 
 **Protocol-Specific Preconditions**
-- `whenNotPaused` or `_checkIfCollateralIsActive` is applied equally to loan closure, collateral addition, and liquidation—blocking protective actions the same way it blocks new borrowing
+- `whenNotPaused` or `_checkIfCollateralIsActive` is applied equally to loan closure, collateral addition, and liquidation-blocking protective actions the same way it blocks new borrowing
 - Interest or fee accrual continues during the paused period, penalizing users who cannot interact to protect their positions
 - A single collateral's oracle going stale blocks all operations across the entire protocol, including full-repayment paths that do not require price information
 
@@ -225,7 +225,7 @@ Beanstalk's diamond proxy used a single-step `transferOwnership` for the contrac
 - Interest accrual is explicitly frozen during the pause period
 
 **Notable Historical Findings**
-Isomorph's `_checkIfCollateralIsActive` was called by all four core functions including `closeLoan` and `increaseCollateralAmount`, meaning a stale Lyra oracle price circuit-breaker permanently blocked every user action—including full repayments that required no price information—leaving borrowers unable to exit positions while interest continued to compound. Reserve Protocol's staking contract allowed new stake deposits during paused/frozen states, but withdrawals were blocked; this asymmetry allowed stake to enter but not exit, trapping new depositors. A separate Reserve finding showed that governance changes to `unstakingDelay` affected users who had already submitted withdrawal requests, retroactively extending their wait time.
+Isomorph's `_checkIfCollateralIsActive` was called by all four core functions including `closeLoan` and `increaseCollateralAmount`, meaning a stale Lyra oracle price circuit-breaker permanently blocked every user action-including full repayments that required no price information-leaving borrowers unable to exit positions while interest continued to compound. Reserve Protocol's staking contract allowed new stake deposits during paused/frozen states, but withdrawals were blocked; this asymmetry allowed stake to enter but not exit, trapping new depositors. A separate Reserve finding showed that governance changes to `unstakingDelay` affected users who had already submitted withdrawal requests, retroactively extending their wait time.
 
 **Remediation Notes**
 - Remove the pause guard from `closeLoan`, `repayDebt`, and `increaseCollateralAmount`; these functions only improve position health and do not require price validation when the repayment covers all outstanding debt
@@ -309,7 +309,7 @@ Isomorph's liquidation check compared `proposedAmount` (computed by pricing each
 - Staleness window is generous but acceptable within the protocol's epoch duration
 
 **Notable Historical Findings**
-Isomorph's oracle bounds were cached at construction time; when Chainlink deprecated an aggregator and deployed a replacement with updated min/max bounds, the cached bounds no longer matched the live feed—causing the protocol to either reject valid prices or accept invalid ones indefinitely. Reserve Protocol's `refresh()` function propagated an oracle deprecation exception upward without catching it, disabling the entire basket recollateralization path the first time any oracle in the basket was deprecated. A separate Reserve finding showed that `Asset.lotPrice()` did not fall back to a safe low price on oracle timeout, instead using a potentially stale cached price for asset sales, enabling significant underpayment to the protocol.
+Isomorph's oracle bounds were cached at construction time; when Chainlink deprecated an aggregator and deployed a replacement with updated min/max bounds, the cached bounds no longer matched the live feed-causing the protocol to either reject valid prices or accept invalid ones indefinitely. Reserve Protocol's `refresh()` function propagated an oracle deprecation exception upward without catching it, disabling the entire basket recollateralization path the first time any oracle in the basket was deprecated. A separate Reserve finding showed that `Asset.lotPrice()` did not fall back to a safe low price on oracle timeout, instead using a potentially stale cached price for asset sales, enabling significant underpayment to the protocol.
 
 **Remediation Notes**
 - Fetch aggregator bounds dynamically (`priceFeed.aggregator().minAnswer()`) on every oracle query rather than caching them at construction

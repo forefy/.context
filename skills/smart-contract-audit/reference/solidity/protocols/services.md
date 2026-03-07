@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-DeFi service contracts act as intermediaries—routing trades, bridging chains, distributing rewards, and automating keeper operations—across a wide range of underlying protocols. Unlike single-purpose AMMs or lending pools, service contracts are characterized by broad token and protocol integration surfaces, frequent cross-chain message passing, and reward accounting that must remain correct across arbitrary user behavior and rebalancing events. The combination of untrusted token inputs, multi-step state updates, and cross-chain asynchrony produces a vulnerability surface that rewards systematic, path-by-path analysis rather than single-function review.
+DeFi service contracts act as intermediaries-routing trades, bridging chains, distributing rewards, and automating keeper operations-across a wide range of underlying protocols. Unlike single-purpose AMMs or lending pools, service contracts are characterized by broad token and protocol integration surfaces, frequent cross-chain message passing, and reward accounting that must remain correct across arbitrary user behavior and rebalancing events. The combination of untrusted token inputs, multi-step state updates, and cross-chain asynchrony produces a vulnerability surface that rewards systematic, path-by-path analysis rather than single-function review.
 
 ---
 
@@ -27,7 +27,7 @@ DeFi service contracts act as intermediaries—routing trades, bridging chains, 
 - Access control is enforced by a multi-sig with a known quorum requirement
 
 **Notable Historical Findings**
-Biconomy's `SmartAccount` implementation contract was not initialized at deployment, allowing an attacker to call `initialize` on the implementation directly, become its owner, and destroy it via a `selfdestruct` delegatecall—bricking every proxy sharing that implementation. SeaDrop's `onlyOwnerOrAdmin` modifier allowed either the owner or admin to overwrite the other's drop configuration, and because the owner chose the admin at construction time, the supposed independence of the two roles was illusory. Taurus Protocol's keeper received an unchecked `_rewardProportion` parameter, enabling a malicious or compromised keeper to set it to 10000 basis points and direct the entire reward pool to themselves.
+Biconomy's `SmartAccount` implementation contract was not initialized at deployment, allowing an attacker to call `initialize` on the implementation directly, become its owner, and destroy it via a `selfdestruct` delegatecall-bricking every proxy sharing that implementation. SeaDrop's `onlyOwnerOrAdmin` modifier allowed either the owner or admin to overwrite the other's drop configuration, and because the owner chose the admin at construction time, the supposed independence of the two roles was illusory. Taurus Protocol's keeper received an unchecked `_rewardProportion` parameter, enabling a malicious or compromised keeper to set it to 10000 basis points and direct the entire reward pool to themselves.
 
 **Remediation Notes**
 - Call `_disableInitializers()` unconditionally in every upgradeable implementation's constructor
@@ -112,7 +112,7 @@ Trader Joe's liquidity contract allowed a user to transfer tokens to themselves,
 - Vault uses an internal balance tracker that ignores direct token donations
 
 **Notable Historical Findings**
-Surge Finance's first depositor could deposit one wei, receive one share, then donate enough tokens to inflate the vault's asset balance such that the next depositor's large deposit minted zero shares—the entire deposit being absorbed by the one-share holder. Liquid Collective's share minting was vulnerable to front-running: an attacker donating one wei to the contract before the first legitimate deposit caused the legitimate depositor to receive zero shares, effectively stealing the entire deposit. Caviar's AMM pool initialization had a related variant where the first depositor could set an extreme price ratio with a negligible liquidity commitment.
+Surge Finance's first depositor could deposit one wei, receive one share, then donate enough tokens to inflate the vault's asset balance such that the next depositor's large deposit minted zero shares-the entire deposit being absorbed by the one-share holder. Liquid Collective's share minting was vulnerable to front-running: an attacker donating one wei to the contract before the first legitimate deposit caused the legitimate depositor to receive zero shares, effectively stealing the entire deposit. Caviar's AMM pool initialization had a related variant where the first depositor could set an extreme price ratio with a negligible liquidity commitment.
 
 **Remediation Notes**
 - Burn a configurable amount of dead shares to `address(0xdead)` on first deposit to anchor the exchange rate
@@ -286,7 +286,7 @@ OlympusDAO's `cachedUserRewards` was incremented on withdrawal but never reset a
 - `mulDiv` or equivalent full-precision arithmetic is used throughout
 
 **Notable Historical Findings**
-Surge Finance's `userCollateralRatioMantissa` calculation used token pairs with different decimals and a single fixed-precision divisor, producing ratios that were systematically incorrect for pairs involving USDC or WBTC—causing liquidations to trigger at wrong thresholds. Taurus Protocol assumed 18-decimal collateral throughout its pricing and leverage calculations, making the protocol entirely non-functional for tokens like WBTC, USDC, or USDT. Liquid Collective's operator reward shares suffered from compounding division errors due to multiple sequential divisions rather than a single `mulDiv` operation, causing measurable under-distribution to node operators over time.
+Surge Finance's `userCollateralRatioMantissa` calculation used token pairs with different decimals and a single fixed-precision divisor, producing ratios that were systematically incorrect for pairs involving USDC or WBTC-causing liquidations to trigger at wrong thresholds. Taurus Protocol assumed 18-decimal collateral throughout its pricing and leverage calculations, making the protocol entirely non-functional for tokens like WBTC, USDC, or USDT. Liquid Collective's operator reward shares suffered from compounding division errors due to multiple sequential divisions rather than a single `mulDiv` operation, causing measurable under-distribution to node operators over time.
 
 **Remediation Notes**
 - Always multiply before dividing: `(amount * PRECISION) / price` rather than `(amount / price) * PRECISION`
@@ -342,7 +342,7 @@ Biconomy's paymaster hash omitted `chainId`, allowing a UserOperation signed for
 - The function is admin-only and manual reconciliation is an accepted operational procedure
 
 **Notable Historical Findings**
-Stakehouse Protocol's `bringUnusedETHBackIntoGiantPool` transferred ETH from staking vaults back to the giant pool but never incremented `idleETH`, causing subsequent deposit/withdrawal operations to use a stale (lower) idle balance and systematically underpay users. OlympusDAO's withdrawal logic set `userRewardDebts` to zero before computing the debt difference, ensuring the full accumulator value was credited rather than only the delta—a single off-by-one in the order of operations that allowed unlimited reward extraction. Morpho's state desynchronized from Aave's when an Aave-level liquidation seized a user's collateral without Morpho's internal accounting being notified, leaving phantom collateral recorded in Morpho's books.
+Stakehouse Protocol's `bringUnusedETHBackIntoGiantPool` transferred ETH from staking vaults back to the giant pool but never incremented `idleETH`, causing subsequent deposit/withdrawal operations to use a stale (lower) idle balance and systematically underpay users. OlympusDAO's withdrawal logic set `userRewardDebts` to zero before computing the debt difference, ensuring the full accumulator value was credited rather than only the delta-a single off-by-one in the order of operations that allowed unlimited reward extraction. Morpho's state desynchronized from Aave's when an Aave-level liquidation seized a user's collateral without Morpho's internal accounting being notified, leaving phantom collateral recorded in Morpho's books.
 
 **Remediation Notes**
 - Measure balance change as `after - before` on every asset recovery operation and add the delta to the internal tracker
@@ -360,7 +360,7 @@ Stakehouse Protocol's `bringUnusedETHBackIntoGiantPool` transferred ETH from sta
 
 **Detection Heuristics**
 - Search for `IERC20.approve(spender, nonZeroAmount)` without a preceding `approve(spender, 0)` or equivalent `forceApprove`
-- Verify the approved spender is a hardcoded, immutable, audited address—not a user-supplied or governance-updatable parameter
+- Verify the approved spender is a hardcoded, immutable, audited address-not a user-supplied or governance-updatable parameter
 - Check for `type(uint256).max` approvals to external contracts; confirm the contract is immutable or the approval is revoked after use
 - Identify patterns where the same approval is granted in a loop without revocation between iterations
 

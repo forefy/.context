@@ -4,13 +4,13 @@
 
 ## Protocol Context
 
-Yield protocols are distinguished by their dependency on multiple external protocol integrations simultaneously — a single vault may interact with Curve, Aave, Convex, and Uniswap in a single transaction, meaning any mismatch in assumptions about external state (exchange rates, borrow indexes, token decimals) compounds into accounting errors. Reward accounting is uniquely complex because users enter and exit positions asynchronously, requiring per-user checkpointing of global reward accumulators before any balance-changing operation; failure to do so enables retroactive reward manipulation. The share-price model used by ERC-4626-style vaults introduces a class of donation-based inflation attacks where a first depositor can manipulate the share-to-asset exchange rate to steal subsequent depositors' funds, a problem endemic to the category and absent from most other protocol types.
+Yield protocols are distinguished by their dependency on multiple external protocol integrations simultaneously - a single vault may interact with Curve, Aave, Convex, and Uniswap in a single transaction, meaning any mismatch in assumptions about external state (exchange rates, borrow indexes, token decimals) compounds into accounting errors. Reward accounting is uniquely complex because users enter and exit positions asynchronously, requiring per-user checkpointing of global reward accumulators before any balance-changing operation; failure to do so enables retroactive reward manipulation. The share-price model used by ERC-4626-style vaults introduces a class of donation-based inflation attacks where a first depositor can manipulate the share-to-asset exchange rate to steal subsequent depositors' funds, a problem endemic to the category and absent from most other protocol types.
 
 ---
 
 ## Bug Classes
 
-### First Depositor Share Inflation Attack (no fv-sol equivalent — candidate for new entry)
+### First Depositor Share Inflation Attack (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 
@@ -44,7 +44,7 @@ Use OpenZeppelin ERC4626's virtual offset pattern (`_decimalsOffset()` returning
 
 ---
 
-### Reward Distribution and Accounting Errors (no fv-sol equivalent — candidate for new entry)
+### Reward Distribution and Accounting Errors (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 
@@ -70,7 +70,7 @@ Use OpenZeppelin ERC4626's virtual offset pattern (`_decimalsOffset()` returning
 
 **Notable Historical Findings**
 
-Blueberry lost reward accounting across multiple findings in a single audit — users depositing extra funds into ICHI positions lost all accrued ICHI rewards because the position update did not checkpoint rewards first. GoGoPool's slashing logic operated on full slash duration regardless of actual accrual period. Sense Finance had a compounding error where the `pounder` reward was excluded from xPYT auto-compound calculations. Velodrome Finance contained at least six reward accounting findings in a single review: incorrect epoch boundary calculations, totalSupply caching in the reward distributor, undistributed rewards not rolling over, and bribe/fee emissions gameable by just-in-time voters.
+Blueberry lost reward accounting across multiple findings in a single audit - users depositing extra funds into ICHI positions lost all accrued ICHI rewards because the position update did not checkpoint rewards first. GoGoPool's slashing logic operated on full slash duration regardless of actual accrual period. Sense Finance had a compounding error where the `pounder` reward was excluded from xPYT auto-compound calculations. Velodrome Finance contained at least six reward accounting findings in a single review: incorrect epoch boundary calculations, totalSupply caching in the reward distributor, undistributed rewards not rolling over, and bribe/fee emissions gameable by just-in-time voters.
 
 **Remediation Notes**
 
@@ -78,7 +78,7 @@ Apply the Synthetix `updateReward(address account)` modifier unconditionally to 
 
 ---
 
-### Stale Cached State Desynchronization (no fv-sol equivalent — candidate for new entry)
+### Stale Cached State Desynchronization (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 
@@ -252,7 +252,7 @@ For user-facing functions, require caller-supplied `minAmountOut` and `deadline`
 
 **Detection Heuristics**
 
-- Identify external calls that precede state updates — the canonical violation of Checks-Effects-Interactions
+- Identify external calls that precede state updates - the canonical violation of Checks-Effects-Interactions
 - Check if hookable token standards are used or accepted as deposit tokens
 - Look for `balanceOf(address(this))` pre/post measurement patterns without reentrancy guards
 - Verify `collectFees` or multi-recipient transfer functions have `nonReentrant`
@@ -420,7 +420,7 @@ Implement ERC-4626 conversions using OpenZeppelin's base with explicit `Math.Rou
 - Check Merkle proof claim functions for a `isRedeemed[leaf]` mapping that is set before the claim is processed
 - Verify that `permit`-style functions increment a nonce atomically with verification
 - Check that `ecrecover` return value is explicitly compared to `address(0)` before use
-- Look for signatures that are verified only by deadline — deadline alone does not prevent replay
+- Look for signatures that are verified only by deadline - deadline alone does not prevent replay
 
 **False Positives**
 

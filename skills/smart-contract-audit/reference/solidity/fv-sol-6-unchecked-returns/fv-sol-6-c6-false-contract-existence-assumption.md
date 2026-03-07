@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Calling a function on an address that contains no contract code does not revert — the EVM treats it as a successful call returning empty data. When a protocol stores or accepts an external address without verifying it is a deployed contract, calls to that address silently succeed as no-ops, producing incorrect state updates or bypassed logic.
+Calling a function on an address that contains no contract code does not revert - the EVM treats it as a successful call returning empty data. When a protocol stores or accepts an external address without verifying it is a deployed contract, calls to that address silently succeed as no-ops, producing incorrect state updates or bypassed logic.
 
 ## Detection Heuristics
 

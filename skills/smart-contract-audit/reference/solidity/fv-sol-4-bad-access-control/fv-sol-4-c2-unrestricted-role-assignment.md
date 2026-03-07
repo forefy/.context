@@ -12,7 +12,7 @@ When a function that assigns ownership, admin rights, or privileged roles is pub
 - `setOwner(address)`, `grantRole(bytes32, address)`, `addAdmin(address)` callable by any address
 
 **Initialization-Time Exposure**
-- `initialize()` function with no access control that sets owner — callable by anyone after deployment if not called atomically
+- `initialize()` function with no access control that sets owner - callable by anyone after deployment if not called atomically
 - Proxy pattern where `initialize` is not gated by `initializer` modifier, allowing re-initialization
 
 **Indirect Privilege Escalation**

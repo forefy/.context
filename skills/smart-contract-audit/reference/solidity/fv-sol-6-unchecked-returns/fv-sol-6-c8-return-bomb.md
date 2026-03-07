@@ -2,7 +2,7 @@
 
 ## TLDR
 
-When a contract makes an external call using `(bool success, bytes memory data) = target.call(payload)`, the EVM copies the full returndata into memory. A malicious or compromised `target` can return enormous amounts of data, causing the caller to spend enormous gas copying it — potentially exceeding the block gas limit and reverting the entire transaction.
+When a contract makes an external call using `(bool success, bytes memory data) = target.call(payload)`, the EVM copies the full returndata into memory. A malicious or compromised `target` can return enormous amounts of data, causing the caller to spend enormous gas copying it - potentially exceeding the block gas limit and reverting the entire transaction.
 
 This is particularly dangerous when `target` is user-supplied (e.g., in batch executors, meta-transaction relayers, or arbitrary call dispatchers).
 
@@ -17,7 +17,7 @@ This is particularly dangerous when `target` is user-supplied (e.g., in batch ex
 ## False Positives
 
 - Returndata not copied: `(bool success,) = target.call(data)` (empty bytes pattern)
-- Assembly call with explicit `outsize = 0`: `call(gas(), target, value, inOffset, inSize, 0, 0)` — no copy occurs
+- Assembly call with explicit `outsize = 0`: `call(gas(), target, value, inOffset, inSize, 0, 0)` - no copy occurs
 - Callee is hardcoded trusted contract (no user control over `target`)
 - Gas-limited call with budget accounting for worst-case returndata size
 - `returndatasize()` capped before copy: `if gt(returndatasize(), MAX_RETURN) { revert(0,0) }`

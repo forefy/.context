@@ -238,7 +238,7 @@ Use Chainlink price feeds with staleness checks for all collateral and reward to
 
 ---
 
-### Withdrawal Queue and Multi-step Unstaking Issues (no fv-sol equivalent — candidate for new entry)
+### Withdrawal Queue and Multi-step Unstaking Issues (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Withdrawal logic has a dead-code success check: a `return` statement appears before `require(sent)`, making the failure condition unreachable.
@@ -296,7 +296,7 @@ Initialize all new staking vaults with dead shares minted to `address(0xdead)` o
 
 ---
 
-### Reward Distribution Flaws (no fv-sol equivalent — candidate for new entry)
+### Reward Distribution Flaws (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Reward distribution uses a `rewardPerToken` accumulator that is not updated on every stake or unstake, allowing stale accrual.

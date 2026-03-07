@@ -24,7 +24,7 @@ EIP-2535 Diamond proxies introduce unique storage and selector collision risks b
 ## False Positives
 
 - All facets use EIP-7201 namespaced storage: `keccak256(abi.encode(uint256(keccak256("namespace")) - 1)) & ~bytes32(uint256(0xff))`
-- No top-level state variables in any facet — only function definitions and struct definitions
+- No top-level state variables in any facet - only function definitions and struct definitions
 - `diamondCut` validates no selector collisions before registering
 - `DiamondLoupeFacet` enumerates all selectors post-cut for off-chain verification
 - Multisig + timelock on `diamondCut` with mandatory selector review step

@@ -8,7 +8,7 @@ Cryptographic access control schemes fail when the protected value is not bound 
 
 **Commit-Reveal Not Bound to Sender**
 - `keccak256(abi.encodePacked(value, salt))` without `msg.sender` included in the hash
-- Commitment stored in a public mapping — visible on-chain once committed, allowing front-running
+- Commitment stored in a public mapping - visible on-chain once committed, allowing front-running
 - Reveal function does not validate `msg.sender` against the address that originally committed
 
 **Merkle Second Preimage**
@@ -19,7 +19,7 @@ Cryptographic access control schemes fail when the protected value is not bound 
 
 **Merkle Proof Reuse and Front-Running**
 - Leaf does not include `msg.sender`: `keccak256(abi.encodePacked(amount))` or `keccak256(abi.encodePacked(tokenId))`
-- Proof not recorded as consumed after first use — replayable across multiple transactions
+- Proof not recorded as consumed after first use - replayable across multiple transactions
 - Public whitelist where proof is visible on-chain before the intended user claims
 
 ## False Positives

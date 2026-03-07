@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Bridges are architecturally unique because correctness depends on two independent execution environments that cannot atomically read each other's state: a lock or burn on the source chain must be faithfully reflected as a mint or release on the destination chain with no shared transaction context to enforce atomicity. The trust model extends beyond on-chain code to off-chain relayers, oracle sets, or validator committees whose compromise can authorize fraudulent minting without corresponding locking. Every cross-chain message carries a distinct attack surface — replay across chains, payload tampering during transmission, and gas griefing on the destination side — that has no equivalent in single-chain protocols.
+Bridges are architecturally unique because correctness depends on two independent execution environments that cannot atomically read each other's state: a lock or burn on the source chain must be faithfully reflected as a mint or release on the destination chain with no shared transaction context to enforce atomicity. The trust model extends beyond on-chain code to off-chain relayers, oracle sets, or validator committees whose compromise can authorize fraudulent minting without corresponding locking. Every cross-chain message carries a distinct attack surface - replay across chains, payload tampering during transmission, and gas griefing on the destination side - that has no equivalent in single-chain protocols.
 
 ## Bug Classes
 
@@ -253,7 +253,7 @@ Bridge executor contracts must maintain an explicit allowlist of callable target
 
 ---
 
-### Flow Rate and Rate Limiting (no fv-sol equivalent — candidate for new entry)
+### Flow Rate and Rate Limiting (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Bridge flow rate limits apply globally across all users when any single user exceeds the per-token threshold, enabling griefing at minimal cost
@@ -279,7 +279,7 @@ Rate limit state must be tracked and enforced per-token; activation of a restric
 
 ---
 
-### State Update Inconsistency (no fv-sol equivalent — candidate for new entry)
+### State Update Inconsistency (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Burn or cancel operations do not clear all associated mappings (e.g., `orderOwner` persists after NFT burn), enabling the next mint of the same token ID to inherit stale ownership
@@ -572,7 +572,7 @@ Cross-chain authorization must never rely on address equality as a proxy for own
 
 ---
 
-### Missing enforcedOptions — Insufficient Gas for lzReceive (ref: pashov-71)
+### Missing enforcedOptions - Insufficient Gas for lzReceive (ref: pashov-71)
 
 **Protocol-Specific Preconditions**
 - The OApp never calls `setEnforcedOptions()` to establish a minimum gas floor for destination execution, leaving gas entirely at the discretion of the message sender
@@ -750,7 +750,7 @@ OApps securing material value must configure at least a `2/3` DVN threshold usin
 Ronin bridge hack: the exploit drained approximately $625M over multiple transactions across six days before being detected. Per-window rate limits would have capped the loss to a fraction of this amount by triggering an automatic pause after the first anomalous window, providing time for human intervention.
 
 **Remediation Notes**
-All bridges securing material value must implement both per-transaction maximums and time-window rate limits on send and receive paths. The `whenNotPaused` modifier must be applied to all token movement functions. A guardian address — a multisig with on-call key holders — must have the ability to pause the bridge immediately without requiring a full governance vote. Automated monitoring that triggers a pause when transfer volume exceeds a statistical threshold should be deployed as an off-chain companion to the on-chain circuit breaker.
+All bridges securing material value must implement both per-transaction maximums and time-window rate limits on send and receive paths. The `whenNotPaused` modifier must be applied to all token movement functions. A guardian address - a multisig with on-call key holders - must have the ability to pause the bridge immediately without requiring a full governance vote. Automated monitoring that triggers a pause when transfer volume exceeds a statistical threshold should be deployed as an off-chain companion to the on-chain circuit breaker.
 
 ---
 

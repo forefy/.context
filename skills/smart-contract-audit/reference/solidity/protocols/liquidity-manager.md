@@ -4,7 +4,7 @@
 
 ## Protocol Context
 
-Liquidity managers sit as an abstraction layer on top of concentrated AMMs such as Uniswap v3, wrapping individual NFT positions into fungible vault shares that represent a range-bound LP strategy. Their correctness depends on external DEX state — tick price ranges, pool slot0, fee accrual checkpoints — that can be manipulated or go stale between rebalance operations. Because rebalancing events trigger collect, burn, and mint sequences on the underlying pool, they accumulate protocol fees and expose multiple re-entry and slippage surfaces within a single transaction. Many protocols additionally wrap positions in ERC-4626 vaults and couple governance, cross-chain bridges, or reward distribution to the same contract surface, compounding the attack area significantly.
+Liquidity managers sit as an abstraction layer on top of concentrated AMMs such as Uniswap v3, wrapping individual NFT positions into fungible vault shares that represent a range-bound LP strategy. Their correctness depends on external DEX state - tick price ranges, pool slot0, fee accrual checkpoints - that can be manipulated or go stale between rebalance operations. Because rebalancing events trigger collect, burn, and mint sequences on the underlying pool, they accumulate protocol fees and expose multiple re-entry and slippage surfaces within a single transaction. Many protocols additionally wrap positions in ERC-4626 vaults and couple governance, cross-chain bridges, or reward distribution to the same contract surface, compounding the attack area significantly.
 
 ## Bug Classes
 
@@ -17,7 +17,7 @@ Liquidity managers sit as an abstraction layer on top of concentrated AMMs such 
 - Cross-function re-entry paths exist between `rebalance`, `deposit`, and `claimRewards` when they share state variables such as `initialGas` or per-epoch accumulators
 
 **Detection Heuristics**
-- Identify all external calls in the rebalance flow: `collect`, `decreaseLiquidity`, `burn`, `mint`, `increaseLiquidity` — check that internal accounting is fully updated before any outbound call
+- Identify all external calls in the rebalance flow: `collect`, `decreaseLiquidity`, `burn`, `mint`, `increaseLiquidity` - check that internal accounting is fully updated before any outbound call
 - Search for `transfer`/`safeTransfer` calls preceding state updates in withdraw or close paths
 - Check `anyExecute` or bridge callback functions for storage variables written early and read again after re-entry is possible
 - Verify `nonReentrant` is applied to all user-facing entry points that touch LP state
@@ -214,7 +214,7 @@ Replace `slot0` with a TWAP derived from `IUniswapV3Pool.observe()` for all econ
 
 ---
 
-### Fee and Royalty Distribution in LP Context (no fv-sol equivalent — candidate for new entry)
+### Fee and Royalty Distribution in LP Context (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - LP fee collection from Uniswap v3 positions (`nonfungiblePositionManager.collect`) produces two token amounts that must be correctly split between protocol, operators, and depositors
@@ -232,14 +232,14 @@ Replace `slot0` with a TWAP derived from `IUniswapV3Pool.observe()` for all econ
 - Vaults that distribute fees proportionally at the share level with no separate accumulator
 
 **Notable Historical Findings**
-RealWagmi reported multiple fee calculation errors: fees were incorrectly updated in both `_deposit` and `_withdraw` functions, causing new depositors to dilute accrued fees and existing depositors to receive less than their entitlement. Maia DAO's Talos vault contracts permanently trapped protocol fees because `rerange()` called `collect()` but no withdrawal mechanism existed. In Golom, the protocol fee was double-counted — subtracted from seller payout and added to buyer cost simultaneously — doubling the effective fee rate. Carapace's sandwich vulnerability in `accruePremiumAndExpireProtections` allowed an attacker to enter and exit just before and after premium accrual, extracting fees intended for long-term protection sellers.
+RealWagmi reported multiple fee calculation errors: fees were incorrectly updated in both `_deposit` and `_withdraw` functions, causing new depositors to dilute accrued fees and existing depositors to receive less than their entitlement. Maia DAO's Talos vault contracts permanently trapped protocol fees because `rerange()` called `collect()` but no withdrawal mechanism existed. In Golom, the protocol fee was double-counted - subtracted from seller payout and added to buyer cost simultaneously - doubling the effective fee rate. Carapace's sandwich vulnerability in `accruePremiumAndExpireProtections` allowed an attacker to enter and exit just before and after premium accrual, extracting fees intended for long-term protection sellers.
 
 **Remediation Notes**
 Update fee accumulators before minting or burning shares in every deposit and withdraw path. Add an explicit `withdrawProtocolFees(address token, address recipient) external onlyOwner` function to all position vaults. Cap the protocol fee rate with an immutable constant. Validate that `collect()` output tokens are reconciled with the vault's internal token0/token1 balance tracking within the same transaction.
 
 ---
 
-### Fund Lock in Position NFTs (no fv-sol equivalent — candidate for new entry)
+### Fund Lock in Position NFTs (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - LP position NFTs represent illiquid, range-bound capital; if the NFT is transferred to a contract that does not implement `onERC721Received`, all underlying liquidity becomes permanently inaccessible
@@ -287,7 +287,7 @@ Measure actual received amounts using before/after `balanceOf` snapshots on ever
 
 ---
 
-### Reward Distribution (no fv-sol equivalent — candidate for new entry)
+### Reward Distribution (no fv-sol equivalent - candidate for new entry)
 
 **Protocol-Specific Preconditions**
 - Gauge-based reward systems that couple LP position size to voting-escrow token balances require atomic updates to both the position and the gauge weight; desyncing these creates phantom gauge weight or loss of boost
