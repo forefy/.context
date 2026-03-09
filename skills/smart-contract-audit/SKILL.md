@@ -1,6 +1,6 @@
 ---
 name: smart-contract-audit
-description: Comprehensive smart contract security audit framework with multi-expert analysis. Use for full audits of Solidity, Anchor, or Vyper projects.
+description: Comprehensive smart contract security audit framework with multi-expert analysis. Use for full audits of Solidity, Anchor, Vyper, TON/FunC/Tact, or Sui/Move projects.
 ---
 
 # Smart Contract Security Audit Framework
@@ -56,6 +56,8 @@ When saving any audit outputs, reports, or analysis files:
 1. IDENTIFY BLOCKCHAIN PLATFORM:
    - Ethereum/EVM (Solidity, Vyper)
    - Solana (Anchor, Native Rust)
+   - TON (FunC, Tact)
+   - Sui (Move)
    - Cosmos (CosmWasm)
    - Near Protocol (AssemblyScript, Rust)
    - Cardano (Plutus, Haskell)
@@ -80,6 +82,8 @@ Based on detected blockchain platform, consult the appropriate reference file:
 - **Ethereum/Solidity**: Read `$SKILL_DIR/SOLIDITY-CHECKS.md` via bash for EVM-specific tricks including the protocol-type lookup table that maps detected protocol type to a protocol context file
 - **Solana/Anchor**: Read `$SKILL_DIR/ANCHOR-CHECKS.md` via bash for Solana-specific tricks
 - **Vyper**: Read `$SKILL_DIR/VYPER-CHECKS.md` via bash for Vyper-specific tricks
+- **TON/FunC/Tact**: Read `$SKILL_DIR/TON-CHECKS.md` via bash for TON actor-model tricks, FunC language footguns, Tact-specific patterns, and TEP standard compliance checks
+- **Sui/Move**: Read `$SKILL_DIR/MOVE-CHECKS.md` via bash for Sui Move object model (abilities), capability pattern, PTB/shared-object concurrency, upgrade safety, and real-world exploit patterns (Cetus, Thala, KriyaDEX)
 
 ### 2.2 Proof of Concept Approach
 
@@ -89,14 +93,38 @@ Only if the repo is already configured with a testing framework, create complete
 
 Reference `$SKILL_DIR/reference/` directory for vulnerability patterns organized by language:
 - `$SKILL_DIR/reference/anchor/` - Solana/Anchor vulnerability patterns (fv-anc-X)
+- `$SKILL_DIR/reference/anchor/protocols/` - Solana protocol-type context files covering oracle, lending, staking, AMM/DEX, and governance DeFi patterns; each file maps bug classes to Solana-specific preconditions, detection heuristics, and remediation notes; cross-referenced to fv-anc-X IDs
 - `$SKILL_DIR/reference/solidity/` - Ethereum/Solidity vulnerability patterns (fv-sol-X)
 - `$SKILL_DIR/reference/solidity/protocols/` - EVM protocol-type context files derived from 10,600+ real audit findings; each file maps bug classes to protocol-specific preconditions, detection heuristics, and historical exploit patterns; cross-referenced to fv-sol-X IDs
 - `$SKILL_DIR/reference/vyper/` - Vyper vulnerability patterns (fv-vyp-X)
+- `$SKILL_DIR/reference/ton/` - TON/FunC/Tact vulnerability patterns (fv-ton-X)
+- `$SKILL_DIR/reference/ton/protocols/` - TON protocol-type context files covering oracle (async delivery model), AMM/DEX (async slippage), lending (async liquidation), staking (accumulator ordering, cooldown griefing), and bridge/governance patterns; cross-referenced to fv-ton-X IDs
+- `$SKILL_DIR/reference/move/` - Sui/Move vulnerability patterns (fv-mov-X)
+- `$SKILL_DIR/reference/move/protocols/` - Sui/Move protocol-type context files covering oracle (Pyth on Sui), AMM/DEX (CLMM tick arithmetic, flash swap), lending (vault inflation, capability-based access), staking (PTB flash stake, receipt duplication), and governance (UpgradeCap, AdminCap, ZK nullifier) patterns; cross-referenced to fv-mov-X IDs
 
 Three-layer reading order for Solidity/EVM audits:
 1. Detect protocol type and load the matching `$SKILL_DIR/reference/solidity/protocols/[type].md` - this is the primary checklist
 2. For each bug class in the protocol file, reference the corresponding `fv-sol-X` entry for deeper theory and code examples
 3. Apply quick tricks from `$SKILL_DIR/SOLIDITY-CHECKS.md` throughout
+
+Three-layer reading order for Solana/Anchor audits:
+1. Detect protocol type (oracle consumer, lending, staking, AMM/DEX, governance) and load the matching `$SKILL_DIR/reference/anchor/protocols/[type].md` - this provides protocol-specific preconditions and heuristics
+2. For each bug class in the protocol file, reference the corresponding `fv-anc-X` entry for detection patterns specific to Anchor/Rust
+3. Apply quick tricks from `$SKILL_DIR/ANCHOR-CHECKS.md` throughout, paying special attention to Token-2022 and compute budget heuristics when relevant
+
+Three-layer reading order for TON/FunC/Tact audits:
+1. Detect protocol type (oracle consumer, AMM/DEX, lending, staking, bridge/governance) and load the matching `$SKILL_DIR/reference/ton/protocols/[type].md` - emphasizes async message model preconditions unique to TON
+2. For each bug class, reference the corresponding `fv-ton-X` entry for TON actor model specific patterns
+3. Apply quick tricks from `$SKILL_DIR/TON-CHECKS.md` throughout
+
+Three-layer reading order for Sui/Move audits:
+1. Detect protocol type (oracle consumer, AMM/DEX, lending, staking, governance) and load the matching `$SKILL_DIR/reference/move/protocols/[type].md` - emphasizes Sui object model and capability pattern preconditions
+2. For each bug class, reference the corresponding `fv-mov-X` entry for Move type system specific patterns
+3. Apply quick tricks from `$SKILL_DIR/MOVE-CHECKS.md` throughout
+
+Two-layer reading order for Vyper audits:
+1. Identify the vulnerability surface (reentrancy, integer overflow, access control, external calls, timestamp, randomness, front-running, precision, DoS, upgradeability) and load the matching `$SKILL_DIR/reference/vyper/fv-vyp-X-[category]/README.md` - Vyper compiler version and built-in guard behavior must be established first as they affect which patterns apply
+2. Apply quick tricks from `$SKILL_DIR/VYPER-CHECKS.md` throughout, paying particular attention to compiler-version-specific reentrancy lock behavior and fixed-point division edge cases
 
 External resources:
 - https://consensys.github.io/smart-contract-best-practices/
@@ -244,8 +272,10 @@ When encountering vulnerability patterns, use bash to cat the relevant files in 
 - Solidity: `cat $SKILL_DIR/reference/solidity/[fv-sol-X]/README.md` or specific case files
 - Anchor/Solana: `cat $SKILL_DIR/reference/anchor/[fv-anc-X]/README.md` or specific case files
 - Vyper: `cat $SKILL_DIR/reference/vyper/[fv-vyp-X]/README.md` or specific case files
-- Each case file contains "Bad" vs "Good" code patterns for comparison
-- Specific vulnerability classifications (fv-sol-X, fv-anc-X, or fv-vyp-X naming)
+- TON/FunC/Tact: `cat $SKILL_DIR/reference/ton/[fv-ton-X]/README.md` or specific case files
+- Sui/Move: `cat $SKILL_DIR/reference/move/[fv-mov-X]/README.md` or specific case files
+- Each case file contains "Detection Heuristics" and "False Positives" sections
+- Specific vulnerability classifications (fv-sol-X, fv-anc-X, fv-vyp-X, fv-ton-X, or fv-mov-X naming)
 
 ### Step 5: Coverage Plan
 **SYSTEMATIC SMART CONTRACT COVERAGE:**
