@@ -9,6 +9,11 @@
 - Check if account reallocation properly handles rent exemption calculations
 - Look for missing close constraints that leave accounts with non-zero data accessible
 - Verify if program-derived addresses validate all derivation parameters
+- Check Token-2022 token transfers use `transfer_checked` not legacy `spl_token::transfer`; confirm transfer hook account is included in CPI and the hook program is not None
+- Verify compute budget instructions (`SetComputeUnitLimit`) in transaction cannot be injected or overridden by users ahead of business-logic instructions; compute exhaustion is a DoS vector
+- Search all `invoke_signed` call sites for seeds derived from attacker-controlled account data; seeds must be validated before use as a signer identity
+- Look for oracle price reads missing any of: staleness check against clock sysvar, confidence interval check, status/trading-halt check, and circuit breaker for extreme price deviation
+- Verify reward and staking accumulator index values are updated before any balance or share change in the same instruction; index-after-balance ordering allows reward theft
 
 ## Security Categories
 
@@ -84,6 +89,41 @@
 - Operations on accounts marked as closed
 - Unintended closure by close constraint
 
+### Oracle & Price Feeds
+
+- Oracle price read without staleness check against `Clock` sysvar
+- Confidence interval not validated against an acceptable threshold
+- Oracle status or trading-halt flag not checked before use
+- Using on-chain spot price instead of a TWAP or aggregated feed
+- Accepting oracle accounts not matching a hardcoded expected address (fake oracle injection)
+- Retroactive oracle price applied to a transaction that occurred in a different slot
+- Flash loan used to manipulate on-chain oracle within a single transaction
+
+### DeFi Patterns
+
+- Vault share issuance using total supply before accruing pending interest or rewards
+- Deposit-then-immediate-withdraw round trip extracting value via rounding gap
+- Missing minimum deposit or withdrawal fee to make precision-gap attacks uneconomical
+- Slippage tolerance of 0 or derived from on-chain state in the same transaction
+- Lamport balance invariant not preserved across CPI chains
+- Reward accumulator index updated after balance change allowing reward theft
+- Cooldown or unlock period bypassable via flash loan entering and exiting in one slot
+
+### Token-2022 Extensions
+
+- Token-2022 transfer hook not invoked or hook account missing from CPI
+- Interest-bearing mint balance read without normalizing for accrued interest rate
+- Transfer fee not accounted for when computing expected received amount
+- Freeze authority on accepted mint not verified to be revoked
+- Close authority on Token-2022 mint can brick protocol positions
+
+### Compute & Program Management
+
+- Compute budget limit instruction injected ahead of business-logic instructions in the same transaction, causing DoS
+- Vec or array initialization with declared capacity but uninitialized elements accessed as if populated
+- Upgrade authority on a dependency program not pinned or audited; silent behavior change after upgrade
+- Log output truncated by compute limit, hiding security-relevant events from off-chain monitors
+
 ## Knowledge Base References
 
 For detailed vulnerability patterns, read the relevant README then drill into case files:
@@ -93,7 +133,17 @@ For detailed vulnerability patterns, read the relevant README then drill into ca
 - `cat $SKILL_DIR/reference/anchor/fv-anc-4-pda-security/README.md` - PDA vulnerabilities
 - `cat $SKILL_DIR/reference/anchor/fv-anc-5-cross-program-invocation-cpi/README.md` - CPI security
 - `cat $SKILL_DIR/reference/anchor/fv-anc-6-error-handling/README.md` - Error handling patterns
-- `cat $SKILL_DIR/reference/anchor/fv-anc-7-token-operations/README.md` - Token security
+- `cat $SKILL_DIR/reference/anchor/fv-anc-7-token-operations/README.md` - Token security including Token-2022
 - `cat $SKILL_DIR/reference/anchor/fv-anc-8-system-account-validation/README.md` - System account checks
 - `cat $SKILL_DIR/reference/anchor/fv-anc-9-type-cosplay/README.md` - Type confusion
 - `cat $SKILL_DIR/reference/anchor/fv-anc-10-closing-accounts/README.md` - Account closure security
+- `cat $SKILL_DIR/reference/anchor/fv-anc-11-state-management/README.md` - Slippage, lamport invariant, DoS, time units
+- `cat $SKILL_DIR/reference/anchor/fv-anc-12-oracle-and-defi/README.md` - Oracle feeds and DeFi accounting patterns
+- `cat $SKILL_DIR/reference/anchor/fv-anc-13-program-management/README.md` - Compute budget, upgrade authority, program init
+
+For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):
+- `cat $SKILL_DIR/reference/anchor/protocols/oracle.md` - Oracle integration patterns
+- `cat $SKILL_DIR/reference/anchor/protocols/lending.md` - Lending and vault protocols
+- `cat $SKILL_DIR/reference/anchor/protocols/staking.md` - Staking and reward protocols
+- `cat $SKILL_DIR/reference/anchor/protocols/amm-dex.md` - AMM and DEX protocols
+- `cat $SKILL_DIR/reference/anchor/protocols/governance.md` - Governance and authority management

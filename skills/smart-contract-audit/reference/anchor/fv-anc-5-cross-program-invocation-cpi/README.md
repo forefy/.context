@@ -16,3 +16,8 @@ Run `cat $SKILL_DIR/reference/anchor/fv-anc-5-cross-program-invocation-cpi/<file
 #### fv-anc-5-cl4-passing-unnecessary-accounts-to-cpis.md
 #### fv-anc-5-cl5-sol-balance-drain-via-cpi.md
 #### fv-anc-5-cl6-post-cpi-ownership-change.md
+#### fv-anc-5-cl7-invoke-signed-with-wrong-or-partial-seeds.md
+#### fv-anc-5-cl8-cpi-to-system-program-creates-unintended-account.md
+#### fv-anc-5-cl9-cpi-privilege-escalation-via-account-authority.md
+#### fv-anc-5-cl10-cross-program-reentrancy-via-callback.md
+#### fv-anc-5-cl11-cpi-to-upgradeable-program-without-version-pin.md
