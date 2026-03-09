@@ -10,7 +10,7 @@ Lending and vault protocols on TON face the same fundamental share-accounting an
 
 ---
 
-### Vault Share Inflation (ref: fv-ton-9-cl2)
+### Vault Share Inflation
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Lending and vault protocols on TON face the same fundamental share-accounting an
 
 ---
 
-### Liquidation Not Atomic in Async Model (ref: fv-ton-9-cl3)
+### Liquidation Not Atomic in Async Model
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Lending and vault protocols on TON face the same fundamental share-accounting an
 
 ---
 
-### Insufficient Liquidation Incentive for Dust Positions (ref: fv-ton-9-cl3)
+### Insufficient Liquidation Incentive for Dust Positions
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Lending and vault protocols on TON face the same fundamental share-accounting an
 
 ---
 
-### Bad Debt Not Socialized (ref: fv-ton-9-cl3)
+### Bad Debt Not Socialized
 
 **Protocol-Specific Preconditions**
 

@@ -10,7 +10,7 @@ Staking on TON has two distinct layers: native TON validator staking (nominator 
 
 ---
 
-### Reward Accumulator Ordering (ref: fv-ton-9-cl4)
+### Reward Accumulator Ordering
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Staking on TON has two distinct layers: native TON validator staking (nominator 
 
 ---
 
-### Flash Stake Reward Capture (ref: fv-ton-9-cl4)
+### Flash Stake Reward Capture
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Staking on TON has two distinct layers: native TON validator staking (nominator 
 
 ---
 
-### Reward Rate Inflation via Direct Transfer (ref: fv-ton-9-cl4)
+### Reward Rate Inflation via Direct Transfer
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Staking on TON has two distinct layers: native TON validator staking (nominator 
 
 ---
 
-### Cooldown Griefing via Dust Messages (ref: fv-ton-9-cl4)
+### Cooldown Griefing via Dust Messages
 
 **Protocol-Specific Preconditions**
 

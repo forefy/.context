@@ -137,8 +137,7 @@ For detailed vulnerability patterns, read the relevant README then drill into ca
 - `cat $SKILL_DIR/reference/anchor/fv-anc-8-system-account-validation/README.md` - System account checks
 - `cat $SKILL_DIR/reference/anchor/fv-anc-9-type-cosplay/README.md` - Type confusion
 - `cat $SKILL_DIR/reference/anchor/fv-anc-10-closing-accounts/README.md` - Account closure security
-- `cat $SKILL_DIR/reference/anchor/fv-anc-11-state-management/README.md` - Slippage, lamport invariant, DoS, time units
-- `cat $SKILL_DIR/reference/anchor/fv-anc-12-oracle-and-defi/README.md` - Oracle feeds and DeFi accounting patterns
+- `cat $SKILL_DIR/reference/anchor/fv-anc-11-state-management/README.md` - Slippage, lamport invariant, DoS, time units, reward accumulator ordering
 - `cat $SKILL_DIR/reference/anchor/fv-anc-13-program-management/README.md` - Compute budget, upgrade authority, program init
 
 For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):

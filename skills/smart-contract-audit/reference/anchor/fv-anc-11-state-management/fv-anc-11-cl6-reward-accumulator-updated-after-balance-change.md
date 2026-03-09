@@ -1,4 +1,4 @@
-# FV-ANC-12-CL4 Reward Accumulator Updated After Balance Change
+# FV-ANC-11-CL6 Reward Accumulator Updated After Balance Change
 
 ## TLDR
 

@@ -1,5 +1,5 @@
 ---
-description: State management vulnerabilities including slippage, lamport invariants, dust attacks, and resource exhaustion.
+description: State management vulnerabilities including slippage, lamport invariants, dust attacks, resource exhaustion, and reward accumulator ordering.
 ---
 
 # FV-ANC-11 State Management
@@ -15,3 +15,4 @@ Run `cat $SKILL_DIR/reference/anchor/fv-anc-11-state-management/<filename>` to r
 #### fv-anc-11-cl3-dust-account-poisoning-blocking-critical-operations.md
 #### fv-anc-11-cl4-unbounded-account-collection-causing-dos.md
 #### fv-anc-11-cl5-time-unit-mismatch-in-deadline-validation.md
+#### fv-anc-11-cl6-reward-accumulator-updated-after-balance-change.md

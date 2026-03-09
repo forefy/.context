@@ -10,7 +10,7 @@ Staking protocols on Sui use Move's object model for staking receipts: a user's 
 
 ---
 
-### Reward Accumulator Ordering (ref: fv-mov-7-cl2)
+### Reward Accumulator Ordering
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Staking protocols on Sui use Move's object model for staking receipts: a user's 
 
 ---
 
-### Flash Stake via PTB (ref: fv-mov-7-cl2)
+### Flash Stake via PTB
 
 **Protocol-Specific Preconditions**
 

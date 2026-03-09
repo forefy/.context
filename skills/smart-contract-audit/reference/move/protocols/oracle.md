@@ -10,7 +10,7 @@ Oracle integrations on Sui use the Sui object model, where price feed data is ac
 
 ---
 
-### Stale Price Acceptance (ref: fv-mov-7-cl1)
+### Stale Price Acceptance
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Oracle integrations on Sui use the Sui object model, where price feed data is ac
 
 ---
 
-### Oracle Confidence Interval and Status Ignored (ref: fv-mov-7-cl1)
+### Oracle Confidence Interval and Status Ignored
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Oracle integrations on Sui use the Sui object model, where price feed data is ac
 
 ---
 
-### Fake Oracle Object Injection (ref: fv-mov-7-cl1)
+### Fake Oracle Object Injection
 
 **Protocol-Specific Preconditions**
 
@@ -75,7 +75,7 @@ Oracle integrations on Sui use the Sui object model, where price feed data is ac
 
 ---
 
-### Single Oracle Source Dependency (ref: fv-mov-7-cl1)
+### Single Oracle Source Dependency
 
 **Protocol-Specific Preconditions**
 

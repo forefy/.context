@@ -54,7 +54,7 @@ Governance on Sui differs from EVM governance in a fundamental way: privileged o
 
 ---
 
-### Flash Governance Vote via PTB (ref: fv-mov-7-cl4)
+### Flash Governance Vote via PTB
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Governance on Sui differs from EVM governance in a fundamental way: privileged o
 
 ---
 
-### Proposal Execution Without Timelock (ref: fv-mov-7-cl4)
+### Proposal Execution Without Timelock
 
 **Protocol-Specific Preconditions**
 
@@ -98,7 +98,29 @@ Governance on Sui differs from EVM governance in a fundamental way: privileged o
 
 ---
 
-### ZK Proof Nullifier Not Enforced (ref: fv-mov-7-cl4)
+### Bridge Message Replay
+
+**Protocol-Specific Preconditions**
+
+- Bridge contract processes inbound messages without storing or checking a message hash or nonce, allowing the same bridge transfer to be submitted multiple times
+- Each accepted submission mints tokens on the Sui side without checking whether the originating lock event was already processed
+- No `Table<vector<u8>, bool>` or equivalent processed-message registry maintained in the bridge contract's shared state
+
+**Detection Heuristics**
+
+- Find the bridge claim or mint function; check whether `assert!(!table::contains(&processed_messages, message_hash), ERROR_ALREADY_PROCESSED)` is called before any token minting
+- Verify that `message_hash` is stored: `table::add(&mut processed_messages, message_hash, true)` after successful processing, not only on error paths
+- Check that `message_hash` is derived from immutable fields of the bridge message (source chain ID, source tx hash, amount, recipient) and not from mutable fields the submitter controls
+- Verify the processed-message table is a shared object accessible to all validators; using an owned object allows the holder to reset it
+
+**False Positives**
+
+- Every bridge claim checks for and stores the message hash before any state mutation; the table is append-only with no deletion path
+- Bridge uses a committee-signed attestation with multi-sig threshold; verify committee key decentralization and threshold adequacy
+
+---
+
+### ZK Proof Nullifier Not Enforced
 
 **Protocol-Specific Preconditions**
 
