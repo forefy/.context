@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Calling an upgradeable program via CPI exposes the caller to logic changes introduced by the program's upgrade authority. If the calling protocol does not pin the expected program binary hash or validate the upgrade slot, an upgrade to the dependency program can silently change the semantics of the CPI, introduce new account requirements, or remove safety checks - without the calling protocol's audit surface being re-evaluated.
+Calling an upgradeable program via CPI exposes the caller to logic changes introduced by the program's upgrade authority. If the calling protocol does not pin the expected program binary hash or validate the upgrade slot, an upgrade to the dependency program can silently change the semantics of the CPI, introduce new account requirements, etc. - without the calling protocol's audit surface being re-evaluated.
 
 ## Detection Heuristics
 
