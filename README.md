@@ -77,7 +77,6 @@ Custom slash commands are auto-installed to `.github/prompts/`:
 
 ## About the Skills
 
-
 **Comprehensive audit skills**
 
 Skills are meant to run in specific invokations and be context-budgeted as much as possible. However, skills aren't good in sharing memory, hence a single flow (at the 5,000 token cap recommendation by anthropic) can be powerful for a comprehensive AI audit experience.
@@ -93,6 +92,8 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
 Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
 
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
+
+- `agent-onboarding` - agents are pre-instructed to get familiar with the code before anything, but also tracka. shared TODO.md - when you are in focus mode in your auditing you should have at least 4 concurrent AI terminals running. To sync their work, as well as keep quality coverage tracking of your audit, you can onboard agents to the team with a purpose (e.g. "Onboard to team to look for issues in recent commits only")
 
 <br>
 
