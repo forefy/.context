@@ -105,3 +105,4 @@ Consult `references/question-types.md` for detailed examples and patterns.
 - Present questions one at a time, waiting for user response between each
 - Keep conversational flow natural - don't use scripts or terminal sessions
 - Track score internally and display after each question
+- Don't make the correct question obvious by it being always the longer answer, or always the same choice field
