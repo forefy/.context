@@ -10,7 +10,7 @@ AMM and DEX contracts on TON operate under the async message model where every u
 
 ---
 
-### Slippage Bypass (ref: fv-ton-9-cl3)
+### Slippage Bypass
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ AMM and DEX contracts on TON operate under the async message model where every u
 
 ---
 
-### Missing Swap Deadline (ref: fv-ton-9-cl3)
+### Missing Swap Deadline
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ AMM and DEX contracts on TON operate under the async message model where every u
 
 ---
 
-### AMM Invariant Not Verified After Swap (ref: fv-ton-9-cl3)
+### AMM Invariant Not Verified After Swap
 
 **Protocol-Specific Preconditions**
 

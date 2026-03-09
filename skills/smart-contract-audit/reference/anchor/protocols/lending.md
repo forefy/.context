@@ -32,7 +32,7 @@ Lending protocols on Solana maintain supply shares representing depositor claims
 
 ---
 
-### Liquidation Logic Flaws (ref: fv-anc-4-cl4, fv-anc-12-cl1, fv-anc-12-cl2)
+### Liquidation Logic Flaws (ref: fv-anc-4-cl4)
 
 **Protocol-Specific Preconditions**
 

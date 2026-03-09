@@ -135,7 +135,6 @@ For detailed vulnerability patterns, read the relevant README then drill into ca
 - `cat $SKILL_DIR/reference/move/fv-mov-4-shared-objects-concurrency/README.md` - Shared objects, PTBs, hot potato, time/clock
 - `cat $SKILL_DIR/reference/move/fv-mov-5-arithmetic-errors/README.md` - Overflow, precision loss, rounding, casts, constants
 - `cat $SKILL_DIR/reference/move/fv-mov-6-token-accounting/README.md` - Coin/Balance, supply invariants, fees, dust
-- `cat $SKILL_DIR/reference/move/fv-mov-7-defi-protocols/README.md` - Oracle, AMM, lending, staking, bridge, governance
 - `cat $SKILL_DIR/reference/move/fv-mov-8-advanced-patterns/README.md` - Real-world exploits, generic type confusion, flash loan binding
 
 For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):
@@ -143,4 +142,4 @@ For protocol-type-specific DeFi audit context (preconditions, historical finding
 - `cat $SKILL_DIR/reference/move/protocols/amm-dex.md` - AMM and DEX patterns (CLMM tick arithmetic, flash swap, shared object concurrency)
 - `cat $SKILL_DIR/reference/move/protocols/lending.md` - Lending patterns (vault inflation, health factor, liquidation dust, self-liquidation)
 - `cat $SKILL_DIR/reference/move/protocols/staking.md` - Staking patterns (accumulator ordering, flash stake via PTB, receipt duplication, validator commission)
-- `cat $SKILL_DIR/reference/move/protocols/governance.md` - Governance patterns (UpgradeCap, AdminCap, flash vote, timelock, ZK nullifier)
+- `cat $SKILL_DIR/reference/move/protocols/governance.md` - Governance and bridge patterns (UpgradeCap, AdminCap, flash vote, timelock, bridge replay, ZK nullifier)

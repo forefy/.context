@@ -10,7 +10,7 @@ Bridge contracts on TON must enforce message uniqueness across the async message
 
 ---
 
-### Bridge Message Replay (ref: fv-ton-9-cl5)
+### Bridge Message Replay
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Bridge contracts on TON must enforce message uniqueness across the async message
 
 ---
 
-### Bridge Supply Invariant Violation (ref: fv-ton-9-cl5)
+### Bridge Supply Invariant Violation
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Bridge contracts on TON must enforce message uniqueness across the async message
 
 ---
 
-### Governance Flash Vote (ref: fv-ton-9-cl5)
+### Governance Flash Vote
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Bridge contracts on TON must enforce message uniqueness across the async message
 
 ---
 
-### Proposal Execution Without Timelock (ref: fv-ton-9-cl5)
+### Proposal Execution Without Timelock
 
 **Protocol-Specific Preconditions**
 

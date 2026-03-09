@@ -10,7 +10,7 @@ Oracle-consuming protocols on Solana are architecturally exposed to the update f
 
 ---
 
-### Stale Price Acceptance (ref: fv-anc-12-cl1)
+### Stale Price Acceptance
 
 **Protocol-Specific Preconditions**
 
@@ -33,7 +33,7 @@ Oracle-consuming protocols on Solana are architecturally exposed to the update f
 
 ---
 
-### Confidence Interval and Status Ignored (ref: fv-anc-12-cl2)
+### Confidence Interval and Status Ignored
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Oracle-consuming protocols on Solana are architecturally exposed to the update f
 
 ---
 
-### Flash Loan Oracle Manipulation (ref: fv-anc-12-cl3)
+### Flash Loan Oracle Manipulation
 
 **Protocol-Specific Preconditions**
 
@@ -75,7 +75,7 @@ Oracle-consuming protocols on Solana are architecturally exposed to the update f
 
 ---
 
-### Fake Oracle Injection (ref: fv-anc-12-cl1, fv-anc-8-cl3)
+### Fake Oracle Injection (ref: fv-anc-8-cl3)
 
 **Protocol-Specific Preconditions**
 

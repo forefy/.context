@@ -10,7 +10,7 @@ Staking protocols on Solana track user share balances and distribute rewards thr
 
 ---
 
-### Reward Accumulator Index Ordering (ref: fv-anc-12-cl4)
+### Reward Accumulator Index Ordering (ref: fv-anc-11-cl6)
 
 **Protocol-Specific Preconditions**
 

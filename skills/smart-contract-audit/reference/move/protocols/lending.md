@@ -10,7 +10,7 @@ Lending protocols on Sui use Move's capability pattern extensively: a `LendingPo
 
 ---
 
-### Vault Share Inflation via Donation (ref: fv-mov-7-cl3)
+### Vault Share Inflation via Donation
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Lending protocols on Sui use Move's capability pattern extensively: a `LendingPo
 
 ---
 
-### Oracle-Dependent Health Factor Errors (ref: fv-mov-7-cl1, fv-mov-7-cl3)
+### Oracle-Dependent Health Factor Errors
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Lending protocols on Sui use Move's capability pattern extensively: a `LendingPo
 
 ---
 
-### Liquidation Dust Position Griefing (ref: fv-mov-7-cl3)
+### Liquidation Dust Position Griefing
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Lending protocols on Sui use Move's capability pattern extensively: a `LendingPo
 
 ---
 
-### Self-Liquidation for Bonus Extraction (ref: fv-mov-7-cl3)
+### Self-Liquidation for Bonus Extraction
 
 **Protocol-Specific Preconditions**
 

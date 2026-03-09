@@ -127,7 +127,6 @@ For detailed vulnerability patterns, read the relevant README then drill into ca
 - `cat $SKILL_DIR/reference/ton/fv-ton-6-contract-lifecycle/README.md` - Deployment, upgrades, StateInit, set_code
 - `cat $SKILL_DIR/reference/ton/fv-ton-7-token-standards/README.md` - Jetton (TEP-74), NFT (TEP-62), token accounting
 - `cat $SKILL_DIR/reference/ton/fv-ton-8-tact-language/README.md` - Tact-specific vulnerability patterns
-- `cat $SKILL_DIR/reference/ton/fv-ton-9-defi-protocols/README.md` - Oracle, AMM, lending, staking, bridge, governance
 
 For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):
 - `cat $SKILL_DIR/reference/ton/protocols/oracle.md` - Oracle integration patterns (async delivery, fake sender, staleness)

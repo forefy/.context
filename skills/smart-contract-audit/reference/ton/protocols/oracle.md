@@ -10,7 +10,7 @@ Oracle integrations on TON face a structural challenge unique to the actor model
 
 ---
 
-### Stale Price Acceptance (ref: fv-ton-9-cl1)
+### Stale Price Acceptance
 
 **Protocol-Specific Preconditions**
 
@@ -32,7 +32,7 @@ Oracle integrations on TON face a structural challenge unique to the actor model
 
 ---
 
-### Missing Confidence Validation (ref: fv-ton-9-cl1)
+### Missing Confidence Validation
 
 **Protocol-Specific Preconditions**
 
@@ -54,7 +54,7 @@ Oracle integrations on TON face a structural challenge unique to the actor model
 
 ---
 
-### Fake Oracle Sender (ref: fv-ton-9-cl1)
+### Fake Oracle Sender
 
 **Protocol-Specific Preconditions**
 
@@ -76,7 +76,7 @@ Oracle integrations on TON face a structural challenge unique to the actor model
 
 ---
 
-### On-Chain Spot Price as Oracle (ref: fv-ton-9-cl1)
+### On-Chain Spot Price as Oracle
 
 **Protocol-Specific Preconditions**
 
