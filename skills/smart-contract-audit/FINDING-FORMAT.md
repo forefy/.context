@@ -3,7 +3,7 @@
 **FINDING FORMAT:**
 Ensure findings created follow this format very strictly:
 
-```markdown
+````markdown
 ## [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
 
 ### Core Information [display with newlines]
@@ -79,7 +79,7 @@ Include:
 - Best practice implementation guidance
 - Verification steps to confirm fix]
 
-**References
+**References:**
 **KB/Reference:** 
 - [Relevant security standards, frameworks, or documentation]
 - [Knowledge base references if applicable: `reference/[language]/...`]
@@ -100,7 +100,7 @@ Include:
 - OVERCLASSIFIED findings: Valid vulnerability but severity was exaggerated - suggest correct severity level and adjusted bounty
 
 **Reality Check Factors:** Consider admin-only functions, existing access controls, economic attack incentives, TVL impact scale, and practical vs theoretical exploitability. Low severity findings merit small bounties ($50-$200) for best practice improvements even if somewhat theoretical, as they fit the severity level appropriately.]
-```
+````
 
 **SEVERITY CLASSIFICATION RULES:**
 
