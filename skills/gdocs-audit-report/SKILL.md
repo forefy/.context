@@ -1,6 +1,6 @@
 ---
 name: gdocs-audit-report
-description: Expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Use when asked to write, update, style, or fix an audit report document — including finding formatting, summary tables, inline code styling, bullet conversion, cross-reference hyperlinks, and severity color schemes. Covers auth, index-drift safety, and all common formatting pitfalls.
+description: Expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Use when asked to write, update, style, or fix an audit report document - including finding formatting, summary tables, inline code styling, bullet conversion, cross-reference hyperlinks, and severity color schemes. Covers auth, index-drift safety, and all common formatting pitfalls.
 ---
 
 # Google Docs Security Audit Report
@@ -27,10 +27,10 @@ Always read `references/api-patterns.md` and `references/formatting-standards.md
 Any insert/delete shifts every index above it. **Always sort ops high→low. Always get_doc() fresh.**
 
 ### 2. Text bg ≠ paragraph bg
-`updateTextStyle.backgroundColor` only covers character width — leaves white gaps between lines in code blocks. Use `updateParagraphStyle.shading.backgroundColor` + `spaceAbove/Below: 0` for full-width code block backgrounds.
+`updateTextStyle.backgroundColor` only covers character width - leaves white gaps between lines in code blocks. Use `updateParagraphStyle.shading.backgroundColor` + `spaceAbove/Below: 0` for full-width code block backgrounds.
 
 ### 3. headingId already has `h.` prefix
-Anchor URL = `#heading={headingId}` — **not** `#heading=h.{headingId}`.
+Anchor URL = `#heading={headingId}` - **not** `#heading=h.{headingId}`.
 
 ### 4. Code styling needs multiple passes
 After `updateTextStyle` splits a run, new unstyled sub-runs appear. Always do a second full-doc re-scan after the first styling pass.
@@ -39,13 +39,13 @@ After `updateTextStyle` splits a run, new unstyled sub-runs appear. Always do a 
 Prevents `maxRelayFeeBPS` matching before `assetConfig.maxRelayFeeBPS` and leaving a partial un-styled prefix.
 
 ### 6. Backtick removal order (per segment, high→low)
-Delete closing backtick → style inner → delete opening backtick — all in one batch.
+Delete closing backtick → style inner → delete opening backtick - all in one batch.
 
 ### 7. Bullet conversion
 `createParagraphBullets` does not change indices. Then `deleteContentRange` the `- ` prefix high→low in a second batch.
 
 ### 8. Cross-reference links: skip only already-linked runs
-Scan ALL runs for `X-NN` regex — **only skip** runs where `textStyle.link` is already set. Do NOT also filter by font (Courier runs can contain xrefs too).
+Scan ALL runs for `X-NN` regex - **only skip** runs where `textStyle.link` is already set. Do NOT also filter by font (Courier runs can contain xrefs too).
 
 ### 9. Table cell content replace
 Delete to `elements[-1].endIndex - 1` (keep the required trailing `\n`), then insert. Sort delete (higher) before insert (lower) in same batch.
@@ -73,7 +73,7 @@ See `references/api-patterns.md` for:
 
 ## Resources
 
-- `scripts/gdocs_auth.py` — reusable auth + get_doc + do_batch helpers
-- `references/api-patterns.md` — op templates and patterns
-- `references/formatting-standards.md` — colors, typography, structure constants
-- `references/how-to-create-google-service-account.md` — one-time setup: instruct the user to create a service account, advise the user to restrict it to the AI-only Drive folder/file (via google share feature), and provide the JSON key path
+- `scripts/gdocs_auth.py` - reusable auth + get_doc + do_batch helpers
+- `references/api-patterns.md` - op templates and patterns
+- `references/formatting-standards.md` - colors, typography, structure constants
+- `references/how-to-create-google-service-account.md` - one-time setup: instruct the user to create a service account, advise the user to restrict it to the AI-only Drive folder/file (via google share feature), and provide the JSON key path
