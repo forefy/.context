@@ -5,7 +5,7 @@ description: "Wrap the current audit agent session inside the Anthropic Sandbox 
 
 # Sandboxed Audit Runner
 
-Before running any audit on untrusted code, this skill configures and launches `srt` to wrap the entire agent session. The goal is to protect the host from prompt injection attacks embedded in the codebase under review — malicious comments, filenames, or configs designed to make the auditing agent exfiltrate SSH keys, tokens, or make unauthorized network calls.
+Before running any audit on untrusted code, this skill configures and launches `srt` to wrap the entire agent session. The goal is to protect the host from prompt injection attacks embedded in the codebase under review - malicious comments, filenames, or configs designed to make the auditing agent exfiltrate SSH keys, tokens, or make unauthorized network calls.
 
 **SKILL DIRECTORY DETECTION:**
 ```bash
@@ -33,7 +33,7 @@ Read `$SKILL_DIR/references/smart-contract.srt.md`, extract the JSON block, and 
 srt --settings .srt-audit.json bash
 ```
 
-All commands run inside that shell — including any invoked audit skill — are now sandboxed at the OS level. On macOS this uses `sandbox-exec`; on Linux it uses `bubblewrap`.
+All commands run inside that shell - including any invoked audit skill - are now sandboxed at the OS level. On macOS this uses `sandbox-exec`; on Linux it uses `bubblewrap`.
 
 ### 3. Invoke the audit skill normally
 
