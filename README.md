@@ -91,9 +91,13 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
 
 Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
 
+- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase — malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
+
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
 
 - `agent-onboarding` - agents are pre-instructed to get familiar with the code before anything, but also tracka. shared TODO.md - when you are in focus mode in your auditing you should have at least 4 concurrent AI terminals running. To sync their work, as well as keep quality coverage tracking of your audit, you can onboard agents to the team with a purpose (e.g. "Onboard to team to look for issues in recent commits only")
+
+- `gdocs-audit-report` - expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Covers finding formatting, summary tables, inline code styling, severity color schemes, index-drift safety, and all common Docs API pitfalls.
 
 <br>
 

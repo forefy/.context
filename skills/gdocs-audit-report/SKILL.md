@@ -76,3 +76,4 @@ See `references/api-patterns.md` for:
 - `scripts/gdocs_auth.py` — reusable auth + get_doc + do_batch helpers
 - `references/api-patterns.md` — op templates and patterns
 - `references/formatting-standards.md` — colors, typography, structure constants
+- `references/how-to-create-google-service-account.md` — one-time setup: instruct the user to create a service account, advise the user to restrict it to the AI-only Drive folder/file (via google share feature), and provide the JSON key path
