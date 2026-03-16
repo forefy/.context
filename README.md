@@ -91,7 +91,7 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
 
 Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
 
-- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase — malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
+- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase - malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
 
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
 

@@ -1,9 +1,9 @@
-# Google Docs API Patterns — Audit Report
+# Google Docs API Patterns - Audit Report
 
 ## Table of Contents
 
 - [Auth](#auth)
-- [Index Drift — The Golden Rule](#index-drift--the-golden-rule)
+- [Index Drift - The Golden Rule](#index-drift--the-golden-rule)
 - [Common Op Templates](#common-op-templates)
   - [Style a text range](#style-a-text-range)
   - [Delete a range](#delete-a-range)
@@ -34,7 +34,7 @@ doc   = get_doc(DOC_ID, TOKEN)
 
 ---
 
-## Index Drift — The Golden Rule
+## Index Drift - The Golden Rule
 
 **Every insert or delete shifts all indices above it.**
 
@@ -142,8 +142,8 @@ url = f"https://docs.google.com/document/d/{DOC_ID}/edit#heading={heading_id}"
 
 **Solution:** Always do at least 2 passes:
 
-1. First pass — style all known terms using `updateTextStyle` on specific ranges
-2. Second pass — re-scan doc for any remaining plain runs containing missed terms
+1. First pass - style all known terms using `updateTextStyle` on specific ranges
+2. Second pass - re-scan doc for any remaining plain runs containing missed terms
 
 **Term matching:** Sort terms **longest first** to avoid partial overlaps.
 
@@ -151,7 +151,7 @@ url = f"https://docs.google.com/document/d/{DOC_ID}/edit#heading={heading_id}"
 CODE_TERMS = sorted([...], key=len, reverse=True)
 ```
 
-**Word boundary check:** Skip for terms containing `.()[]{}/:'"#@* ` — only check boundaries for plain identifiers.
+**Word boundary check:** Skip for terms containing `.()[]{}/:'"#@* ` - only check boundaries for plain identifiers.
 
 ---
 
@@ -174,7 +174,7 @@ import re
 XREF_RE = re.compile(r'\b[A-Z]-\d{2}\b')
 # Map headingId -> title by scanning HEADING_1 paragraphs first
 # Only skip runs where ts.get('link') is already set
-# Do NOT restrict to plain/non-Courier runs — the ref can appear in any styled text
+# Do NOT restrict to plain/non-Courier runs - the ref can appear in any styled text
 # Apply updateTextStyle: link + bold to each match
 ```
 

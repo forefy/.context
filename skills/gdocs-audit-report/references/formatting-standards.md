@@ -1,4 +1,4 @@
-# Formatting Standards — Security Audit Report
+# Formatting Standards - Security Audit Report
 
 ## Severity Colors (RGB 0-1 scale)
 
@@ -14,10 +14,10 @@
 
 | Element         | Font       | Size  | Style       | Color              |
 |----------------|------------|-------|-------------|---------------------|
-| Finding heading | Roboto     | —     | HEADING_1   | Red `#e06666` `(0.439, 0.188, 0.627)` |
-| Body labels     | —          | —     | Bold        | (same as severity)  |
-| Inline code     | Courier New| —     | Bold        | Red `#e06666` `(0.447, 0.353, 0.675)` |
-| Code background | —          | —     | —           | Gray `#EDEDED` `(0.929, 0.929, 0.929)` |
+| Finding heading | Roboto     | -     | HEADING_1   | Red `#e06666` `(0.439, 0.188, 0.627)` |
+| Body labels     | -          | -     | Bold        | (same as severity)  |
+| Inline code     | Courier New| -     | Bold        | Red `#e06666` `(0.447, 0.353, 0.675)` |
+| Code background | -          | -     | -           | Gray `#EDEDED` `(0.929, 0.929, 0.929)` |
 
 ## Finding Structure (per finding)
 
