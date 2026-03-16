@@ -1,8 +1,25 @@
 # Google Docs API Patterns — Audit Report
 
-## Auth
+## Table of Contents
 
-For security isolation, we do not want to give agents free access to roam around our google drive, instead - we can create a service account, and give it access to only what it needs to work on and nothing else. see `./how-to-create-google-service-account.md` and instruct the user on how and why.
+- [Auth](#auth)
+- [Index Drift — The Golden Rule](#index-drift--the-golden-rule)
+- [Common Op Templates](#common-op-templates)
+  - [Style a text range](#style-a-text-range)
+  - [Delete a range](#delete-a-range)
+  - [Insert text](#insert-text)
+  - [Replace table cell content](#replace-table-cell-content)
+  - [Apply hyperlink](#apply-hyperlink)
+  - [Create paragraph bullets](#create-paragraph-bullets)
+  - [Full-width paragraph background (code blocks)](#full-width-paragraph-background-code-blocks)
+- [Heading Anchor URLs](#heading-anchor-urls)
+- [Inline Code Styling (multi-pass approach)](#inline-code-styling-multi-pass-approach)
+- [Removing Backtick-Wrapped Code](#removing-backtick-wrapped-code)
+- [Cross-Reference Hyperlinks](#cross-reference-hyperlinks)
+
+---
+
+## Auth
 
 Service account key (JSON) → RS256 JWT → OAuth2 Bearer token.
 Always use `ssl._create_unverified_context()`. Token expires in 1h.
