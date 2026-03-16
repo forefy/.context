@@ -1,8 +1,3 @@
----
-name: smart-contract.srt
-description: srt sandbox config for smart contract security audit sessions. Covers Foundry, Slither, Semgrep, Etherscan lookups, npm/pip/cargo installs, and fork test RPCs. Blocks host credential paths by default.
----
-
 Sandbox profile for EVM smart contract audits. Allows GitHub dependency fetches, block explorer APIs, free public RPCs for fork testing, and package registries. All sensitive host credential paths are denied.
 
 Copy the JSON block below to `.srt-audit.json` in the project root before starting the sandboxed session.
