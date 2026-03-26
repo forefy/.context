@@ -99,6 +99,10 @@ Workflow skills are designed to be picked up naturally as you pick through a cod
 
 - `gdocs-audit-report` - expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Covers finding formatting, summary tables, inline code styling, severity color schemes, index-drift safety, and all common Docs API pitfalls.
 
+- `foundry-poc` - context window optimized skill to generate a foundry proof of concept for a discussed finding.
+
+- `tiny-auditor` - context window optimized skill to challenge if autonomous audit skills are better than "find crits make no mistakes".
+
 <br>
 
 Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
