@@ -120,13 +120,13 @@ After detecting the protocol type, run `cat $SKILL_DIR/reference/solidity/protoc
 ## Knowledge Base References
 
 For detailed vulnerability patterns, read the relevant README then drill into case files:
-- `cat $SKILL_DIR/reference/solidity/fv-sol-1-reentrancy/README.md` - Reentrancy attack patterns
-- `cat $SKILL_DIR/reference/solidity/fv-sol-2-precision-errors/README.md` - Fixed-point math, ERC4626 rounding, special token accounting
-- `cat $SKILL_DIR/reference/solidity/fv-sol-3-arithmetic-errors/README.md` - Overflow/underflow, assembly pitfalls
-- `cat $SKILL_DIR/reference/solidity/fv-sol-4-bad-access-control/README.md` - Access control, signatures, hash collision
-- `cat $SKILL_DIR/reference/solidity/fv-sol-5-logic-errors/README.md` - Business logic, deployment config, randomness
-- `cat $SKILL_DIR/reference/solidity/fv-sol-6-unchecked-returns/README.md` - External call validation, non-standard tokens
-- `cat $SKILL_DIR/reference/solidity/fv-sol-7-proxy-insecurities/README.md` - Proxy patterns, upgrade lifecycle, diamond
-- `cat $SKILL_DIR/reference/solidity/fv-sol-8-slippage/README.md` - MEV, slippage, oracle front-running
-- `cat $SKILL_DIR/reference/solidity/fv-sol-9-unbounded-loops/README.md` - DoS, gas griefing, blacklistable tokens
-- `cat $SKILL_DIR/reference/solidity/fv-sol-10-oracle-manipulation/README.md` - Oracle attacks, Chainlink validity, L2 sequencer
+- `cat $SKILL_DIR/reference/solidity/fv-sol-1-reentrancy/readme.md` - Reentrancy attack patterns
+- `cat $SKILL_DIR/reference/solidity/fv-sol-2-precision-errors/readme.md` - Fixed-point math, ERC4626 rounding, special token accounting
+- `cat $SKILL_DIR/reference/solidity/fv-sol-3-arithmetic-errors/readme.md` - Overflow/underflow, assembly pitfalls
+- `cat $SKILL_DIR/reference/solidity/fv-sol-4-bad-access-control/readme.md` - Access control, signatures, hash collision
+- `cat $SKILL_DIR/reference/solidity/fv-sol-5-logic-errors/readme.md` - Business logic, deployment config, randomness
+- `cat $SKILL_DIR/reference/solidity/fv-sol-6-unchecked-returns/readme.md` - External call validation, non-standard tokens
+- `cat $SKILL_DIR/reference/solidity/fv-sol-7-proxy-insecurities/readme.md` - Proxy patterns, upgrade lifecycle, diamond
+- `cat $SKILL_DIR/reference/solidity/fv-sol-8-slippage/readme.md` - MEV, slippage, oracle front-running
+- `cat $SKILL_DIR/reference/solidity/fv-sol-9-unbounded-loops/readme.md` - DoS, gas griefing, blacklistable tokens
+- `cat $SKILL_DIR/reference/solidity/fv-sol-10-oracle-manipulation/readme.md` - Oracle attacks, Chainlink validity, L2 sequencer

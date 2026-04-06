@@ -129,13 +129,13 @@
 ## Knowledge Base References
 
 For detailed vulnerability patterns, read the relevant README then drill into case files:
-- `cat $SKILL_DIR/reference/move/fv-mov-1-object-model/README.md` - Abilities (copy/drop/store), dynamic fields, wrapping attacks
-- `cat $SKILL_DIR/reference/move/fv-mov-2-access-control/README.md` - Capability pattern, visibility, sender spoofing, phantom types
-- `cat $SKILL_DIR/reference/move/fv-mov-3-upgrade-safety/README.md` - init assumptions, upgrades, version checks, struct evolution
-- `cat $SKILL_DIR/reference/move/fv-mov-4-shared-objects-concurrency/README.md` - Shared objects, PTBs, hot potato, time/clock
-- `cat $SKILL_DIR/reference/move/fv-mov-5-arithmetic-errors/README.md` - Overflow, precision loss, rounding, casts, constants
-- `cat $SKILL_DIR/reference/move/fv-mov-6-token-accounting/README.md` - Coin/Balance, supply invariants, fees, dust
-- `cat $SKILL_DIR/reference/move/fv-mov-8-advanced-patterns/README.md` - Real-world exploits, generic type confusion, flash loan binding
+- `cat $SKILL_DIR/reference/move/fv-mov-1-object-model/readme.md` - Abilities (copy/drop/store), dynamic fields, wrapping attacks
+- `cat $SKILL_DIR/reference/move/fv-mov-2-access-control/readme.md` - Capability pattern, visibility, sender spoofing, phantom types
+- `cat $SKILL_DIR/reference/move/fv-mov-3-upgrade-safety/readme.md` - init assumptions, upgrades, version checks, struct evolution
+- `cat $SKILL_DIR/reference/move/fv-mov-4-shared-objects-concurrency/readme.md` - Shared objects, PTBs, hot potato, time/clock
+- `cat $SKILL_DIR/reference/move/fv-mov-5-arithmetic-errors/readme.md` - Overflow, precision loss, rounding, casts, constants
+- `cat $SKILL_DIR/reference/move/fv-mov-6-token-accounting/readme.md` - Coin/Balance, supply invariants, fees, dust
+- `cat $SKILL_DIR/reference/move/fv-mov-8-advanced-patterns/readme.md` - Real-world exploits, generic type confusion, flash loan binding
 
 For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):
 - `cat $SKILL_DIR/reference/move/protocols/oracle.md` - Oracle patterns (Pyth on Sui, staleness, confidence, fake injection)
