@@ -33,13 +33,13 @@
 ## Knowledge Base References
 
 For detailed vulnerability patterns, read the relevant README then drill into case files:
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-1-reentrancy/README.md` - Reentrancy attack patterns
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-2-integer-overflow/README.md` - Overflow/underflow issues
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-3-access-control/README.md` - Access control vulnerabilities
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-4-external-calls/README.md` - External call safety
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-5-timestamp-dependencies/README.md` - Timestamp manipulation
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-6-weak-randomness/README.md` - Random number generation
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-7-front-running/README.md` - MEV and front-running
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-8-division-precision/README.md` - Fixed-point math issues
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-9-denial-of-service/README.md` - DoS vulnerabilities
-- `cat $SKILL_DIR/reference/vyper/fv-vyp-10-upgradeability/README.md` - Upgrade pattern security
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-1-reentrancy/readme.md` - Reentrancy attack patterns
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-2-integer-overflow/readme.md` - Overflow/underflow issues
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-3-access-control/readme.md` - Access control vulnerabilities
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-4-external-calls/readme.md` - External call safety
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-5-timestamp-dependencies/readme.md` - Timestamp manipulation
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-6-weak-randomness/readme.md` - Random number generation
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-7-front-running/readme.md` - MEV and front-running
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-8-division-precision/readme.md` - Fixed-point math issues
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-9-denial-of-service/readme.md` - DoS vulnerabilities
+- `cat $SKILL_DIR/reference/vyper/fv-vyp-10-upgradeability/readme.md` - Upgrade pattern security

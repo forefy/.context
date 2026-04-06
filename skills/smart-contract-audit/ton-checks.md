@@ -119,14 +119,14 @@
 ## Knowledge Base References
 
 For detailed vulnerability patterns, read the relevant README then drill into case files:
-- `cat $SKILL_DIR/reference/ton/fv-ton-1-message-handling/README.md` - Sender validation, bounce, opcodes, serialization
-- `cat $SKILL_DIR/reference/ton/fv-ton-2-access-control/README.md` - Authorization, replay protection, admin patterns
-- `cat $SKILL_DIR/reference/ton/fv-ton-3-arithmetic-errors/README.md` - Integer/boolean errors, precision, rounding
-- `cat $SKILL_DIR/reference/ton/fv-ton-4-gas-and-storage/README.md` - Gas management, send modes, storage fees
-- `cat $SKILL_DIR/reference/ton/fv-ton-5-async-execution/README.md` - TON actor model, async reentrancy, race conditions
-- `cat $SKILL_DIR/reference/ton/fv-ton-6-contract-lifecycle/README.md` - Deployment, upgrades, StateInit, set_code
-- `cat $SKILL_DIR/reference/ton/fv-ton-7-token-standards/README.md` - Jetton (TEP-74), NFT (TEP-62), token accounting
-- `cat $SKILL_DIR/reference/ton/fv-ton-8-tact-language/README.md` - Tact-specific vulnerability patterns
+- `cat $SKILL_DIR/reference/ton/fv-ton-1-message-handling/readme.md` - Sender validation, bounce, opcodes, serialization
+- `cat $SKILL_DIR/reference/ton/fv-ton-2-access-control/readme.md` - Authorization, replay protection, admin patterns
+- `cat $SKILL_DIR/reference/ton/fv-ton-3-arithmetic-errors/readme.md` - Integer/boolean errors, precision, rounding
+- `cat $SKILL_DIR/reference/ton/fv-ton-4-gas-and-storage/readme.md` - Gas management, send modes, storage fees
+- `cat $SKILL_DIR/reference/ton/fv-ton-5-async-execution/readme.md` - TON actor model, async reentrancy, race conditions
+- `cat $SKILL_DIR/reference/ton/fv-ton-6-contract-lifecycle/readme.md` - Deployment, upgrades, StateInit, set_code
+- `cat $SKILL_DIR/reference/ton/fv-ton-7-token-standards/readme.md` - Jetton (TEP-74), NFT (TEP-62), token accounting
+- `cat $SKILL_DIR/reference/ton/fv-ton-8-tact-language/readme.md` - Tact-specific vulnerability patterns
 
 For protocol-type-specific DeFi audit context (preconditions, historical findings, remediation):
 - `cat $SKILL_DIR/reference/ton/protocols/oracle.md` - Oracle integration patterns (async delivery, fake sender, staleness)
