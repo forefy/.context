@@ -103,6 +103,8 @@ Workflow skills are designed to be picked up naturally as you pick through a cod
 
 - `tiny-auditor` - context window optimized skill to challenge if autonomous audit skills are better than "find crits make no mistakes".
 
+- `blockchain-forensics` - Trace stolen funds, attribute attacker wallets, using only public on-chain data. Also useful during audits for checking deployer history, validating privileged roles, and understanding how past exploits on similar protocols played out on-chain.
+
 <br>
 
 Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
