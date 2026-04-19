@@ -87,7 +87,7 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
   </p>
 - `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations.
 
-**Workflow skills**
+**Workflow / complementary skills**
 
 Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
 
@@ -104,6 +104,10 @@ Workflow skills are designed to be picked up naturally as you pick through a cod
 - `tiny-auditor` - context window optimized skill to challenge if autonomous audit skills are better than "find crits make no mistakes".
 
 - `blockchain-forensics` - Trace stolen funds, attribute attacker wallets, using only public on-chain data. Also useful during audits for checking deployer history, validating privileged roles, and understanding how past exploits on similar protocols played out on-chain.
+
+- `git-commit` - before letting the agent blind-commiting your code, it pre-runs tests, security reviews changed code, strips dead code and sensitive data it finds, enforces clean commit messages and validates the change won't break deployments.
+
+- `context-window-to-skill` - converts a completed agent conversation into a reusable skill. extracts the pitfalls, tweaks, and lessons from the session so the next run gets it right from the start.
 
 <br>
 
