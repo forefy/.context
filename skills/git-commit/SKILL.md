@@ -3,7 +3,7 @@ name: git-commit
 description: Commits github changes to repository safely and professionally. use this before any commit made to github.
 ---
 
-- Ensure before commit that tests run
+- Ensure before commit that tests run (and create tests to cover new crucial functionality)
 - Do a security review on changed code and ensure there aren't critical issues introduced
 - Ensure before commit that there are no leftover code, dead code, scripts, sensitive data, or nothing that will pollute the commit history - this commits are unrevertable and leaving these stuff is seriously dangerous as well as unprofessional
 - Always apply human-like commit messages which are short, concise, but still accurate
