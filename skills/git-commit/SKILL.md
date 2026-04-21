@@ -16,3 +16,4 @@ description: Commits github changes to repository safely and professionally. use
 - Ensure no em dashes ("—") exist in code at all. all em dashes should be changed to regular dashes ("-") pre-commit — EXCEPT in database migration files (e.g. `migrations/*.sql`) which are immutable once applied; editing them changes their checksum and breaks deploys
 - Ensure that if a frontend component was changed, that the change is screen-adaptive
 - Context awareness - check that the code changes done if they were considered for locally (e.g. fix a missing dependency) that this will translate well in potential future deployments (e.g. the deployment procedure also handles this new case etc)
+- Docs - if there's a clear place where the projects docs are managed (e.g. obsidian or gitbooks), ensure that any relevant documentation is updated accordingly
