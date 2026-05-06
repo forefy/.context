@@ -9,10 +9,11 @@ List of always-true audit primitives:
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
 
 ## Severity classification
-- Bug risk (C=4/H=3/M=2/L=1) should always be derived from `risk = (severity x probability)` when the highest risk is 16 and the lowest is 1 (end result low risk 1-4, medium risk 5-8, high risk 9-11, critical risk 12-16)
+- Bug severity (C=4/H=3/M=2/L=1) should always be derived from `severity = (risk x probability)` when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16)
+  - Risl calculation should be abstacted away and not written other than the resulting Severity and Probability
   - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability
   - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
-  - Comparative risk - in a single report, a Critical can't be of less risk than a Low
+  - Comparative severity - in a single report, a Critical can't be of less severity than a Low
   - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
 
 ## Scope
