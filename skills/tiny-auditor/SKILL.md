@@ -13,7 +13,8 @@ List of always-true audit primitives:
   - Risl calculation should be abstacted away and not written other than the resulting Severity and Probability
   - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability
   - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
-  - Comparative severity - in a single report, a Critical can't be of less severity than a Low
+  - Comparative severity - in the same report, a Critical can't be of less severity than a Low
+  - Escalate severities of bugs that directly affect business-critical assets or defy core protocol purpose
   - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
 
 ## Scope
