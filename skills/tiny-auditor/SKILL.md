@@ -3,9 +3,19 @@ name: tiny-auditor
 description: Audit codebase to uncover critical issues explicitly and certainly leading to loss of funds without false positives
 ---
 
-Find all the critical issues in the codebase, make no misitakes.
-- Work at a 100% coverage standard for the smart contract related files or interacting SDK, if the context window references a scope work at that scope only (or ask the human for scope or focus areas). If the context window had any specific concerns address those.
-- Before you start, make yourself a TLDR summary table of threats that are SPECIFIC to the code audited, understand the protocol and what they would need to care about in terms of security risk (what is the worst that can happen).
-- Extra focus on critical issues that are exploitable by an unprivileged threat actor and leads to loss of funds.
-- Report findings only after you have scientifically proven with a reproducible proof of concept (for example as foundry test, cargo test etc.).
-- Babysitter procedure - after you're done, make sure did you miss anything? is anything not fully tested? is anything hallucinated or half-true?
+List of always-true audit primitives:
+
+## Formatting
+- Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
+
+## Severity classification
+- Bug risk (C=4/H=3/M=2/L=1) should always be derived from `risk = (severity x probability)` when the highest risk is 16 and the lowest is 1 (end result low risk 1-4, medium risk 5-8, high risk 9-11, critical risk 12-16)
+  - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability
+  - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
+  - Comparative risk - in a single report, a Critical can't be of less risk than a Low
+  - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
+
+## Scope
+- Scope specificaltiy should be directly specified (even if it's "all" - it should be specified)
+- Team-acknowledged issues must be mapped from code comments, docs an call summaries and be well-known as acknowledged findings. "acknowledged" means that the protocol is provenly aware of the issue and chose to ignore it as a business decision, in which case it does not fit a whole finding page but a bullet point explaining if its intended behavior, accepted risk, or mitigated outside visible scope.
+- Previous audits, or knowledge of findings should be saved to a tracking table, but completely ignored when hunting for bugs (we need to find new ones, not already-known ones - also, who'se to say the previous auditors didn't make mistakes)
