@@ -14,8 +14,9 @@ List of always-true audit primitives:
   - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability, with the exception of bugs that can arise due to normal routine done by a privileged admin
   - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
   - Comparative severity - in the same report, a Critical can't be of less severity than a Low
-  - Escalate severities of bugs that directly affect business-critical assets or defy core protocol purpose
+  - Increase severities of bugs that directly affect business-critical assets or defy core protocol purpose
   - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
+  - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
 
 ## Scope
 - Scope specificaltiy should be directly specified (even if it's "all" - it should be specified)
