@@ -1,9 +1,12 @@
-<h1 align="center">AI Agent Skills for Security Auditing</h1>
+<h1 align="center">.context</h1>
 
 <p align="center">
-  <img src="static/logo.svg" alt="pocer" width="120">
+  <img src="static/logo.svg" alt="pocer" width="180">
 </p>
 
+<p align="center">
+ <b>An optimized collection of AI agent skills for security auditing</b>
+</p>
 <p align="center">
   <a href="https://github.com/forefy/.context/issues/new/choose"><img alt="Issues" title="Issues" src="https://img.shields.io/github/issues-raw/forefy/.context"></a>
   <img alt=".context GitHub repo size" title=".context GitHub repo size" src="https://img.shields.io/github/languages/code-size/forefy/.context">
@@ -16,6 +19,8 @@
 <p align="center">
  <a href="https://t.me/forefy_t" title="forefy Telegram">Telegram DM</a>
 </p>
+
+
 
 ## Quick Start
 
