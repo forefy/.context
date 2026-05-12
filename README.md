@@ -54,7 +54,7 @@ Security auditing skills for AI agents, adhering to the [Agent Skills Format](ht
 
 ## Usage
 
-### <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt=""> Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt=""> Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt=""> Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt=""> Codex
+### <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt="">&nbsp;Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt="">&nbsp;Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt="">&nbsp;Codex
 
 Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoked via textual inference when you request to audit a codebase, for example:
 
@@ -64,7 +64,7 @@ Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoke
 
 <br>
 
-### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt=""> GitHub Copilot (VSCode IDE)
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;GitHub Copilot (VSCode IDE)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
