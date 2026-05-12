@@ -22,7 +22,7 @@
 
 
 
-## Quick Start
+# Quick Start
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
@@ -37,7 +37,7 @@ You can also use `npx skills add forefy/.context` but vercel's skills registry i
 
 <br>
 
-## What is this?
+# What is this?
 
 Security auditing skills for AI agents, adhering to the [Agent Skills Format](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
 
@@ -57,7 +57,7 @@ Security auditing skills for AI agents, adhering to the [Agent Skills Format](ht
 
 <br>
 
-## Usage
+# Usage
 
 ### <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt="">&nbsp;Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt="">&nbsp;Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt="">&nbsp;Codex
 
@@ -85,11 +85,11 @@ Custom slash commands are auto-installed to `.github/prompts/`:
 
 <br>
 
-## About the Skills
+# About the Skills
 
-**Comprehensive audit skills**
+## Comprehensive audit
 
-Skills are meant to run in specific invokations and be context-budgeted as much as possible. However, skills aren't good in sharing memory, hence a single flow (at the 5,000 token cap recommendation by anthropic) can be powerful for a comprehensive AI audit experience.
+Optimized for protocol developers to use pre-audit, or for auditors expirementing with AI skills.
 
 - `smart-contract-security-audit` - Full smart contract audit framework with multi-expert analysis for Solidity, Anchor, Vyper, TON (FunC/Tact), and Sui (Move). Includes language-specific checks and vulnerability pattern references.
   <p align="center">
@@ -97,9 +97,11 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
   </p>
 - `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations. audits generate numbered folders in `.context/outputs/` for tracking and reports
 
-**Workflow / complementary skills**
+<br>
 
-Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
+## Workflow / complementary skills
+
+Workflow skills are designed to be picked up naturally as you travel through a codebase in your auditing process, and strategically fill context into a specific task.
 
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
 
@@ -121,6 +123,8 @@ Workflow skills are designed to be picked up naturally as you pick through a cod
 
 <br>
 
+# Quality
+
 Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
 
 Each skill is a directory with:
@@ -132,7 +136,7 @@ Each skill is a directory with:
 <br>
 
 
-## Contributors
+# Contributions
 
 <table>
 <tr>
