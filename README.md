@@ -13,7 +13,7 @@
   <img alt=".context GitHub commit activity" title=".context GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/forefy/.context">
   <img alt="GitHub last commit" title="GitHub last commit" src="https://img.shields.io/github/last-commit/forefy/.context">
   <a href="https://twitter.com/forefy"><img alt="Forefy Twitter" title="Forefy Twitter" src="https://img.shields.io/twitter/follow/forefy.svg?logo=twitter"></a>
-  <a href="https://github.com/W3OSC/skill-warden"><img alt="skill-warden" title="skill-warden" src="https://img.shields.io/badge/skill--warden-safe-brightgreen?style=flat-square&logo=shield"></a>
+  <a href="https://github.com/forefy/.context/actions/workflows/warden.yml"><img alt="skill-warden" title="skill-warden" src="https://github.com/forefy/.context/actions/workflows/warden.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -151,3 +151,4 @@ Each skill is a directory with:
 </table>
 
 Your research knowledge is the only skill required to contribute, whether its a methodology, specific knowledge on a protocol or language or even corrections - everything's highly welcome! help secure and improve the community!
+
