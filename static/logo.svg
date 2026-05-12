@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 280" width="220" height="280">
+
+  <!-- Drop shadow -->
+  <ellipse cx="110" cy="272" rx="60" ry="8" fill="#00000018"/>
+
+  <!-- ── Ears: small, flat, round, side-mounted ── -->
+  <ellipse cx="56"  cy="88" rx="16" ry="20" fill="#7ec8c8"/>
+  <ellipse cx="164" cy="88" rx="16" ry="20" fill="#7ec8c8"/>
+  <ellipse cx="56"  cy="88" rx="9"  ry="12" fill="#b8e8e8"/>
+  <ellipse cx="164" cy="88" rx="9"  ry="12" fill="#b8e8e8"/>
+
+  <!-- ── Body: wide, squat ── -->
+  <ellipse cx="110" cy="168" rx="62" ry="52" fill="#7ec8c8"/>
+
+  <!-- ── Head: wide flat oval ── -->
+  <ellipse cx="110" cy="98" rx="62" ry="52" fill="#7ec8c8"/>
+
+  <!-- ── Belly ── -->
+  <ellipse cx="110" cy="170" rx="38" ry="34" fill="#cff0f0"/>
+
+  <!-- ── Big muzzle: the iconic Gopher feature ── -->
+  <ellipse cx="110" cy="118" rx="34" ry="26" fill="#cff0f0"/>
+
+  <!-- ── Devil eyes: angular, pointed inner corners ── -->
+  <!-- Outer glow aura -->
+  <ellipse cx="84"  cy="86" rx="17" ry="14" fill="#ff000022"/>
+  <ellipse cx="136" cy="86" rx="17" ry="14" fill="#ff000022"/>
+  <!-- Sclera: sharp almond shape, inner corner pointed down -->
+  <path d="M68 86 Q76 74 84 76 Q92 74 100 86 Q92 96 84 94 Q76 96 68 86Z" fill="#ffe0d0"/>
+  <path d="M120 86 Q128 74 136 76 Q144 74 152 86 Q144 96 136 94 Q128 96 120 86Z" fill="#ffe0d0"/>
+  <!-- Iris: blazing orange-red, slightly bottom-heavy -->
+  <ellipse cx="84"  cy="87" rx="8"  ry="8"  fill="#cc2200"/>
+  <ellipse cx="136" cy="87" rx="8"  ry="8"  fill="#cc2200"/>
+  <!-- Inner fire ring -->
+  <ellipse cx="84"  cy="87" rx="8"  ry="8"  fill="none" stroke="#ff6600" stroke-width="2" opacity="0.7"/>
+  <ellipse cx="136" cy="87" rx="8"  ry="8"  fill="none" stroke="#ff6600" stroke-width="2" opacity="0.7"/>
+  <!-- Vertical slit pupil -->
+  <ellipse cx="84"  cy="87" rx="2.8" ry="7" fill="#0a0000"/>
+  <ellipse cx="136" cy="87" rx="2.8" ry="7" fill="#0a0000"/>
+  <!-- Pupil highlight -->
+  <circle cx="86"  cy="84" r="2" fill="white" opacity="0.6"/>
+  <circle cx="138" cy="84" r="2" fill="white" opacity="0.6"/>
+  <!-- Heavy drooping upper eyelids (villain half-squint) -->
+  <path d="M68 86 Q76 74 84 76 Q92 74 100 86 Q92 81 84 81 Q76 81 68 86Z" fill="#5a9a9a"/>
+  <path d="M120 86 Q128 74 136 76 Q144 74 152 86 Q144 81 136 81 Q128 81 120 86Z" fill="#5a9a9a"/>
+  <!-- Eyelid bottom edge shadow -->
+  <path d="M68 86 Q76 81 84 81 Q92 81 100 86" stroke="#3a7a7a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M120 86 Q128 81 136 81 Q144 81 152 86" stroke="#3a7a7a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- ── Evil eyebrows: thick, angled inward ── -->
+  <path d="M72 72 Q84 66 96 70"  stroke="#1a4a4a" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <path d="M124 70 Q136 66 148 72" stroke="#1a4a4a" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+
+  <!-- ── Nose: small, top of muzzle ── -->
+  <ellipse cx="110" cy="108" rx="7" ry="5" fill="#c05878"/>
+  <ellipse cx="109" cy="106" rx="3" ry="2" fill="#e07898" opacity="0.65"/>
+
+  <!-- ── Devil grin: wide, sharp-cornered ── -->
+  <!-- Grin fill -->
+  <path d="M90 122 Q95 136 110 138 Q125 136 130 122" fill="#1a0808" stroke="none"/>
+  <!-- Grin outline -->
+  <path d="M90 122 Q95 136 110 138 Q125 136 130 122" stroke="#3a0000" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Sharp corner fangs (tiny) -->
+  <polygon points="93,122 90,122 91,128" fill="white"/>
+  <polygon points="127,122 130,122 129,128" fill="white"/>
+  <!-- Tongue -->  
+  <ellipse cx="110" cy="136" rx="8" ry="5" fill="#e03060"/>
+
+
+  <!-- ── Arms reaching to laptop ── -->
+  <path d="M58 172 Q40 188 40 212" stroke="#7ec8c8" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <path d="M162 172 Q180 188 180 212" stroke="#7ec8c8" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <!-- Paws -->
+  <ellipse cx="40"  cy="214" rx="12" ry="9" fill="#cff0f0"/>
+  <ellipse cx="180" cy="214" rx="12" ry="9" fill="#cff0f0"/>
+
+  <!-- ── Feet ── -->
+  <ellipse cx="86"  cy="210" rx="20" ry="9" fill="#6ab8b8"/>
+  <ellipse cx="134" cy="210" rx="20" ry="9" fill="#6ab8b8"/>
+
+  <!-- ── Laptop ── -->
+  <!-- Screen lid -->
+  <rect x="48" y="215" width="124" height="44" rx="5" fill="#1a1a2e"/>
+  <rect x="52" y="219" width="116" height="36" rx="3" fill="#1e2440"/>
+  <!-- Terminal text lines -->
+  <rect x="59" y="225" width="55" height="3.5" rx="1.5" fill="#39ff14" opacity="0.9"/>
+  <rect x="59" y="232" width="40" height="3.5" rx="1.5" fill="#39ff14" opacity="0.65"/>
+  <rect x="59" y="239" width="66" height="3.5" rx="1.5" fill="#39ff14" opacity="0.75"/>
+  <!-- Cursor blink -->
+  <rect x="59" y="246" width="7" height="4" rx="1" fill="#39ff14"/>
+  <!-- Laptop base -->
+  <rect x="40" y="258" width="140" height="8" rx="4" fill="#111122"/>
+  <!-- Trackpad -->
+  <rect x="88" y="261" width="44" height="3" rx="1.5" fill="#1e1e32"/>
+
+</svg>
+
