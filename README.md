@@ -90,7 +90,7 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
   <p align="center">
   <img src="static/skill-architecture.png" alt="AI Audit Agent Skill Architecture" width="800">
   </p>
-- `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations.
+- `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations. audits generate numbered folders in `.context/outputs/` for tracking and reports
 
 **Workflow / complementary skills**
 
@@ -126,15 +126,6 @@ Each skill is a directory with:
 
 <br>
 
-## Outputs
-
-Audits generate numbered folders in `.context/outputs/`:
-
-- `audit-report.md` - Security findings
-- `audit-context.md` - Scope and assumptions
-- `audit-debug.md` - Technical analysis log
-
-<br>
 
 ## Contributors
 
