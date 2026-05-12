@@ -1,4 +1,8 @@
-# AI Agent Skills for Security Auditing
+<h1 align="center">AI Agent Skills for Security Auditing</h1>
+
+<p align="center">
+  <img src="static/logo.svg" alt="pocer" width="120">
+</p>
 
 <p align="center">
   <a href="https://github.com/forefy/.context/issues/new/choose"><img alt="Issues" title="Issues" src="https://img.shields.io/github/issues-raw/forefy/.context"></a>
@@ -50,7 +54,7 @@ Security auditing skills for AI agents, adhering to the [Agent Skills Format](ht
 
 ## Usage
 
-### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="Claude"> Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="Copilot"> Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt="Gemini"> Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt="Codex"> Codex
+### <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt=""> Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt=""> Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt=""> Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt=""> Codex
 
 Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoked via textual inference when you request to audit a codebase, for example:
 
@@ -60,7 +64,7 @@ Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoke
 
 <br>
 
-### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="GitHub Copilot"> GitHub Copilot (VSCode IDE)
+### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt=""> GitHub Copilot (VSCode IDE)
 
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
@@ -92,17 +96,17 @@ Skills are meant to run in specific invokations and be context-budgeted as much 
 
 Workflow skills are designed to be picked up naturally as you pick through a codebase in your auditing process, and fill strategically concised context into a specific task.
 
-- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase - malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
-
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
+
+- `tiny-auditor` - context window optimized audit skill - think caveman for audits. 
+
+- `foundry-poc` - context window optimized skill to generate a foundry proof of concept for a discussed finding.
+
+- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase - malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
 
 - `agent-onboarding` - agents are pre-instructed to get familiar with the code before anything, but also tracka. shared TODO.md - when you are in focus mode in your auditing you should have at least 4 concurrent AI terminals running. To sync their work, as well as keep quality coverage tracking of your audit, you can onboard agents to the team with a purpose (e.g. "Onboard to team to look for issues in recent commits only")
 
 - `gdocs-audit-report` - expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Covers finding formatting, summary tables, inline code styling, severity color schemes, index-drift safety, and all common Docs API pitfalls.
-
-- `foundry-poc` - context window optimized skill to generate a foundry proof of concept for a discussed finding.
-
-- `tiny-auditor` - context window optimized skill to challenge if autonomous audit skills are better than "find crits make no mistakes".
 
 - `blockchain-forensics` - Trace stolen funds, attribute attacker wallets, using only public on-chain data. Also useful during audits for checking deployer history, validating privileged roles, and understanding how past exploits on similar protocols played out on-chain.
 
