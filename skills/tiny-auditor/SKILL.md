@@ -12,7 +12,7 @@ List of always-true audit primitives:
 - Do not modify the audited code, unless you are writing PoC files or tests, in which case the test should have a comment at the top indicating its a temporary audit-phase AI-generated test and to ignore it in code review
 
 ## Checks
-- things in scopre that should never break but might under specific conditions
+- things in scope that should never break but might under specific conditions
 
 ## Formatting
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
