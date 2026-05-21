@@ -13,6 +13,8 @@ List of always-true audit primitives:
 
 ## Checks
 - things in scope that should never break but might under specific conditions
+- review git commit history for bugs introduced and later fixed, rank security bug-introducers and audit their live code for open issues
+- review git commit history for weakest security-mindset developers and audit their live code for open issues
 
 ## Formatting
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
