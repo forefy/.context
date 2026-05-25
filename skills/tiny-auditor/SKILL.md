@@ -13,6 +13,7 @@ List of always-true audit primitives:
 
 ## Checks
 - things in scope that should never break but might under specific conditions
+- review code comments and documentation for spec-to-compliance mismatches
 - review git commit history for bugs introduced and later fixed, rank security bug-introducers and audit their live code for open issues
 - review git commit history for weakest security-mindset developers and audit their live code for open issues
 
@@ -35,3 +36,10 @@ List of always-true audit primitives:
 - Increase severities of bugs that directly affect business-critical assets or defy core protocol purpose
 - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
+
+## Self-validation loop
+- At each turn double-check accurracy and quality of produced findings
+  - Did we truthfully match statements to code evidence?
+  - Did we check items are all in scope?
+  - Did we verify we are not contradicting acknowledged design tradeoffs or business protocol decisions?
+  - Did we not miss-out on a real vulnerability?
