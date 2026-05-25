@@ -20,6 +20,7 @@ List of always-true audit primitives:
 
 ## Formatting and Style
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
+- Finding name number should mark his relative severity next to all the other items of the same level (e.g. H-1 is more of a priority than H-2)
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
 - Description must be technically accurate but concise and abstract
