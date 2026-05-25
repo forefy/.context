@@ -16,8 +16,13 @@ List of always-true audit primitives:
 - review git commit history for bugs introduced and later fixed, rank security bug-introducers and audit their live code for open issues
 - review git commit history for weakest security-mindset developers and audit their live code for open issues
 
-## Formatting
+## Formatting and Style
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
+- Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
+- Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
+- Description must be technically accurate but concise and abstract
+- Remediations must be priority-sorted bullet items of fix recommendations to the team
+- All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from `severity = (risk x probability)` when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16)
