@@ -21,6 +21,7 @@ List of always-true audit primitives:
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
 - Description must be technically accurate but concise and abstract
+- Description must follow "X is a feature that does Y, During the audit it was found that .. An attacker that does Z might.."
 - Remediations must be priority-sorted bullet items of fix recommendations to the team
 - All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
 
