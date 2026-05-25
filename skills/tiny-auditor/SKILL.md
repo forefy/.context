@@ -45,3 +45,4 @@ List of always-true audit primitives:
   - Did we check items are all in scope?
   - Did we verify we are not contradicting acknowledged design tradeoffs or business protocol decisions?
   - Did we not miss-out on a real vulnerability?
+  - Is the item a security issue?
