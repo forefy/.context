@@ -16,6 +16,7 @@ List of always-true audit primitives:
 - review code comments and documentation for spec-to-compliance mismatches
 - review git commit history for bugs introduced and later fixed, rank security bug-introducers and audit their live code for open issues
 - review git commit history for weakest security-mindset developers and audit their live code for open issues
+- find security guards that are implemented on parts of the protocol but forgotten or misimplemented on siblings / similar code or logic blocks
 
 ## Formatting and Style
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
