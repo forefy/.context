@@ -23,6 +23,7 @@ List of always-true audit primitives:
 - Description must be technically accurate but concise and abstract
 - Description must follow "X is a feature that does Y, During the audit it was found that D. Although <protocol dispute point or mitigating factor if exists>, An attacker that does Z might.."
 - Remediations must be priority-sorted bullet items of fix recommendations to the team, usually, its one most-ideal fix and descending to next-best things that compliment/do 80% of the fix for 5% the effort
+- Remediations must be battletested and NOT introduce extra complexity and NEVER introduce other risks
 - All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
 
 ## Severity classification
