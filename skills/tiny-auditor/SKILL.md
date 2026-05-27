@@ -1,6 +1,6 @@
 ---
 name: tiny-auditor
-description: Audit codebase to uncover critical issues explicitly and leading to loss of funds without false positives
+description: Audit codebase to uncover critical issues explicitly without false positives
 ---
 
 List of always-true audit primitives:
