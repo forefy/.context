@@ -22,7 +22,15 @@
 
 
 
-# Quick Start
+# Quick Installation
+
+## Easiest - get from registry
+1. Find which skills you want from [.context/tree/main/skills](https://github.com/forefy/.context/tree/main/skills)
+2. Go to the skills registry https://forefy.com/skills
+3. Search and download from there via easy installation button
+
+
+## Also easy - repo installer script
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
@@ -33,7 +41,7 @@ curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | b
   - **Current project** - skills installed to `.claude/skills/`
 - Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
 
-You can also use `npx skills add forefy/.context` but vercel's skills registry is less optimal
+You can also try `npx skills add forefy/.context`
 
 <br>
 
@@ -74,13 +82,7 @@ Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoke
 Skills are auto-installed to `.claude/skills/` and referenced by name:
 
 ```
-@smart-contract-security-audit
-```
-
-Custom slash commands are auto-installed to `.github/prompts/`:
-
-```
-/generate_audit_report_generic
+/tiny-auditor
 ```
 
 <br>
@@ -132,6 +134,10 @@ Each skill is a directory with:
 - `SKILL.md` - Main framework and instructions
 - Language-specific reference files (loaded as needed for token efficiency)
 - `reference/` - Vulnerability patterns organized by language, protocol etc. Skills automatically reference these patterns during audits using progressive disclosure for token efficiency.
+
+Most skills are written WITHOUT AI to achieve most optimized results based on a decades worth of security research knowledge. Some partially use AI to fill in large sets of reference data and where makes sense.
+
+All skills are CI-level security-audited via `skill-warden`.
 
 <br>
 
