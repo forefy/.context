@@ -19,12 +19,15 @@ List of always-true audit primitives:
 - find security guards that are implemented on parts of the protocol but forgotten or misimplemented on siblings / similar code or logic blocks
 
 ## Formatting and Style
+- Report format is consisted of ToC, Executive Summary, Findings. If the report is around a single finding, only the finding should be there.
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
 - Finding name number should mark his relative severity next to all the other items of the same level (e.g. H-1 is more of a priority than H-2)
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
+- Finding headings should match across all findings of the report
 - Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
 - Description must be technically accurate but concise and abstract
-- Description must follow "X is a feature that does Y, During the audit it was found that D. Although `<protocol dispute point or mitigating factor if exists>`, An attacker that does Z might.."
+- Description must follow "XXX is a feature that does XXX, During the audit it was found that XXX. Although `<protocol dispute point or mitigating factor if exists>`, An attacker that does XXX might.."
+- Attack Flow must be bullet-point breadcrumb trace of how an attacker might exploit the finding from gaining prerequisites to actual exploitation. if the finding is not exactly an attacker gets to X, it should be developer/employee makes mistake Y, etc.
 - Remediations must be priority-sorted bullet items of fix recommendations to the team, usually, its one most-ideal fix and descending to next-best things that compliment/do 80% of the fix for 5% the effort. but if the best recommendations is the cleanest that's preferred.
 - Remediations must be battletested and NOT introduce extra complexity and NEVER introduce other risks
 - All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
