@@ -3,12 +3,13 @@ name: tiny-auditor
 description: Audit codebase to uncover critical issues explicitly without false positives
 ---
 
-List of always-true audit primitives:
+# List of always-true audit primitives:
 
 ## Formatting and Style
-- Report format is consisted of ToC, Executive Summary, Findings. If the report is around a single finding, only the finding should be there.
+- Report format is consisted of ToC, Executive Summary, Findings Summary Table, Findings. If the report is around a single finding, only the finding should be there.
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
 - Finding name number should mark his relative severity next to all the other items of the same level (e.g. H-1 is more of a priority than H-2)
+- Findings summary table should consist of ID (e.g. C-1), Risk, Status, and possible audit-spcificality that's key to track from a report reciever perspective)
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Finding headings should match across all findings of the report
 - Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
@@ -29,7 +30,8 @@ List of always-true audit primitives:
 - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
 
-Apply if relevant to user intent (only if unclear - ask to verify):
+
+# Apply if relevant to user intent (only if unclear - ask to verify):
 
 ## Scope
 - Scope specificaltiy should be directly specified (even if it's "all" - it should be specified)
@@ -44,7 +46,7 @@ Apply if relevant to user intent (only if unclear - ask to verify):
 - review git commit history for weakest security-mindset developers and audit their live code for open issues
 - find security guards that are implemented on parts of the protocol but forgotten or misimplemented on siblings / similar code or logic blocks
 
-## Self-validation loop
+# Self-validation loop
 - At each turn double-check accurracy and quality of produced findings
   - Did we truthfully match statements to code evidence?
   - Did we check items are all in scope?
