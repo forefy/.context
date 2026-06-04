@@ -21,7 +21,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
 
 ## Severity classification
-- Bug severity (C=4/H=3/M=2/L=1) should always be derived from `severity = (risk x probability)` when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16)
+- Bug severity (C=4/H=3/M=2/L=1) should always be derived from `severity = (risk x probability)` when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly though
   - Risk calculation should be abstacted away and not written other than the resulting Severity and Probability
 - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability, with the exception of bugs that can arise due to normal routine done by a privileged admin
 - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
@@ -29,7 +29,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Increase severities of bugs that directly affect business-critical assets or defy core protocol purpose
 - Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
-
+- Severity heirarchy - sometimes findings get removed added or reclassified which affects the order, so if we are enforcing a C1,C2,H1,M1,M2 heirarchy (in ToC, finding table, finding headings and possibel cross-references) and a change occured e.g. a new High was introduced which is more risk than existing H1, then H1->H2 and H1 takes its place and we update that everywhere on the page where needed
 
 # Apply if relevant to user intent (only if unclear - ask to verify):
 
@@ -53,3 +53,4 @@ description: Audit codebase to uncover critical issues explicitly without false 
   - Did we verify we are not contradicting acknowledged design tradeoffs or business protocol decisions?
   - Did we not miss-out on a real vulnerability?
   - Is the item a security issue?
+- Is the severity classification changed and do we need to update it anywhere?
