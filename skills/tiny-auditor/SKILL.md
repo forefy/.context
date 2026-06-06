@@ -32,20 +32,31 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
 - Severity heirarchy - sometimes findings get removed added or reclassified which affects the order, so if we are enforcing a C1,C2,H1,M1,M2 heirarchy (in ToC, finding table, finding headings and possibel cross-references) and a change occured e.g. a new High was introduced which is more risk than existing H1, then H1->H2 and H1 takes its place and we update that everywhere on the page where needed
 
-# Apply if relevant to user intent (only if unclear - ask to verify):
-
 ## Scope
 - Scope specificaltiy should be directly specified (even if it's "all" - it should be specified)
 - Team-acknowledged issues must be mapped from code comments, docs an call summaries and be well-known as acknowledged findings. "acknowledged" means that the protocol is provenly aware of the issue and chose to ignore it as a business decision, in which case it does not fit a whole finding page but a bullet point explaining if its intended behavior, accepted risk, or mitigated outside visible scope.
 - Previous audits, or knowledge of findings should be saved to a tracking table, but completely ignored when hunting for bugs (we need to find new ones, not already-known ones - also, who'se to say the previous auditors didn't make mistakes)
 - Do not modify the audited code, unless you are writing PoC files or tests, in which case the test should have a comment at the top indicating its a temporary audit-phase AI-generated test and to ignore it in code review
 
-## Checks
+## Audit Checks
 - things in scope that should never break but might under specific conditions
 - review code comments and documentation for spec-to-compliance mismatches
 - review git commit history for bugs introduced and later fixed, rank security bug-introducers and audit their live code for open issues
 - review git commit history for weakest security-mindset developers and audit their live code for open issues
 - find security guards that are implemented on parts of the protocol but forgotten or misimplemented on siblings / similar code or logic blocks
+
+## Proof of Concept
+- It's always best to show the user a copy-paste, undisputable proof of the exploitability of the finding, e.g. PoC script, curl, or whatever is the normal interaction method with the audited codebase.
+- Before claiming a PoC is real, we double check ourselfs to see it actually runs, produces expected results, and also check that the conditions of the PoC infact mimic a realistic attacker achievable scenario (no "synthetic sugar" for the exploitabilty)
+- Sometimes, we got a critical risk without a poc possible, e.g. there's some pre-requisites that we don't have but an attacker is likely to obtain - in this case no poc is acceptable, but the evident of the attack hypothesis must be pointed at clearly and simply
+
+## Threat Model
+- An attack anatomy is like a flow graph going left-to-right.
+  - on the rightest we got the "holy grail" a.k.a "business-crital asset" that is important to the audited protocol or team and is the point of attcking them
+  - left to the holy grail we got the privileged situation/user/machine/service account or condition that natively accesses that holy grail for legitimate operations
+  - left to that we got situation/user/machine/service account or condition that if abused correctly elevates to be in that legitimate operation, even if unintended for them (could be compromised dev, privesc-able endpoint etc)
+  - on the most left we got the threat - attacker, public entity, direction of the incentivized entity from which the threat arrives
+- Threat model helps us think and frame the attack as relevant to the protocol, as quality is important and we don't want false positives, its a helpful thinking excercise
 
 # Self-validation loop
 - Self-validation loop is not something to update in the report, just like a quality voice in the background to ensure high grade reports
