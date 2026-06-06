@@ -9,7 +9,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Report format is consisted of ToC, Executive Summary, Findings Summary Table, Findings. If the report is around a single finding, only the finding should be there.
 - Finding name format must be [C/H/M/L]-[Number] [Impact] via [Weakness] in [Feature]
 - Finding name number should mark his relative severity next to all the other items of the same level (e.g. H-1 is more of a priority than H-2)
-- Findings summary table should consist of ID (e.g. C-1), Risk, Status, and possible audit-spcificality that's key to track from a report reciever perspective)
+- Findings summary table should consist of ID (e.g. C-1), Risk, Status, and possible audit-spcificality that's key to track from a report reciever perspective) (e.g. if there are two environments tested then a column for prod and staging or env names might make sense
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Finding headings should match across all findings of the report
 - Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
