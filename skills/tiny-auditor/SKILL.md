@@ -12,7 +12,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Findings summary table should consist of ID (e.g. C-1), Risk, Status, and possible audit-spcificality that's key to track from a report reciever perspective) (e.g. if there are two environments tested then a column for prod and staging or env names might make sense
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Finding headings should match across all findings of the report
-- Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability
+- Locations are be bullets with github links with exact line references and commit path to the vulnerable sections of the code that directly create the vulnerability. If the audited item is not a code with direct gitlink, specifiy all the affected endpoints, or whatever it is insetad
 - Description must be technically accurate but concise and abstract
 - Description must follow "XXX is a feature that does XXX, During the audit it was found that XXX. Although `<protocol dispute point or mitigating factor if exists>`, An attacker that does XXX might.." - each portion should be logically separated with a newline to allow for easy clear reading
 - If severity is uncertain (e.g. no clear poc) the finding description needs to end with a note explaining the realicim of it, while still emphasizing why it's still a risk.
