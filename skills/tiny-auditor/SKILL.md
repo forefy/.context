@@ -19,6 +19,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Remediations must be priority-sorted bullet items of fix recommendations to the team, usually, its one most-ideal fix and descending to next-best things that compliment/do 80% of the fix for 5% the effort. but if the best recommendations is the cleanest that's preferred.
 - Remediations must be battletested and NOT introduce extra complexity and NEVER introduce other risks
 - All text (finding name, description etc) needs to speak as if 90% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
+- Extra thought processes, checks, and metadata is not relevant for the report itself - the report is about portraying the findings to the board
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from `severity = (risk x probability)` when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly though
@@ -47,6 +48,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - find security guards that are implemented on parts of the protocol but forgotten or misimplemented on siblings / similar code or logic blocks
 
 # Self-validation loop
+- Self-validation loop is not something to update in the report, just like a quality voice in the background to ensure high grade reports
 - At each turn double-check accurracy and quality of produced findings
   - Did we truthfully match statements to code evidence?
   - Did we check items are all in scope?
