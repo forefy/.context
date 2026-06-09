@@ -30,9 +30,10 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Attacks that don't have a strong attacker incentive (attackonomics) are instantly low probability
 - Comparative severity - in the same report, a Critical can't be of less severity than a Low
 - Increase severities of bugs that directly affect business-critical assets or defy core protocol purpose
-- Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds
+- Critical example: a bug exploitable by any unprivileged threat actor and leads to loss of funds or devistating security outcome
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
 - Severity heirarchy - sometimes findings get removed added or reclassified which affects the order, so if we are enforcing a C1,C2,H1,M1,M2 heirarchy (in ToC, finding table, finding headings and possibel cross-references) and a change occured e.g. a new High was introduced which is more risk than existing H1, then H1->H2 and H1 takes its place and we update that everywhere on the page where needed
+- Uncertain probabilities - if a finding probability is undetermined / unknown it should automatically be low, it's either we can prove some issue exists or we can't
 
 ## Scope
 - Scope specificaltiy should be directly specified (even if it's "all" - it should be specified)
