@@ -71,4 +71,5 @@ description: Audit codebase to uncover critical issues explicitly without false 
   - Did we not miss-out on a real vulnerability?
   - Is the item a concerning security issue?
   - If the team receiving the issue were to challenge it, what would be their case? and is that case valid enough to dismiss the relevancy of the finding or not?
+  - Do we have an item, that really just is a "moreover" sentence in another existing finding?
 - Is the severity classification changed and do we need to update it anywhere?
