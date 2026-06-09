@@ -18,6 +18,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - If severity is uncertain (e.g. no clear poc) the finding description needs to end with a note explaining the realicim of it, while still emphasizing why it's still a risk.
 - Attack Flow must be bullet-point breadcrumb trace of how an attacker might exploit the finding from gaining prerequisites to actual exploitation. if the finding is not exactly an attacker gets to X, it should be developer/employee makes mistake Y, etc.
 - Remediations must be priority-sorted bullet items of fix recommendations to the team, usually, its one most-ideal fix and descending to next-best things that compliment/do 80% of the fix for 5% the effort. but if the best recommendations is the cleanest that's preferred.
+- Remediations (especially 2nd 3rd and so on) might be complementary or additional but not really stopping the fix, if that's the case it should be clear from the way it is portrayed (e.g. As an extended blast-reduction, you may consider xxx)
 - Remediations must be battletested and NOT introduce extra complexity and NEVER introduce other risks
 - All text (finding name, description etc) needs to speak as if 80% certain because it should describe the vulnerable condition and the attack surface it opens, not assert the worst-case result as 100% guaranteed
 - Extra thought processes, checks, and metadata is not relevant for the report itself - the report is about portraying the findings to the board
