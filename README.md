@@ -119,6 +119,8 @@ Workflow skills are designed to be picked up naturally as you travel through a c
 
 - `blockchain-forensics` - Trace stolen funds, attribute attacker wallets, using only public on-chain data. Also useful during audits for checking deployer history, validating privileged roles, and understanding how past exploits on similar protocols played out on-chain.
 
+- `safe-hunt` - Sweeps DeFi protocol Safe multisig wallets for governance misconfigurations and security weaknesses. Given a protocol name, Safe address, or "sweep all", fetches live config and tx history from the Safe Transaction Service API, scores each Safe against a finding pattern library, and produces an audit-ready ranked report.
+
 - `git-commit` - before letting the agent blind-commiting your code, it pre-runs tests, security reviews changed code, strips dead code and sensitive data it finds, enforces clean commit messages and validates the change won't break deployments.
 
 - `context-window-to-skill` - converts a completed agent conversation into a reusable skill. extracts the pitfalls, tweaks, and lessons from the session so the next run gets it right from the start.
