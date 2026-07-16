@@ -42,6 +42,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Team-acknowledged issues must be mapped from code comments, docs and call summaries and be well-known as acknowledged findings. “acknowledged” means that the protocol is provenly aware of the issue and chose to ignore it as a business decision, in which case it does not fit a whole finding page but a bullet point explaining if its intended behavior, accepted risk, or mitigated outside visible scope.
 - Previous audits, or knowledge of findings should be saved to a tracking table, but completely ignored when hunting for bugs (we need to find new ones, not already-known ones - also, who’s to say the previous auditors didn’t make mistakes)
 - Do not modify the audited code, unless you are writing PoC files or tests, in which case the test should have a comment at the top indicating it's a temporary audit-phase AI-generated test and to ignore it in code review
+- If a team-acknowledged, resurfaced, or mentioned finding is very close to a finding we reported and its a 20% drifted impact / slight wording or similar vectors under same category, the bug is not valid as team acknowledged it. If they wrote it down it means they are aware of the impacts even if not all stated.
 
 ## Audit Checks
 - things in scope that should never break but might under specific conditions
