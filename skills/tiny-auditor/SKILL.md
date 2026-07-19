@@ -13,7 +13,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Standard finding headings should be Severity, Probability, Locations, Description, Attack Flow, Remediations
 - Finding headings should match across all findings of the report
 - Vulnerable Occurrences are bullets with (usually) github links with exact line references and commit paths to the vulnerable sections of the code that directly create the vulnerability. If the audited item is not a code with direct gitlink, specifiy all the affected endpoints, or whatever it is instead. If an evidence (e.g. api key name) is preset, prioritize it in reading of the bullets (e.g. - found_secret (Line 485)) - where line is a hyperlink, putting more priority on the key name itsefl which is easier on the fixing team to understand on a quick read.
-- Description must be technically accurate but concise and abstract.
+- Description must be technically accurate but concise and abstract. Plain narration of what was done and found.
 - Description must follow “XXX is a feature that does XXX, During the audit it was found that XXX. Although <protocol dispute point or mitigating factor if exists>, an attacker that does XXX might…” - each portion should be logically separated with a newline to allow for easy clear reading
 - If severity is uncertain (e.g. no clear poc) the finding description needs to end with a note explaining the realism of it, while still emphasizing why it’s still a risk.
 - Attack Flow must be a bullet-point breadcrumb trace of how an attacker might exploit the finding from gaining prerequisites to actual exploitation. if the finding is not exactly an attacker gets to X, it should be developer/employee makes mistake Y, etc.
