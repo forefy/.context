@@ -28,6 +28,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Every title in the finding body (e.g. description) should be a in its own line and have a newline before the text begins (description -> new line -> description text)
 - For impact, name the realistic actor (could also be a fat-fingering operator / lazy dev / curious user, not always a genius attacker), state the loss in plain terms, and be honest about reachability. If you can't name a realistic actor, the impact is "hardening," not "attack."
 - Some findings' impact is just an inflation/duplication of whatever is written on the description ending, in which case it is redundant
+- Almost all of the points to use `;` are redundant - the point of descriptions and writing in a repot are to be read humanly, natural flow sentences rather than ";" or similar
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
