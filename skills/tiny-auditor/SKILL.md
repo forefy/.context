@@ -25,6 +25,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - No emojis, no unnecessary or repeating information, no fluff
 - Use regular dashes over em-dashes
 - Finding summary table should clearly match findings to the component (one look at the finding summary table will tell the protocol "oh, they were on-track")
+- Every title in the finding body (e.g. description) should be a in its own line and have a newline before the text begins (description -> new line -> description text)
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
