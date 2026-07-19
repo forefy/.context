@@ -26,6 +26,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Use regular dashes over em-dashes
 - Finding summary table should clearly match findings to the component (one look at the finding summary table will tell the protocol "oh, they were on-track")
 - Every title in the finding body (e.g. description) should be a in its own line and have a newline before the text begins (description -> new line -> description text)
+- For impact, name the realistic actor (could also be a fat-fingering operator / lazy dev / curious user, not always a genius attacker), state the loss in plain terms, and be honest about reachability. If you can't name a realistic actor, the impact is "hardening," not "attack."
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
