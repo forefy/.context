@@ -1,5 +1,5 @@
 export const meta = {
-  name: 'k8s-crit-hunt',
+  name: 'k8-bugbounty',
   description:
     'Hunt hackerone.com/kubernetes for one critical bug. Map the scope, fan out across attack-surface lanes, and gate every candidate behind an adversarial judge wave — a finding only counts if a skeptic cannot break its reproduction.',
   phases: [
