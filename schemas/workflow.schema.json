@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/forefy/.context/schemas/workflow.schema.json",
+  "title": "Dynamic workflow meta",
+  "description": "The `export const meta = {...}` block of a *.js dynamic workflow. Only authored fields are validated; di3 derives stages separately.",
+  "type": "object",
+  "required": ["name", "phases"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "detail": { "type": "string" },
+          "model": { "type": "string" }
+        }
+      }
+    }
+  }
+}
