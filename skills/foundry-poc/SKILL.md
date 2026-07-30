@@ -31,9 +31,9 @@ After the test passes, add a `## Proof Explanation` section as a comment in the 
  * 5. Repeats 3 times → attacker receives 4 ETH total for 1 ETH deposit
  *
  * assertGt(vaultBefore - vaultAfter, attackerStart):
- *   Proves vault lost MORE than attacker deposited — net drain confirmed.
+ *   Proves vault lost MORE than attacker deposited - net drain confirmed.
  *
  * assertGt(address(attacker).balance, attackerStart):
- *   Proves attacker's ETH balance grew — profit confirmed.
+ *   Proves attacker's ETH balance grew - profit confirmed.
  */
 ```

@@ -1,7 +1,7 @@
 export const meta = {
   name: 'k8-bugbounty',
   description:
-    'Hunt hackerone.com/kubernetes for one critical bug. Map the scope, fan out across attack-surface lanes, and gate every candidate behind an adversarial judge wave — a finding only counts if a skeptic cannot break its reproduction.',
+    'Hunt hackerone.com/kubernetes for one critical bug. Map the scope, fan out across attack-surface lanes, and gate every candidate behind an adversarial judge wave - a finding only counts if a skeptic cannot break its reproduction.',
   phases: [
     { title: 'Scope', detail: 'list in-scope components and rules' },
     { title: 'Hunt', detail: 'parallel lanes, each returns a reproducible PoC' },
@@ -67,7 +67,7 @@ const LANES = [
   { key: 'supply-chain', prompt: 'Build and supply chain: release artifacts, image signing and verification, dependency handling, provenance gaps.' },
 ]
 
-const GUARDRAILS = 'Stay in scope — read the hackerone.com/kubernetes policy first, and only reproduce on a cluster you own.'
+const GUARDRAILS = 'Stay in scope - read the hackerone.com/kubernetes policy first, and only reproduce on a cluster you own.'
 
 phase('Scope')
 const scope = await agent(
@@ -76,7 +76,7 @@ const scope = await agent(
 )
 log(`In scope: ${scope.assets.length} assets, ${scope.rules.length} rules`)
 
-// Fan the lanes out and judge each candidate the moment its lane returns — a pipeline, so a
+// Fan the lanes out and judge each candidate the moment its lane returns - a pipeline, so a
 // slow lane never holds up judging of a fast one. The judge wave is the oracle here: a
 // candidate is real only if a majority of skeptics fail to break its reproduction.
 const covered = new Set()
@@ -86,7 +86,7 @@ const judged = await pipeline(
     agent(
       `Hunt for a critical vulnerability in the Kubernetes codebase, lane "${lane.key}": ${lane.prompt}\n` +
         `Rules: ${scope.rules.join('; ')}. ${GUARDRAILS}\n` +
-        `Return only candidates you can actually reproduce — each with a hypothesis, the attacker's gain, and the exact steps that reproduce it from a clean cluster. Prefer nothing over a false positive.`,
+        `Return only candidates you can actually reproduce - each with a hypothesis, the attacker's gain, and the exact steps that reproduce it from a clean cluster. Prefer nothing over a false positive.`,
       { schema: FINDINGS_SCHEMA, label: `hunt:${lane.key}`, phase: 'Hunt' },
     ),
   (result, lane) => {
@@ -96,7 +96,7 @@ const judged = await pipeline(
         parallel(
           ['walk-the-repro', 'reachability', 'preconditions'].map((lens) => () =>
             agent(
-              `You are a skeptic. Try to break this Kubernetes finding through the "${lens}" lens: follow its repro steps from a clean cluster and find where they don't hold — a missing precondition, an unreachable path, an environment assumption.\n` +
+              `You are a skeptic. Try to break this Kubernetes finding through the "${lens}" lens: follow its repro steps from a clean cluster and find where they don't hold - a missing precondition, an unreachable path, an environment assumption.\n` +
                 `Finding: ${JSON.stringify(f)}\n` +
                 `Only report reproduced=true if the steps genuinely reproduce the impact. Default to false when unsure.`,
               { schema: VERDICT_SCHEMA, label: `judge:${lane.key}:${lens}`, phase: 'Judge' },
@@ -117,7 +117,7 @@ const survivors = candidates.filter((c) => c.survives)
 
 phase('Coverage')
 const skipped = LANES.filter((l) => !covered.has(l.key)).map((l) => l.key)
-log(`Coverage: ${covered.size}/${LANES.length} lanes hunted${skipped.length ? ` — SKIPPED: ${skipped.join(', ')}` : ''}`)
+log(`Coverage: ${covered.size}/${LANES.length} lanes hunted${skipped.length ? ` - SKIPPED: ${skipped.join(', ')}` : ''}`)
 log(`Candidates: ${candidates.length}, reproduced under judging: ${survivors.length}`)
 
 phase('Report')
@@ -125,7 +125,7 @@ if (!survivors.length) {
   return { verdict: 'nothing reproduced under judging', coverage: { hunted: [...covered], skipped }, candidates: candidates.length }
 }
 const report = await agent(
-  `Write submission-ready HackerOne reports for these findings — each one reproduced under adversarial judging. For each: title, affected component and versions, the exact repro from a clean cluster, what the attacker gains, and the fix. Match the disclosure policy.\n` +
+  `Write submission-ready HackerOne reports for these findings - each one reproduced under adversarial judging. For each: title, affected component and versions, the exact repro from a clean cluster, what the attacker gains, and the fix. Match the disclosure policy.\n` +
     `Findings: ${JSON.stringify(survivors)}`,
   { label: 'report', phase: 'Report' },
 )

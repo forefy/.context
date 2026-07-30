@@ -61,7 +61,7 @@ These techniques are for complex investigations where basic tracing has stalled 
 1. Identify the bridge used (check attacker wallet for interactions with known bridge contracts)
 2. Find the bridge's destination contract on the target chain (Google: `"[bridge name] contract address [destination chain]"`)
 3. Use time-value correlation to match deposit → withdrawal
-4. On Solana: look for Program-Derived Addresses (PDAs) — deterministic addresses that map back to Ethereum origins
+4. On Solana: look for Program-Derived Addresses (PDAs) - deterministic addresses that map back to Ethereum origins
 5. Repeat for each subsequent hop
 
 **Behavioral patterns to detect:**
@@ -115,18 +115,18 @@ These techniques are for complex investigations where basic tracing has stalled 
 - **Exploit-contract clustering:** All wallets that approved or interacted with same malicious contract = linked campaign
 
 **Free graph tools:**
-- **Breadcrumbs** (`breadcrumbs.app`) — visual graph of wallet relationships, free tier available
-- **MetaSleuth** (`metasleuth.io`) — auto-generated fund flow map, cross-chain
-- **Arkham Intelligence** (`arkhamintelligence.com`) — entity-level graph with free account
-- **GraphSense** (open source, self-hosted) — full UTXO + account model graph analytics
+- **Breadcrumbs** (`breadcrumbs.app`) - visual graph of wallet relationships, free tier available
+- **MetaSleuth** (`metasleuth.io`) - auto-generated fund flow map, cross-chain
+- **Arkham Intelligence** (`arkhamintelligence.com`) - entity-level graph with free account
+- **GraphSense** (open source, self-hosted) - full UTXO + account model graph analytics
 
 **What to look for in graphs:**
 - **Star networks:** One central wallet receiving from hundreds of victims (drainer collector)
-- **Chain splitters:** One wallet fans out to dozens — peel chain beginning
+- **Chain splitters:** One wallet fans out to dozens - peel chain beginning
 - **Service reliance:** Multiple hacks converging on the same bridge/mixer/CEX
 - **Overlap between incidents:** Two apparently unrelated hacks share a common laundering hub → same group
 
-**Paid options:** Arkham Pro, Crystal Intelligence, Chainalysis Reactor — offer automated entity resolution and compliance-grade clustering. Worth it for professional investigations.
+**Paid options:** Arkham Pro, Crystal Intelligence, Chainalysis Reactor - offer automated entity resolution and compliance-grade clustering. Worth it for professional investigations.
 
 ## 7.6 Pattern Recognition Across Cases
 

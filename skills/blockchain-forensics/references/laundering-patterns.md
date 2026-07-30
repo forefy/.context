@@ -13,7 +13,7 @@ Reference table of known laundering techniques and how to detect and follow them
 | Instant swap obfuscation | Time-value correlation (±5 min window) | Etherscan, chain explorer |
 | CEX micro-deposits | Pattern-match small amounts to hot wallets | Etherscan, Arkham |
 | OTC cash-out (Tron USDT) | Identify Tron address clusters receiving large USDT | Tronscan, MistTrack |
-| P2P off-ramp (Binance P2P, LocalBitcoins, HodlHodl) | Attacker sells crypto directly for fiat via burner/purchased-KYC identities; minimal on-chain trace after P2P exchange — pivot on the deposit address to the P2P platform, report to exchange compliance | Exchange cooperation required |
+| P2P off-ramp (Binance P2P, LocalBitcoins, HodlHodl) | Attacker sells crypto directly for fiat via burner/purchased-KYC identities; minimal on-chain trace after P2P exchange - pivot on the deposit address to the P2P platform, report to exchange compliance | Exchange cooperation required |
 | Stablecoin bridging | Follow USDT/USDC via bridge contracts to Tron/BNB | Tronscan, BSCScan |
 | Fake/stolen identity CEX | Flag for exchange cooperation; not traceable on-chain alone | Report to exchange |
 | Unregulated exchange off-ramp (Huione, Xinbi, Grantex) | **Huione**: Cambodia-linked platform with Telegram/WeChat presence; used by pig butchering rings and fraud networks to off-ramp via informal agents. **Xinbi**: weak-KYC exchange; accepts near-anonymous trading. **Grantex**: Russia-based; darknet and ransomware cashout. Detection: trace Tron USDT flows to receiving addresses associated with these platforms; report to partner exchanges and OFAC | MistTrack, Arkham, exchange cooperation |
