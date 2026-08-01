@@ -1,7 +1,7 @@
 ---
 kind: loop
 schema: goal.v1
-name: k8-bugbounty
+name: k8-bounty-goal
 description: Land one critical, reproducible bug on hackerone.com/kubernetes.
 end_state:
   - A critical finding whose PoC reproduces from a clean cluster via a repeatable script
