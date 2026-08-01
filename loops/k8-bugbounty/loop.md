@@ -1,6 +1,6 @@
 ---
 kind: loop
-schema: goal.v3
+schema: goal.v1
 name: k8-bugbounty
 description: Land one critical, reproducible bug on hackerone.com/kubernetes.
 end_state:

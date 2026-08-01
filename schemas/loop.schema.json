@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/forefy/.context/schemas/loop.schema.json",
-  "title": "Loop goal.v3",
+  "title": "Loop goal.v1",
   "description": "YAML frontmatter of a loop.md / *.loop.md file. The allowed_paths-in-condition drift rule is enforced by scripts/schema_check.py, not this schema.",
   "type": "object",
   "required": ["end_state", "proof", "termination"],
