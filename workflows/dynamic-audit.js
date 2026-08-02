@@ -1,7 +1,7 @@
 export const meta = {
   name: 'dynamic-audit',
   description:
-    'A self-shaping audit that keeps tiny-auditor\'s judgment, not just its shape. It discovers the surfaces worth hunting for this target, aims them at the crown-jewel assets, and grows the surface on every confirmed hit. Candidates must survive skeptics who name-check a realistic actor and strip privileged-breach redundancy; survivors are proven, deduped, ranked with attackonomics demotions, then written up under do-no-harm rules and gated by a report-QA pass. Prefer nothing over a false positive.',
+    'A self-shaping audit that discovers the surfaces worth hunting for this target, aims them at the crown-jewel assets, and grows the surface on every confirmed hit. Candidates must survive skeptics who name-check a realistic actor and strip privileged-breach redundancy; survivors are proven, deduped, ranked with attackonomics demotions, then written up under do-no-harm rules and gated by a report-QA pass.',
   phases: [
     { title: 'Discover', detail: 'derive crown jewels, known/acknowledged issues, and initial lanes' },
     { title: 'Hunt', detail: 'parallel lanes off the queue' },
