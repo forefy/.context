@@ -1,13 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/forefy/.context/schemas/loop.schema.json",
-  "title": "Loop goal.v1",
-  "description": "YAML frontmatter of a loop.md / *.loop.md file. The allowed_paths-in-condition drift rule is enforced by scripts/schema_check.py, not this schema.",
+  "title": "Loop loop.v1",
+  "description": "YAML frontmatter of a loop.md / *.loop.md file. The goal-completion core (end_state/proof/guardrail/termination) is goal.v1; the optional cadence is the loop.v1 addition. The allowed_paths-in-condition drift rule and the recurring-cadence recurrence-bound rule are enforced by scripts/schema_check.py, not this schema.",
   "type": "object",
   "required": ["end_state", "proof", "termination"],
   "properties": {
     "kind": { "const": "loop" },
+    "schema": { "enum": ["loop.v1", "goal.v1"], "description": "loop.v1; goal.v1 accepted as an alias for run-once loops." },
     "name": { "type": "string" },
+    "description": { "type": "string" },
     "condition": { "type": "string" },
     "end_state": {
       "type": "array",
@@ -31,14 +33,37 @@
       "properties": {
         "max_turns": { "type": "integer", "minimum": 1 },
         "max_duration": { "type": "string", "minLength": 1 },
+        "max_runs": { "type": "integer", "minimum": 1 },
         "stop_on": { "type": "array", "items": { "type": "string" } }
       },
       "anyOf": [
         { "required": ["max_turns"] },
         { "required": ["max_duration"] },
+        { "required": ["max_runs"] },
         {
           "required": ["stop_on"],
           "properties": { "stop_on": { "minItems": 1 } }
+        }
+      ]
+    },
+    "cadence": {
+      "type": "object",
+      "description": "If/how the loop re-runs. Omit for a run-once goal loop.",
+      "properties": {
+        "trigger": { "enum": ["once", "interval", "cron", "self-paced"] },
+        "interval": { "type": "string", "minLength": 1, "description": "e.g. \"5m\". Required when trigger is \"interval\"." },
+        "cron": { "type": "string", "minLength": 1, "description": "5-field cron expression. Required when trigger is \"cron\"." },
+        "timezone": { "type": "string", "description": "IANA timezone for the cron schedule." },
+        "pacing_hint": { "type": "string", "description": "Pacing guidance for the model (self-paced)." }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "trigger": { "const": "interval" } }, "required": ["trigger"] },
+          "then": { "required": ["interval"] }
+        },
+        {
+          "if": { "properties": { "trigger": { "const": "cron" } }, "required": ["trigger"] },
+          "then": { "required": ["cron"] }
         }
       ]
     },

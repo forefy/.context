@@ -1,6 +1,6 @@
 ---
 kind: loop
-schema: goal.v1
+schema: loop.v1
 name: audit-goal
 description: Hunt criticals on the highest-value attack surface until they stop paying for their tokens.
 end_state:

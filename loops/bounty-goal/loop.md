@@ -1,6 +1,6 @@
 ---
 kind: loop
-schema: goal.v1
+schema: loop.v1
 name: bounty-goal
 description: Land one critical, reproducible bug on a bounty program's in-scope target.
 end_state:
