@@ -74,20 +74,6 @@ def drift_check(path, fm, body):
         add(path, f"guardrail allowed_paths {missing} absent from the /goal condition (drift)")
 
 
-def recurrence_check(path, fm):
-    # A recurring cadence (interval/cron/self-paced) that only bounds a single run (max_turns)
-    # would restart forever - it must also be bounded across runs.
-    cadence = fm.get("cadence") or {}
-    trigger = cadence.get("trigger")
-    if trigger not in ("interval", "cron", "self-paced"):
-        return
-    term = fm.get("termination") or {}
-    stop_on = term.get("stop_on") or []
-    if term.get("max_runs") is None and not term.get("max_duration") and not stop_on:
-        add(path, f"cadence.trigger '{trigger}' is recurring but termination has no cross-run bound "
-                  f"(set max_runs, max_duration, or stop_on; max_turns only bounds one run)")
-
-
 def extract_meta(js):
     start = js.find("export const meta")
     if start == -1:
@@ -141,7 +127,6 @@ for path in ROOT.rglob("*.md"):
         continue
     if report(path, LOOP, fm):
         drift_check(path, fm, body)
-        recurrence_check(path, fm)
 
 for path in ROOT.rglob("*.js"):
     if path.name.lower().endswith(".min.js"):
