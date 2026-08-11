@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
- <b>An optimized collection of AI agent skills for security auditing</b>
+ <b>An optimized collection of AI agent skills, loops and workflows for security auditing</b>
 </p>
 <p align="center">
   <a href="https://github.com/forefy/.context/issues/new/choose"><img alt="Issues" title="Issues" src="https://img.shields.io/github/issues-raw/forefy/.context"></a>
@@ -17,31 +17,25 @@
 </p>
 
 <p align="center">
+  <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt="">&nbsp;Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;Copilot &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt="">&nbsp;Gemini &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt="">&nbsp;Codex
+</p>
+
+<p align="center">
  <a href="https://t.me/forefy_t" title="forefy Telegram">Telegram DM</a>
 </p>
 
 
+# Installation
 
-# Quick Installation
-
-## Easiest - get from registry
-1. Find which skills you want from [.context/tree/main/skills](https://github.com/forefy/.context/tree/main/skills)
-2. Go to the skills registry https://forefy.com/skills
-3. Search and download from there via easy installation button
-
-
-## Also easy - repo installer script
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/forefy/.context/main/install.sh | bash
+## Agents:
+Paste in your chat:
+```
+Run the AI Security Registry installation wizard https://github.com/forefy/.context/blob/main/install.md
 ```
 
-- The installer will prompt for your agent harness and install location:
-  - **Global** - skills installed to `~/.claude/skills/`
-  - **Current project** - skills installed to `.claude/skills/`
-- Next time you are auditing with an AI agent, the agent harness will automatically know when to read the skill files and invoke its magic
-
-You can also try `npx skills add forefy/.context`
+## Manual
+1. Data maintained in this repo is also listed on https://forefy.com/aisecurity
+2. Search and download from there via easy installation button
 
 <br>
 
@@ -50,40 +44,6 @@ You can also try `npx skills add forefy/.context`
 Security auditing skills for AI agents, adhering to the [Agent Skills Format](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
 
 `.context` is one of the oldest efforts by security researchers to share auditing knowledge directly to your AI agent, and is built gradually over time. at the most simple form, you type "audit this contract" and end up with a multi-agent triaged AI report.
-
-<p align="center">
-<img src="static/example-1.png" alt="Before: .context reop setup" width="600">
-<br><br>
-<span style="font-size: 24px;">↓</span>
-<br><br>
-<img src="static/example-2.png" alt="After: Starting security analysis" width="600">
-<br><br>
-<span style="font-size: 24px;">↓</span>
-<br><br>
-<img src="static/example-3.png" alt="Final: Generated Security Report" width="400">
-</p>
-
-<br>
-
-# Usage
-
-### <img src="https://claude.com/images/claude_app_icon.png" width="16" height="16" alt="">&nbsp;Claude Code &nbsp;·&nbsp; <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;Copilot CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/161781182?s=48&v=4" width="16" height="16" alt="">&nbsp;Gemini CLI &nbsp;·&nbsp; <img src="https://avatars.githubusercontent.com/u/14957082?s=48&v=4" width="16" height="16" alt="">&nbsp;Codex
-
-Skills are auto-installed to `.claude/skills/` (or `.agents/skills/`) and invoked via textual inference when you request to audit a codebase, for example:
-
-```
-> Audit this codebase with the scope of @file.sol
-```
-
-<br>
-
-### <img src="https://github.githubassets.com/images/modules/site/copilot/copilot.png" width="16" height="16" alt="">&nbsp;GitHub Copilot (VSCode IDE)
-
-Skills are auto-installed to `.claude/skills/` and referenced by name:
-
-```
-/tiny-auditor
-```
 
 <br>
 
@@ -94,16 +54,14 @@ Skills are auto-installed to `.claude/skills/` and referenced by name:
 Optimized for protocol developers to use pre-audit, or for auditors expirementing with AI skills.
 
 - `smart-contract-security-audit` - Full smart contract audit framework with multi-expert analysis for Solidity, Anchor, Vyper, TON (FunC/Tact), and Sui (Move). Includes language-specific checks and vulnerability pattern references.
-  <p align="center">
-  <img src="static/skill-architecture.png" alt="AI Audit Agent Skill Architecture" width="800">
-  </p>
+
 - `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations. audits generate numbered folders in `.context/outputs/` for tracking and reports
 
 <br>
 
-## Workflow / complementary skills
+## Daily-use security skills
 
-Workflow skills are designed to be picked up naturally as you travel through a codebase in your auditing process, and strategically fill context into a specific task.
+Daily skills are designed to be picked up naturally as you travel through a codebase in your auditing process, and strategically fill context into a specific task.
 
 - `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
 
@@ -129,17 +87,14 @@ Workflow skills are designed to be picked up naturally as you travel through a c
 
 # Quality
 
-Skills follow the [Agent Skills open standard](https://github.com/agentskills/agentskills) - compatible with both GitHub Copilot and Claude Code.
+Skills, workflows and loops are following industry best practice and guidance (e.g. we read the docs):
+- [Agent Skills open standard](https://github.com/agentskills/agentskills)
+- [Claude Code Dynamic Workflows](https://code.claude.com/docs/en/workflows)
 
-Each skill is a directory with:
+And are CI-validated by in-repo, versioned json-schema files:
+- [https://github.com/forefy/.context/schemas](https://github.com/forefy/.context/blob/main/schemas)
 
-- `SKILL.md` - Main framework and instructions
-- Language-specific reference files (loaded as needed for token efficiency)
-- `reference/` - Vulnerability patterns organized by language, protocol etc. Skills automatically reference these patterns during audits using progressive disclosure for token efficiency.
-
-Most skills are written WITHOUT AI to achieve most optimized results based on a decades worth of security research knowledge. Some partially use AI to fill in large sets of reference data and where makes sense.
-
-All skills are CI-level security-audited via `skill-warden`.
+.context skills are CI-level security-audited via `skill-warden`, skills, loops and workflows are validated on the AI Security Registry.
 
 <br>
 
