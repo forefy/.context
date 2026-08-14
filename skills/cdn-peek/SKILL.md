@@ -1,6 +1,6 @@
 ---
 name: cdn-peek
-description: Determine whether a CDN/WAF-fronted host is reachable outside its edge protection, and hunt for the real origin behind it. Works against any reverse-proxy edge (Cloudflare, CloudFront, Akamai, Fastly, Sucuri, Imperva/Incapsula, Azure Front Door, StackPath). Use for authorized security testing of a host you own or are engaged to assess - when asked to "find the origin", "bypass the CDN/WAF", "check if the origin leaks", "is this behind Cloudflare/CloudFront", or to map a domain's non-proxied attack surface. Produces a check/done ledger and, if found, a confirmed origin IP.
+description: Lightweight check for whether a CDN/WAF-fronted host is reachable outside its edge, using only dig, curl, openssl, whois, and nc - no API keys, no paid tools, no brute-force scans. Works against any reverse-proxy edge (Cloudflare, CloudFront, Akamai, Fastly, Sucuri, Imperva/Incapsula, Azure Front Door, Google Cloud CDN, Gcore, Bunny, Edgio). Use for authorized security testing of a host you own or are engaged to assess - when asked to "find the origin", "bypass the CDN/WAF", "check if the origin leaks", "is this behind Cloudflare/CloudFront", or to map a domain's non-fronted surface. Produces a check/done ledger and, if found, a confirmed origin IP.
 
 ---
 
@@ -8,64 +8,68 @@ description: Determine whether a CDN/WAF-fronted host is reachable outside its e
 
 Only run against hosts the user owns or is contractually engaged to test. This is origin discovery for defensive hardening (confirming the edge actually hides the origin), not for attacking third parties. If the target isn't clearly the user's or in-scope, ask before probing.
 
-Keep scope tight to the requested host ("straight") unless the user asks to pivot to siblings. Sibling subdomains are enumerated for leaks, but don't treat a separate app on another IP as the target's origin without host-confusion proof.
+This skill is deliberately dependency-free: every step is a plain `dig`, `curl`, `openssl`, `whois`, or `nc` one-liner. It covers origin reachability, not WAF signature evasion (payload encoding / rule bypass) - that is a separate discipline. Techniques that need API keys or heavy tooling (favicon-hash pivots on Shodan/Censys/ZoomEye/FOFA, historical-DNS via SecurityTrails, passive-source or brute-force subdomain enumeration, app-callback/SSRF leaks) are intentionally out of scope here; note them as unrun if the target warrants a deeper pass.
 
 ## Step 0 - identify the edge
 
-Resolve the host and match its IPs/NS/CNAME against known edge fingerprints, then load that provider's profile from the table below. Everything after is provider-agnostic; only the IP ranges, the client-IP header name, and the origin-allowlist source differ per provider.
+Match the host's IPs/NS/CNAME against known edge fingerprints, then load that provider's client-IP header. Everything after is provider-agnostic; only the IP ranges and the client-IP header name differ.
 
-| Edge | Fingerprint (IP/NS/CNAME) | Client-IP header | Origin allowlist source |
-|---|---|---|---|
-| Cloudflare | 104.16/13, 172.64/13, 2606:4700::/32, *.ns.cloudflare.com | CF-Connecting-IP | cloudflare.com/ips |
-| CloudFront | *.cloudfront.net, AWS CLOUDFRONT ranges | CloudFront-Viewer-Address / X-Amz-Cf-Id | AWS CLOUDFRONT_ORIGIN_FACING prefix list |
-| Akamai | *.akamaiedge.net, *.akamai.net, *.edgekey.net | True-Client-IP | Akamai SiteShield map |
-| Fastly | *.fastly.net, 151.101/16 | Fastly-Client-IP | Fastly public-IP list / api.fastly.com/public-ip-list |
-| Sucuri | *.sucuri.net, 192.88.134/23, 185.93.228/22 | X-Sucuri-ClientIP | Sucuri firewall IP list |
-| Imperva/Incapsula | *.incapdns.net | Incap-Client-IP / X-Forwarded-For | Incapsula IP ranges |
-| Azure Front Door | *.azurefd.net, AzureFrontDoor.Backend tag | X-Azure-ClientIP / X-Azure-SocketIP | AzureFrontDoor.Backend service tag |
+| Edge | Fingerprint (IP/NS/CNAME) | Client-IP header |
+|---|---|---|
+| Cloudflare | 104.16/13, 172.64/13, 2606:4700::/32, *.ns.cloudflare.com | CF-Connecting-IP |
+| CloudFront | *.cloudfront.net, AWS CLOUDFRONT ranges | CloudFront-Viewer-Address |
+| Akamai | *.akamaiedge.net, *.akamai.net, *.edgekey.net | True-Client-IP |
+| Fastly | *.fastly.net, 151.101/16 | Fastly-Client-IP |
+| Sucuri | *.sucuri.net, 192.88.134/23, 185.93.228/22 | X-Sucuri-ClientIP |
+| Imperva/Incapsula | *.incapdns.net | Incap-Client-IP |
+| Azure Front Door | *.azurefd.net, AzureFrontDoor.Backend tag | X-Azure-ClientIP |
+| Google Cloud CDN | Google ranges, ghs.googlehosted.com | X-Forwarded-For |
+| Gcore / Bunny / Edgio | *.gcdn.co, *.b-cdn.net, *.edgecastcdn.net | X-Forwarded-For |
 
 ## Methodology (run in order; each step is a check with a done/result state)
 
-1. **Confirm fronted.** Resolve A/AAAA, match IPs against the edge ranges from Step 0, check NS/CNAME. If not fronted, stop - there's nothing to bypass.
-2. **DNS record sweep.** `dig` A/AAAA/CNAME/TXT/MX/SOA/SRV/CAA. SPF `include`/`ip4`, MX, and autodiscover records frequently leak a non-fronted origin IP.
-3. **Subdomain enum via CT.** Query Certificate Transparency (certspotter API, crt.sh) for `*.domain`. Flag any subdomain resolving to a non-edge IP.
-4. **Fingerprint exposed siblings.** For each off-edge IP: ASN/hosting provider, server banner, cert CN/SAN. Reveals the hosting footprint (e.g. same cloud project) even when the box isn't the target's origin.
-5. **Host-confusion vs exposed IPs.** `curl --resolve target:443:<IP>` with the target Host + SNI; compare title/body/length to the real fronted response. Same content = origin bypass; different (default vhost) = not the origin.
-6. **CT search for the target's own origin cert.** A Let's Encrypt / self-issued cert scoped to just the target host (not the edge's shared cert) is a pivotable leak; 0 entries = clean.
-7. **Favicon / HTML hash pivot.** mmh3 hash of `/favicon.ico` (Shodan `http.favicon.hash:`) or md5 (Censys `services.http.response.favicons.md5_hash`); also homepage body hash. Finds any box on the internet serving identical content off-edge. Needs a Shodan/Censys key.
-8. **Passive / historical DNS.** SecurityTrails / Censys history for pre-edge A records on the host and the apex. Any historical non-edge IP is a prime origin candidate. Needs an API key.
-9. **Client-IP header trust.** Send `X-Forwarded-For`, `X-Real-IP`, and the edge's own client-IP header (from Step 0) = `127.0.0.1`; compare responses. Bypasses IP allowlist/geo/rate-limit logic - not the origin. A hardened edge rejects a client-supplied copy of its own header (Cloudflare answers 403 `error code: 1000`); if the app instead trusts it, that is the finding.
-10. **Edge header tricks.** `X-Forwarded-Host`, `X-Original-URL`, blank/mismatched `Host` - test for cache/redirect poisoning or routing bypass and header reflection in links.
-11. **Confirm candidate origin.** For any candidate IP from 2/3/7/8: `curl -skI --resolve target:443:<IP>`. If it returns the target app and isn't firewalled to the edge ranges, it's a full bypass.
-12. **Port-scan confirmed origin.** Non-HTTP services the edge never proxies (SSH/22, k8s API/6443, kubelet/10250, admin panels).
+1. **Confirm fronted.** `dig` A/AAAA/NS/CNAME, match IPs against the edge ranges from Step 0. If not fronted, stop - there's nothing to bypass.
+2. **DNS record sweep.** `dig` A/AAAA/CNAME/TXT/MX/SOA/SRV/CAA and `_dmarc`. SPF `ip4:`/`include:`, MX, and autodiscover records frequently name a non-fronted origin or mail IP.
+3. **CT lookup (free, no key, no brute).** One `curl` to crt.sh and certspotter for `*.domain`: enumerates subdomains and the host's own cert history. Flag any subdomain resolving to a non-edge IP; a Let's Encrypt / self-issued cert scoped to just the target host (not the edge's shared cert) is a pivotable leak.
+4. **Fingerprint every non-edge IP.** `dig -x` (reverse DNS), `whois` (ASN/hosting org), `curl` banner, `openssl s_client` cert CN/SAN/issuer. Reveals the hosting footprint even when the box isn't the origin.
+5. **Host-confusion.** `curl --resolve target:443:<IP>` with the target Host + SNI against each non-edge IP; compare title/body/length to the real fronted response. Same content = origin bypass; different (default vhost) = not the origin.
+6. **Response-header & error-page leak.** `curl -I` the target and a bogus path; inspect `Via`, `X-Cache`, `X-Served-By`, `X-Backend-Server`, `Server`, `X-Powered-By`, redirect `Location`, and verbose error bodies for internal hostnames or RFC1918/origin IPs.
+7. **Client-IP header trust.** Send `X-Forwarded-For`, `X-Real-IP`, and the edge's own client-IP header (Step 0) = `127.0.0.1`; compare responses. Bypasses IP allowlist/geo/rate-limit logic - not the origin. A hardened edge rejects a client-supplied copy of its own header (Cloudflare answers 403 `error code: 1000`); if the app instead trusts it, that is the finding.
+8. **Edge header tricks.** `X-Forwarded-Host`, `X-Original-URL`, blank/mismatched `Host` - test for cache/redirect poisoning, routing bypass, and header reflection in links.
+9. **Confirm candidate origin.** For any candidate IP from steps 2/3/4: `curl -skI --resolve target:443:<IP>`. If it returns the target app and isn't firewalled to the edge ranges, it's a full bypass.
+10. **Port check on a confirmed origin.** `nc -z` the non-HTTP services the edge never proxies (SSH/22, k8s API/6443, kubelet/10250, DB/admin ports).
 
 ## Runnable snippets
 
 ```bash
 # 1 confirm fronted
-dig +short TARGET A; dig +short DOMAIN NS
+dig +short TARGET A; dig +short TARGET AAAA; dig +short DOMAIN NS; dig +short TARGET CNAME
 # 2 DNS sweep
-for t in A AAAA CNAME TXT MX SOA SRV CAA; do echo "$t: $(dig +short TARGET $t | tr '\n' ' ')"; done
-# 3 CT subdomains
+for t in A AAAA CNAME TXT MX SOA SRV CAA; do echo "$t: $(dig +short TARGET $t | tr '\n' ' ')"; done; dig +short _dmarc.DOMAIN TXT
+# 3 CT lookup (subdomains + cert history, no key)
+curl -s "https://crt.sh/?q=%25.DOMAIN&output=json" | python3 -c "import sys,json;print('\n'.join(sorted({n for x in json.load(sys.stdin) for n in x['name_value'].split(chr(10))})))"
 curl -s "https://api.certspotter.com/v1/issuances?domain=DOMAIN&include_subdomains=true&expand=dns_names" | python3 -c "import sys,json;[print(n) for x in json.load(sys.stdin) for n in x.get('dns_names',[])]" | sort -u
+# 4 fingerprint a non-edge IP
+dig -x IP +short; whois IP | grep -iE 'orgname|netname|origin|as[0-9]'; echo | openssl s_client -connect IP:443 -servername TARGET 2>/dev/null | openssl x509 -noout -subject -issuer -ext subjectAltName
 # 5 host-confusion
 curl -sk --resolve TARGET:443:IP https://TARGET/ | python3 -c "import sys,re;h=sys.stdin.read();t=re.search(r'<title>(.*?)</title>',h,re.S);print('title:',t and t.group(1).strip(),'len:',len(h))"
-# 6 origin cert history
-curl -s "https://crt.sh/?q=TARGET&output=json" | python3 -c "import sys,json;d=json.load(sys.stdin);print('certs:',len(d))"
-# 7 favicon hash
-curl -sk https://TARGET/favicon.ico | python3 -c "import sys,mmh3,base64;d=sys.stdin.buffer.read();print(mmh3.hash(base64.encodebytes(d)) if d else 'none')"
-# 8 historical DNS  (export SECURITYTRAILS_KEY first)
-curl -s "https://api.securitytrails.com/v1/history/TARGET/dns/a" -H "APIKEY: $SECURITYTRAILS_KEY" | python3 -m json.tool
-# 9 header trust  (swap EDGE_HEADER for the provider's own, from Step 0)
+# 6 header / error leak
+curl -sI https://TARGET/ | grep -iE 'via|x-cache|x-served-by|x-backend|server|x-powered|location'
+curl -sk https://TARGET/nonexistent-$RANDOM | grep -oiE '([0-9]{1,3}\.){3}[0-9]{1,3}|[a-z0-9.-]+\.(internal|local|lan)'
+# 7 client-IP header trust  (swap EDGE_HEADER for the provider's own, from Step 0)
 for h in "X-Forwarded-For: 127.0.0.1" "X-Real-IP: 127.0.0.1" "EDGE_HEADER: 127.0.0.1"; do echo "[$h] $(curl -sk -o /dev/null -w '%{http_code} %{size_download}b' -H "$h" https://TARGET/)"; done
-# 11 confirm origin
+# 8 edge header tricks
+for h in "X-Forwarded-Host: evil.example" "X-Original-URL: /admin" "Host: example.com"; do echo "[$h] $(curl -sk -o /dev/null -w '%{http_code} %{size_download}b' -H "$h" https://TARGET/)"; done
+# 9 confirm candidate origin
 curl -skI --resolve TARGET:443:CANDIDATE_IP https://TARGET/ | head
+# 10 port check
+for p in 22 6443 10250 3306 5432 8080 8443; do nc -z -G2 CANDIDATE_IP $p 2>/dev/null && echo "open $p"; done
 ```
 
 ## Output
 
-Finish with a `check / done? / result` ledger over all 12 steps, then a one-line verdict:
-- **Clean** - every runnable technique exhausted and negative; origin not leaking via DNS/cert/header/edge.
+Finish with a `check / done? / result` ledger over all 10 steps, then a one-line verdict:
+- **Clean** - every check exhausted and negative; origin not leaking via DNS/cert/header/edge.
 - **Exposed** - a confirmed origin IP (name the step that found it and the confirming direct fetch), plus the fix (firewall origin to the edge ranges only, enable origin authentication such as Cloudflare Authenticated Origin Pulls or CloudFront custom-header validation, strip client-IP headers at the edge).
 
 Report each step's true status - done or not-run - so coverage is honest; never present an unrun step as clean.
