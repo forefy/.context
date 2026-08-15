@@ -49,39 +49,61 @@ Security auditing skills for AI agents, adhering to the [Agent Skills Format](ht
 
 # About the Skills
 
-## Comprehensive audit
+Skills are grouped into category folders under `skills/`. Discovery is flat, so the folders are for organization only; each skill still lives at `skills/<category>/<name>/SKILL.md`.
 
-Optimized for protocol developers to use pre-audit, or for auditors expirementing with AI skills.
+## Applicative pentest
 
-- `smart-contract-security-audit` - Full smart contract audit framework with multi-expert analysis for Solidity, Anchor, Vyper, TON (FunC/Tact), and Sui (Move). Includes language-specific checks and vulnerability pattern references.
+`skills/applicative-pentest/` - portable, tool-agnostic web-app testing methodologies (curl/python3, no scanner required), each with runnable snippets and the wordlists/regexes/thresholds inline or in `references/`.
 
-- `infrastructure-security-audit` - Infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations. audits generate numbered folders in `.context/outputs/` for tracking and reports
+- `ssrf-oob` - active out-of-band SSRF probe; injects an OAST/collaborator callback into request-forwarding params and client-IP headers, then watches for the DNS/HTTP interaction that proves a blind server-side request.
+- `http-request-smuggling` - active HTTP desync detection for CL.TE and TE.CL via raw socket requests, using timing probes plus differential-response confirmation with the exact payloads.
+- `jwt-attacks` - forges and re-signs captured JWTs to test signature validation (alg:none, signature stripping, kid traversal, jwk/jku injection, RS256/HS256 confusion) plus offline HMAC secret cracking.
+- `broken-access-control` - active authorization and IDOR testing by replaying captured requests with swapped identities and incremented object-ids, carrying the response-diff thresholds that decide a finding.
+- `webapp-probe` - assesses what a web app exposes or leaks, passively from captured traffic (headers, cookies, secrets, error pages, tech fingerprints, RCE-prone params) and actively (exposed files, vulnerable software on open ports, Wayback endpoints, dependency confusion).
+- `cdn-peek` - checks whether a CDN/WAF-fronted host is reachable outside its edge, using only dig, curl, openssl, whois, and nc; works against any reverse-proxy edge.
 
 <br>
 
-## Daily-use security skills
+## Blockchain
 
-Daily skills are designed to be picked up naturally as you travel through a codebase in your auditing process, and strategically fill context into a specific task.
+`skills/blockchain/` - smart-contract auditing and on-chain investigation.
 
-- `auditor-quiz` - Quick skill to get yourself engaged with the codebase from a security auditor perspective (but also from protocol dev perspective) and test how well you memorized it by quizing yourself.
+- `smart-contract-audit` - full smart contract audit framework with multi-expert analysis for Solidity, Anchor, Vyper, TON (FunC/Tact), and Sui (Move), with language-specific checks and vulnerability pattern references.
+- `foundry-poc` - context-window-optimized skill to generate a Foundry proof of concept for a discussed finding.
+- `blockchain-forensics` - trace stolen funds and attribute attacker wallets using only public on-chain data; also useful for deployer history and privileged-role validation during audits.
+- `safe-hunt` - sweeps DeFi protocol Safe multisig wallets for governance misconfigurations, scoring each against a finding pattern library and producing an audit-ready ranked report.
 
-- `tiny-auditor` - context window optimized audit skill - think caveman for audits. 
+<br>
 
-- `foundry-poc` - context window optimized skill to generate a foundry proof of concept for a discussed finding.
+## Cloud
 
-- `sandboxed-audit-runner` - wraps the entire agent session inside the Anthropic Sandbox Runtime before starting any audit on untrusted code. Protects the host from prompt injection attacks embedded in the codebase - malicious comments, filenames, or configs designed to make the agent exfiltrate keys or make unauthorized network calls.
+`skills/cloud/` - cloud and infrastructure exposure.
 
-- `agent-onboarding` - agents are pre-instructed to get familiar with the code before anything, but also tracka. shared TODO.md - when you are in focus mode in your auditing you should have at least 4 concurrent AI terminals running. To sync their work, as well as keep quality coverage tracking of your audit, you can onboard agents to the team with a purpose (e.g. "Onboard to team to look for issues in recent commits only")
+- `cloud-bucket-brute` - active enumeration of publicly readable cloud-storage buckets; permutes a company name into candidate bucket names and probes AWS S3, Google Cloud, DigitalOcean, Alibaba, Oracle, and Vultr.
+- `infrastructure-audit` - infrastructure security audit framework for IaC, Docker, Kubernetes, and cloud configurations; audits generate numbered folders in `.context/outputs/` for tracking and reports.
 
-- `gdocs-audit-report` - expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Covers finding formatting, summary tables, inline code styling, severity color schemes, index-drift safety, and all common Docs API pitfalls.
+<br>
 
-- `blockchain-forensics` - Trace stolen funds, attribute attacker wallets, using only public on-chain data. Also useful during audits for checking deployer history, validating privileged roles, and understanding how past exploits on similar protocols played out on-chain.
+## Hunter utils
 
-- `safe-hunt` - Sweeps DeFi protocol Safe multisig wallets for governance misconfigurations and security weaknesses. Given a protocol name, Safe address, or "sweep all", fetches live config and tx history from the Safe Transaction Service API, scores each Safe against a finding pattern library, and produces an audit-ready ranked report.
+`skills/hunter-utils/` - general auditing methodology and workflow tooling picked up naturally as you travel through a codebase.
 
-- `git-commit` - before letting the agent blind-commiting your code, it pre-runs tests, security reviews changed code, strips dead code and sensitive data it finds, enforces clean commit messages and validates the change won't break deployments.
+- `tiny-auditor` - context-window-optimized audit skill; think caveman for audits.
+- `auditor-quiz` - get engaged with the codebase from a security-auditor perspective and test how well you memorized it by quizzing yourself.
+- `audit-scope` - generate a security audit scope document from GitHub repo URLs and/or API access descriptions, with a protocol narrative and a scope table (NSLOC, focus areas, days).
+- `sandboxed-audit-runner` - wraps the agent session inside the Anthropic Sandbox Runtime before auditing untrusted code, protecting the host from prompt-injection embedded in the codebase.
+- `agent-onboarding` - onboard concurrent agents to a shared TODO.md so parallel auditing terminals sync work and keep coverage tracking.
+- `gdocs-audit-report` - create, format, and maintain security audit reports in Google Docs via the Docs API, covering finding formatting, summary tables, severity colors, and index-drift safety.
+- `git-commit` - before committing, pre-runs tests, security-reviews changed code, strips dead code and sensitive data, enforces clean commit messages, and validates the change won't break deployments.
+- `context-window-to-skill` - converts a completed agent conversation into a reusable skill, extracting the pitfalls, tweaks, and lessons so the next run gets it right from the start.
 
-- `context-window-to-skill` - converts a completed agent conversation into a reusable skill. extracts the pitfalls, tweaks, and lessons from the session so the next run gets it right from the start.
+<br>
+
+## Defensive
+
+`skills/defensive/` - blue-team and DFIR.
+
+- `endpoint-threat-hunt` - live endpoint threat hunting across process/file/network/persistence/registry categories using native OS tools (macOS/Linux/Windows), producing a structured findings report with explicit coverage gaps.
 
 <br>
 
