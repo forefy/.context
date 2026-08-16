@@ -96,6 +96,8 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 - `gdocs-audit-report` - create, format, and maintain security audit reports in Google Docs via the Docs API, covering finding formatting, summary tables, severity colors, and index-drift safety.
 - `git-commit` - before committing, pre-runs tests, security-reviews changed code, strips dead code and sensitive data, enforces clean commit messages, and validates the change won't break deployments.
 - `context-window-to-skill` - converts a completed agent conversation into a reusable skill, extracting the pitfalls, tweaks, and lessons so the next run gets it right from the start.
+- `pre-bounty` - pre-engagement recon and target prioritization for a bounty/VDP scope; maps assets, mines bug history, extracts scope gotchas, then scores and ranks every asset best-to-worst by opportunity and renders a ranked asset -> setup -> ROI Sankey.
+- `hackerone-report` - drives a HackerOne submission end to end: dedup pre-flight, concise writeup, a video-ready PoC package, and browser form-fill, handing the irreversible login and Submit steps back to the user.
 
 <br>
 
