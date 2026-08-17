@@ -95,36 +95,111 @@ def drift_check(path, fm, body):
         add(path, f"guardrail allowed_paths {missing} absent from the /goal condition (drift)")
 
 
-def extract_meta(js):
-    start = js.find("export const meta")
-    if start == -1:
-        start = js.find("const meta")
-    if start == -1:
-        return None
-    brace = js.find("{", start)
-    if brace == -1:
-        return None
+class MetaError(str):
+    """Sentinel returned by extract_meta when a `meta` block is present but unparseable.
+
+    Carries a human message (with a line/column position where useful).
+    """
+
+
+def _line_col(text, index):
+    """1-based (line, column) of offset `index` in `text`."""
+    prefix = text[:index]
+    return prefix.count("\n") + 1, index - (prefix.rfind("\n") + 1) + 1
+
+
+def _match_brace(text, open_idx):
+    """Index of the `}` matching the `{` at open_idx, skipping braces inside
+    '...' / "..." / `...` string literals (honoring backslash escapes). None if unbalanced.
+
+    A plain depth counter miscounts a brace that appears inside a description string and
+    slices the object at the wrong place; this mirrors di3's match_bracket so both agree.
+    """
     depth = 0
-    end = brace
-    for i in range(brace, len(js)):
-        if js[i] == "{":
+    quote = None
+    i = open_idx
+    while i < len(text):
+        c = text[i]
+        if quote is not None:
+            if c == "\\":
+                i += 2
+                continue
+            if c == quote:
+                quote = None
+        elif c in "'\"`":
+            quote = c
+        elif c == "{":
             depth += 1
-        elif js[i] == "}":
+        elif c == "}":
             depth -= 1
             if depth == 0:
-                end = i
-                break
+                return i
+        i += 1
+    return None
+
+
+def _read_quoted_value(text, start, quote):
+    """Unescape a JS string literal from offset `start` (first char after the opening
+    quote) up to the matching unescaped `quote`. `\\n`/`\\t`/`\\r` become their control
+    chars; any other escaped char passes through as its literal.
+
+    The old `['\"`]([^'\"`]*)['\"`]` regex stopped at the first quote byte, so an escaped
+    quote inside a value (e.g. `keeps tiny-auditor\\'s judgment`) silently truncated it.
+    """
+    out = []
+    i = start
+    while i < len(text):
+        c = text[i]
+        if c == "\\":
+            nxt = text[i + 1] if i + 1 < len(text) else ""
+            out.append({"n": "\n", "t": "\t", "r": "\r"}.get(nxt, nxt))
+            i += 2
+            continue
+        if c == quote:
+            break
+        out.append(c)
+        i += 1
+    return "".join(out)
+
+
+def _read_quoted_field(obj, key):
+    """Value of `key: '...'` in obj with escape handling, or None if absent."""
+    match = re.search(r"\b" + re.escape(key) + r"\s*:\s*(['\"`])", obj, re.DOTALL)
+    if not match:
+        return None
+    return _read_quoted_value(obj, match.end(), match.group(1))
+
+
+META_DECL = re.compile(r"\b(?:export\s+)?const meta\b")
+
+
+def extract_meta(js):
+    block = META_DECL.search(js)
+    if block is None:
+        return None
+    start = block.start()
+    brace = js.find("{", start)
+    if brace == -1:
+        return MetaError("meta block has no opening brace")
+    end = _match_brace(js, brace)
+    if end is None:
+        line, col = _line_col(js, brace)
+        return MetaError(f"meta block has unbalanced braces (opens at line {line}, column {col})")
     obj = js[brace:end + 1]
-    meta = {}
-    for key in ("name", "description"):
-        match = re.search(r"\b" + key + r"\s*:\s*['\"`]([^'\"`]*)['\"`]", obj, re.DOTALL)
-        if match:
-            meta[key] = match.group(1)
+    name = _read_quoted_field(obj, "name")
+    if name is None:
+        line, col = _line_col(js, brace)
+        return MetaError(f"meta.name missing or not a quoted string (meta block at line {line}, column {col})")
+    meta = {"name": name}
+    description = _read_quoted_field(obj, "description")
+    if description is not None:
+        meta["description"] = description
     phases = []
     pi = obj.find("phases")
     if pi != -1:
-        for match in re.finditer(r"title\s*:\s*['\"`]([^'\"`]*)['\"`]", obj[pi:]):
-            phases.append({"title": match.group(1)})
+        tail = obj[pi:]
+        for match in re.finditer(r"\btitle\s*:\s*(['\"`])", tail, re.DOTALL):
+            phases.append({"title": _read_quoted_value(tail, match.end(), match.group(1))})
     meta["phases"] = phases
     return meta
 
@@ -159,12 +234,17 @@ for path in ROOT.rglob("*.js"):
     if path.name.lower().endswith(".min.js"):
         continue
     text = path.read_text(encoding="utf-8", errors="replace")
-    if "const meta" not in text:
+    if not META_DECL.search(text):
         continue
     counts["workflow"] += 1
     meta = extract_meta(text)
+    if isinstance(meta, MetaError):
+        add(path, f"invalid workflow meta: {meta}. Check the quoting and braces of the `export const meta` block.")
+        continue
     if meta is None:
-        add(path, "meta block present but could not be parsed")
+        # No `meta` block after all - not a workflow. The outer guard already required the
+        # "const meta" substring, so this is a defensive no-op rather than a parse failure.
+        counts["workflow"] -= 1
         continue
     report(path, WORKFLOW, meta)
 
