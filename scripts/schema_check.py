@@ -31,6 +31,23 @@ def add(path, message):
     errors.append(f"{rel(path)}: {message}")
 
 
+class FrontmatterError(str):
+    """Sentinel returned in place of parsed frontmatter when the YAML is invalid.
+
+    Carries the (single-line) parser message so the caller can report it.
+    """
+
+
+def _yaml_message(exc):
+    parts = []
+    if getattr(exc, "problem", None):
+        parts.append(exc.problem.strip())
+    mark = getattr(exc, "problem_mark", None)
+    if mark is not None:
+        parts.append(f"(line {mark.line + 1}, column {mark.column + 1})")
+    return " ".join(parts) or " ".join(str(exc).split())
+
+
 def split_frontmatter(text):
     text = text.lstrip("﻿")
     if not text.startswith("---"):
@@ -38,7 +55,11 @@ def split_frontmatter(text):
     parts = text.split("---\n", 2)
     if len(parts) < 3:
         return None, ""
-    return yaml.safe_load(parts[1]) or {}, parts[2]
+    try:
+        data = yaml.safe_load(parts[1])
+    except yaml.YAMLError as exc:
+        return FrontmatterError(_yaml_message(exc)), parts[2]
+    return data or {}, parts[2]
 
 
 def report(path, validator, data):
@@ -111,6 +132,9 @@ def extract_meta(js):
 for path in ROOT.rglob("SKILL.md"):
     counts["skill"] += 1
     fm, _ = split_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
+    if isinstance(fm, FrontmatterError):
+        add(path, f"invalid YAML frontmatter: {fm}. Wrap any value containing ':' or other YAML-special characters in double quotes.")
+        continue
     if fm is None:
         add(path, "missing YAML frontmatter")
         continue
@@ -122,6 +146,9 @@ for path in ROOT.rglob("*.md"):
         continue
     counts["loop"] += 1
     fm, body = split_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
+    if isinstance(fm, FrontmatterError):
+        add(path, f"invalid YAML frontmatter: {fm}. Wrap any value containing ':' or other YAML-special characters in double quotes.")
+        continue
     if fm is None:
         add(path, "missing YAML frontmatter")
         continue
