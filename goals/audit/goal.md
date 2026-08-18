@@ -1,7 +1,7 @@
 ---
-kind: loop
-schema: loop.v1
-name: audit-goal
+kind: goal
+schema: goal.v1
+name: audit
 description: Hunt criticals on the highest-value attack surface until they stop paying for their tokens.
 end_state:
   - Every critical found is proven with a PoC that runs under realistic attacker conditions

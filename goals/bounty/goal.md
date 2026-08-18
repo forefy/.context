@@ -1,7 +1,7 @@
 ---
-kind: loop
-schema: loop.v1
-name: bounty-goal
+kind: goal
+schema: goal.v1
+name: bounty
 description: Land one critical, reproducible bug on a bounty program's in-scope target.
 end_state:
   - A critical finding whose PoC reproduces from a clean environment via a repeatable script

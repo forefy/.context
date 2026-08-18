@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
- <b>An optimized collection of AI agent skills, loops and workflows for security auditing</b>
+ <b>An optimized collection of AI agent skills, goals and workflows for security auditing</b>
 </p>
 <p align="center">
   <a href="https://github.com/forefy/.context/issues/new/choose"><img alt="Issues" title="Issues" src="https://img.shields.io/github/issues-raw/forefy/.context"></a>
@@ -111,14 +111,14 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 
 # Quality
 
-Skills, workflows and loops are following industry best practice and guidance (e.g. we read the docs):
+Skills, workflows and goals are following industry best practice and guidance (e.g. we read the docs):
 - [Agent Skills open standard](https://github.com/agentskills/agentskills)
 - [Claude Code Dynamic Workflows](https://code.claude.com/docs/en/workflows)
 
 And are CI-validated by in-repo, versioned json-schema files:
 - [https://github.com/forefy/.context/schemas](https://github.com/forefy/.context/blob/main/schemas)
 
-.context skills are CI-level security-audited via `skill-warden`, skills, loops and workflows are validated on the AI Security Registry.
+.context skills are CI-level security-audited via `skill-warden`, skills, goals and workflows are validated on the AI Security Registry.
 
 <br>
 

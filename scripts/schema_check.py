@@ -11,7 +11,7 @@ ROOT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
 SCHEMAS = pathlib.Path(__file__).resolve().parent.parent / "schemas"
 
 errors = []
-counts = {"skill": 0, "loop": 0, "workflow": 0}
+counts = {"skill": 0, "goal": 0, "workflow": 0}
 
 
 def load(name):
@@ -19,7 +19,7 @@ def load(name):
 
 
 SKILL = load("skill.schema.json")
-LOOP = load("loop.schema.json")
+GOAL = load("goal.schema.json")
 WORKFLOW = load("workflow.schema.json")
 
 
@@ -217,9 +217,9 @@ for path in ROOT.rglob("SKILL.md"):
 
 for path in ROOT.rglob("*.md"):
     name = path.name.lower()
-    if not (name == "loop.md" or name.endswith(".loop.md")):
+    if not (name == "goal.md" or name.endswith(".goal.md")):
         continue
-    counts["loop"] += 1
+    counts["goal"] += 1
     fm, body = split_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
     if isinstance(fm, FrontmatterError):
         add(path, f"invalid YAML frontmatter: {fm}. Wrap any value containing ':' or other YAML-special characters in double quotes.")
@@ -227,7 +227,7 @@ for path in ROOT.rglob("*.md"):
     if fm is None:
         add(path, "missing YAML frontmatter")
         continue
-    if report(path, LOOP, fm):
+    if report(path, GOAL, fm):
         drift_check(path, fm, body)
 
 for path in ROOT.rglob("*.js"):
@@ -248,7 +248,7 @@ for path in ROOT.rglob("*.js"):
         continue
     report(path, WORKFLOW, meta)
 
-summary = f"skills={counts['skill']} loops={counts['loop']} workflows={counts['workflow']}"
+summary = f"skills={counts['skill']} goals={counts['goal']} workflows={counts['workflow']}"
 if errors:
     print(f"schema check FAILED ({summary})")
     for line in errors:
