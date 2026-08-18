@@ -2,3 +2,4 @@
 outputs/
 .vscode
 TODO.md
+__pycache__/

@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/forefy/.context/schemas/loop.schema.json",
-  "title": "Loop loop.v1",
-  "description": "YAML frontmatter of a loop.md / *.loop.md file. A loop is the goal-completion contract - end_state, proof, guardrail, termination. How it runs - once, repeating, or on a schedule - is a run mechanism the user chooses at invocation (/goal, /loop, /schedule), never stored in the loop. The allowed_paths-in-condition drift rule is enforced by scripts/schema_check.py, not this schema.",
+  "$id": "https://github.com/forefy/.context/schemas/goal.schema.json",
+  "title": "Goal goal.v1",
+  "description": "YAML frontmatter of a goal.md / *.goal.md file. A goal is the completion contract - end_state, proof, guardrail, termination. How it runs - once via /goal, repeating via /loop, or scheduled via /schedule - is chosen at invocation, never stored in the goal. The allowed_paths-in-condition drift rule is enforced by scripts/schema_check.py, not this schema.",
   "type": "object",
   "required": ["end_state", "proof", "termination"],
   "properties": {
-    "kind": { "const": "loop" },
-    "schema": { "enum": ["loop.v1", "goal.v1"], "description": "loop.v1; goal.v1 accepted as an alias for run-once loops." },
+    "kind": { "const": "goal" },
+    "schema": { "enum": ["goal.v1"] },
     "name": { "type": "string" },
     "description": { "type": "string" },
     "condition": { "type": "string" },
