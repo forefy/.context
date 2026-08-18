@@ -24,5 +24,3 @@ termination:
     - every high-value surface is either exhausted or consciously de-scoped with a logged reason, and every high-value 'no critical here' has been refuted
     - budget is spent
 ---
-
-`/goal keep hunting the highest-value paths to a business-critical asset until new criticals stop surfacing per unit of budget; every critical proven with a running PoC; every 'no critical here' on high-value surface refuted, not assumed; touch only notes/** and pocs/**`
