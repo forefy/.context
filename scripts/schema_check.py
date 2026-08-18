@@ -71,30 +71,6 @@ def report(path, validator, data):
     return ok
 
 
-def condition_of(fm, body):
-    condition = (fm.get("condition") or "").strip()
-    if condition:
-        return condition
-    marker = body.find("/goal")
-    if marker == -1:
-        return ""
-    line = body[marker + len("/goal"):].splitlines()
-    return line[0].strip().strip("`").strip() if line else ""
-
-
-def drift_check(path, fm, body):
-    guardrail = fm.get("guardrail") or {}
-    allowed = [p.strip() for p in (guardrail.get("allowed_paths") or []) if p and p.strip()]
-    if not allowed:
-        return
-    condition = condition_of(fm, body)
-    if not condition:
-        return
-    missing = [p for p in allowed if p not in condition]
-    if missing:
-        add(path, f"guardrail allowed_paths {missing} absent from the /goal condition (drift)")
-
-
 class MetaError(str):
     """Sentinel returned by extract_meta when a `meta` block is present but unparseable.
 
@@ -220,15 +196,16 @@ for path in ROOT.rglob("*.md"):
     if not (name == "goal.md" or name.endswith(".goal.md")):
         continue
     counts["goal"] += 1
-    fm, body = split_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
+    fm, _ = split_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
     if isinstance(fm, FrontmatterError):
         add(path, f"invalid YAML frontmatter: {fm}. Wrap any value containing ':' or other YAML-special characters in double quotes.")
         continue
     if fm is None:
         add(path, "missing YAML frontmatter")
         continue
-    if report(path, GOAL, fm):
-        drift_check(path, fm, body)
+    # The runnable /goal command is derived 1:1 from the structured fields by consumers (di3), so a
+    # goal.md carries no hand-written command line and there is nothing to drift-check.
+    report(path, GOAL, fm)
 
 for path in ROOT.rglob("*.js"):
     if path.name.lower().endswith(".min.js"):
