@@ -1,7 +1,7 @@
 ---
 kind: goal
 schema: goal.v1
-name: audit
+name: audit-goal
 description: Hunt criticals on the highest-value attack surface until they stop paying for their tokens.
 end_state:
   - Every critical found is proven with a PoC that runs under realistic attacker conditions
