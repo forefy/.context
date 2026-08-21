@@ -64,6 +64,7 @@ Blockchain data proves what happened. OSINT reveals who made it happen. Neither 
 - Practical use: if a scammer shares a "whitepaper", token deck, or screenshot - extract metadata before discarding it as evidence
   > Instruction: `On Mac/Linux: run \`exiftool filename.pdf\` (install with \`brew install exiftool\` or \`apt install libimage-exiftool-perl\`). Look at "Create Date", "Modify Date", "Creator Tool", "Author", and "GPS" fields. Timestamps reveal likely timezone of the creator. Cross-reference with on-chain transaction timestamps for correlation.`
   > Instruction: `For images: upload to \`jimpl.com\` (free web EXIF viewer) if you don't have exiftool. Note: many platforms strip EXIF on upload - the most useful metadata comes from files shared via Telegram or email, not re-uploaded images.`
+  > Privacy note: For sensitive files, prefer ExifTool or [Metadata Remover's browser-local viewer](https://metadataremover.ai/metadata-viewer), which processes files in the browser. Corroborate high-stakes findings with a second parser; metadata alone is not proof of attribution.
 
 **Stablecoin Blacklists (free, on-chain):**
 - USDT (Ethereum): Call `isBlacklisted(address)` on USDT contract (`0xdAC17F...`)
