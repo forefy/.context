@@ -1,0 +1,23 @@
+{
+  "skill_name": "dylib-hijack-scan",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Check my whole Mac for dylib hijacking, and tell me which apps are actually exploitable rather than just theoretically susceptible.",
+      "expected_output": "Runs the scanner across the system, produces the per-app report, leads with elevation count then user-context hijackable then protected, and states coverage and blind spots.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Is /Applications/Target.app vulnerable to dylib hijacking? Explain why or why not.",
+      "expected_output": "Scans just that bundle, identifies any rpath-order or weak-dylib slot, reports the who-can-plant class and library-validation status, and explains the mechanism and mitigation.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Could an ordinary user on this machine plant a dylib that gets loaded by a root process for privilege escalation?",
+      "expected_output": "Uses the elevation model: cross-references non-root-writable slots against root loaders (LaunchDaemons, setuid, helpers), applies library validation, and reports the count of true elevation findings with the writer class and loader reason for each, or states zero.",
+      "files": []
+    }
+  ]
+}
