@@ -8,9 +8,6 @@
     --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
     --shadow:0 1px 2px rgba(16,32,28,.05),0 12px 40px rgba(16,32,28,.08);
   }
-  /* THEME: pick a neutral biased toward your accent, and design both modes.
-     To reskin, change --accent / --accent-ink / --accent-soft (the ONE bold colour)
-     and the neutrals. Keep --warn (caution) and --danger (problem) as semantic-only. */
   @media (prefers-color-scheme:dark){
     :root{
       --bg:#0D1416; --panel:#141F1D; --panel-2:#192623; --ink:#E7F0EC; --muted:#8DA29B;
@@ -49,11 +46,6 @@
   @media (min-width:900px){
     .card{grid-template-columns:minmax(0,1.62fr) minmax(360px,1fr)}
     .col-vis{border-right:1px solid var(--hair)}
-    /* align-items:center here overrides flex's default stretch, so
-       .stagewrap (the svg's flex-item parent) needs its own explicit
-       width:100% below - otherwise it shrinks to the svg's intrinsic
-       default size (~300x150) and every diagram renders tiny regardless
-       of how big the stage actually is. Do not remove that width rule. */
     .stage{flex:1 1 auto; display:flex; align-items:center; justify-content:center; min-height:0}
     .stage svg{max-height:100%; width:100%}
   }
@@ -153,25 +145,17 @@
 
 <script>
 (function(){
-  /* ============================================================================
-     CONFIG - set the subject. Reskin the palette in the CSS :root blocks above.
-     ============================================================================ */
   var CONFIG = {
-    brand: 'YOUR SUBJECT',            // small uppercase mono label, top-left
-    brandSub: '',                     // optional bolded second half of the brand line
-    title: 'A visual primer',         // the H1
-    legend: [                         // maps the 3 semantic colours to what they mean here
+    brand: 'YOUR SUBJECT',
+    brandSub: '',
+    title: 'A visual primer',
+    legend: [
       {c:'accent', t:'key idea'},
       {c:'warn',   t:'caution'},
       {c:'danger', t:'pitfall'}
     ]
   };
 
-  /* ============================================================================
-     COLOUR SHORTCUTS + SVG HELPERS  (do not change - the authoring API)
-     Coordinate space for every diagram is a 640 x 300 viewBox.
-     Safe drawing area: x 20..620, y 30..270. Put captions near y 250-270.
-     ============================================================================ */
   var A="var(--accent)",AI="var(--accent-ink)",AS="var(--accent-soft)",H="var(--hair)",
       P2="var(--panel-2)",INK="var(--ink)",MU="var(--muted)",D="var(--danger)",W="var(--warn)";
 
@@ -185,7 +169,6 @@
   var VB='0 0 640 300';
   function svg(inner){ return '<svg viewBox="'+VB+'" role="img">'+defs()+inner+'</svg>'; }
 
-  // box(x,y,w,h,label,sublabel,opts) - a rounded actor box. opts: {stroke,fill,tc,delay}
   function box(x,y,w,h,label,sub,opt){
     opt=opt||{}; var st=opt.stroke||H, fill=opt.fill||P2, tc=opt.tc||INK, d=opt.delay||0;
     var s='<g class="pop" style="animation-delay:'+d+'s">';
@@ -194,13 +177,10 @@
     if(sub) s+='<text x="'+(x+w/2)+'" y="'+(y+h/2+14)+'" text-anchor="middle" font-size="10.5" fill="'+MU+'">'+sub+'</text>';
     s+='</g>'; return s;
   }
-  // wire(x1,y1,x2,y2,opts) - a connector. opts: {color, marker:'ar'|'arA'|'arD', cls:'draw'|'flow', delay, w}
   function wire(x1,y1,x2,y2,opt){opt=opt||{};var c=opt.color||MU,m=opt.marker||'ar',cls=opt.cls||'draw',d=opt.delay||0,w=opt.w||1.8;
     return '<line class="'+cls+'" style="animation-delay:'+d+'s" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+w+'" marker-end="url(#'+m+')"/>';}
-  // lbl(x,y,text,opts) - a free text label. opts: {color, anchor:'start'|'middle'|'end', fs, fw, delay}
   function lbl(x,y,t,opt){opt=opt||{};var c=opt.color||MU,a=opt.anchor||'middle',fs=opt.fs||11,d=opt.delay||0,fw=opt.fw||400;
     return '<text class="fade" style="animation-delay:'+d+'s" x="'+x+'" y="'+y+'" text-anchor="'+a+'" font-size="'+fs+'" font-weight="'+fw+'" fill="'+c+'">'+t+'</text>';}
-  // seal(cx,cy,r,broken,delay) - a wax-seal glyph. broken=true draws a red crack, false a teal check.
   function seal(cx,cy,r,broken,d){
     var col=broken?D:A; var g='<g class="pop" style="animation-delay:'+d+'s">';
     g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+(broken?'var(--danger-soft)':AS)+'" stroke="'+col+'" stroke-width="2" '+(broken?'':'class="breathe"')+'/>';
@@ -208,17 +188,12 @@
     else{g+='<path d="M'+(cx-6)+' '+cy+' l4 4 l8 -8" fill="none" stroke="'+A+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';}
     g+='</g>'; return g;
   }
-  // A reusable "?" motif for quiz screens.
   function dQuiz(){
     return svg('<g class="pop"><circle cx="320" cy="140" r="52" fill="'+AS+'" stroke="'+A+'" stroke-width="2" class="breathe"/>'+
       '<text x="320" y="163" text-anchor="middle" font-size="60" font-weight="500" fill="'+AI+'">?</text></g>'+
       lbl(320,226,'trick question &mdash; think twice',{color:MU,fs:12,delay:.3}));
   }
 
-  /* ============================================================================
-     EXAMPLE DIAGRAMS - delete these and write one per concept. They only show
-     how the helpers compose. Stagger delays so the diagram assembles left-to-right.
-     ============================================================================ */
   function dExFlow(){
     var i='';
     i+=box(40,124,130,54,'Input','what goes in',{delay:0});
@@ -238,21 +213,6 @@
     return svg(i);
   }
 
-  /* ============================================================================
-     STEPS - the content. One object per screen, in teaching order.
-     Screen kinds:
-       concept  (default):  {ey, eyt, tag?, chip?, svg, title, body, aha, revealLabel?}
-       quiz:                {type:'quiz', ey, eyt, tag?, svg:dQuiz, q, opts:[{t,correct?}], explain}
-     Fields:
-       ey    = small uppercase eyebrow, top-left  (e.g. 'CONCEPT 1', 'GUT-CHECK', 'DEEP DIVE')
-       eyt   = eyebrow topic, next to ey
-       tag   = muted text, top-right  (omit if using chip)
-       chip  = {label:'KEY', tone:'accent'|'warn'|'danger'} - a pill top-right instead of tag
-       svg   = a diagram function from above
-       body  = HTML. Wrap first-use jargon in <span class="k">term</span>; <b> for emphasis; <br><br> to separate beats.
-       aha   = the reveal callout - put the ANALOGY / the "so what" here, not more facts.
-       revealLabel = button text (default 'reveal the intuition'; use 'the fix', 'why it matters', etc.)
-     ============================================================================ */
   var steps=[
     {ey:'START', eyt:'Visual primer', tag:'', svg:dExFlow,
      title:'Replace me with your opening',
@@ -272,9 +232,6 @@
      aha:'The fix / the takeaway.', revealLabel:'the takeaway'}
   ];
 
-  /* ============================================================================
-     ENGINE - no need to edit below.
-     ============================================================================ */
   var idx=0, N=steps.length;
   var stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var eN=document.getElementById('ey-n'),eT=document.getElementById('ey-t'),eTag=document.getElementById('ey-tag');
@@ -325,14 +282,6 @@
       ahaBody.innerHTML='<b>'+(correct?'Right. ':'Not quite. ')+'</b>'+s.explain; ahaWrap.classList.add('open');
     }); });
   }
-  // ---- resume-on-reload: remember the current step across reloads ----
-  // A returning viewer lands back where they left off instead of at step 0,
-  // and #sN makes any step shareable/bookmarkable. Key is derived from
-  // CONFIG so two different courses in the same browser don't collide.
-  // Everything is guarded: the published artifact runs in a sandboxed
-  // iframe where localStorage / history.replaceState can throw a
-  // SecurityError, and file:// storage is flaky in some browsers. On any
-  // failure this silently no-ops and the deck just starts at step 0.
   var STORE_KEY='tg:'+(CONFIG.brand||'')+':'+(CONFIG.title||'')+':step';
   function persist(){
     try{ history.replaceState(null,'','#s'+idx); }catch(e){}
@@ -340,7 +289,7 @@
   }
   function restore(){
     var v=NaN, m=/^#s(\d+)$/.exec(location.hash||'');
-    if(m) v=parseInt(m[1],10);                 // an explicit #sN link wins
+    if(m) v=parseInt(m[1],10);
     if(!(isFinite(v)&&v>=0&&v<N)){ try{ v=parseInt(localStorage.getItem(STORE_KEY),10); }catch(e){ v=NaN; } }
     return (isFinite(v)&&v>=0&&v<N)?v:0;
   }
