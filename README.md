@@ -92,12 +92,22 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 - `auditor-quiz` - get engaged with the codebase from a security-auditor perspective and test how well you memorized it by quizzing yourself.
 - `audit-scope` - generate a security audit scope document from GitHub repo URLs and/or API access descriptions, with a protocol narrative and a scope table (NSLOC, focus areas, days).
 - `sandboxed-audit-runner` - wraps the agent session inside the Anthropic Sandbox Runtime before auditing untrusted code, protecting the host from prompt-injection embedded in the codebase.
-- `agent-onboarding` - onboard concurrent agents to a shared TODO.md so parallel auditing terminals sync work and keep coverage tracking.
 - `gdocs-audit-report` - create, format, and maintain security audit reports in Google Docs via the Docs API, covering finding formatting, summary tables, severity colors, and index-drift safety.
-- `git-commit` - before committing, pre-runs tests, security-reviews changed code, strips dead code and sensitive data, enforces clean commit messages, and validates the change won't break deployments.
-- `context-window-to-skill` - converts a completed agent conversation into a reusable skill, extracting the pitfalls, tweaks, and lessons so the next run gets it right from the start.
 - `pre-bounty` - pre-engagement recon and target prioritization for a bounty/VDP scope; maps assets, mines bug history, extracts scope gotchas, then scores and ranks every asset best-to-worst by opportunity and renders a ranked asset -> setup -> ROI Sankey.
 - `hackerone-report` - drives a HackerOne submission end to end: dedup pre-flight, concise writeup, a video-ready PoC package, and browser form-fill, handing the irreversible login and Submit steps back to the user.
+- `external-enumeration` - passive external attack-surface mapping for a company; multi-source subdomain discovery, NS/MX/TXT ownership attribution, per-subdomain header harvest, tech-stack and dual-CDN detection, stealth Cloudflare bypass, and a structured recon report.
+
+<br>
+
+## Generic utils
+
+`skills/generic-utils/` - workflow tooling that is useful on any engagement, security or not.
+
+- `context-window-to-skill` - converts a completed agent conversation into a reusable skill, extracting the pitfalls, tweaks, and lessons so the next run gets it right from the start.
+- `agent-onboarding` - onboard concurrent agents to a shared TODO.md so parallel terminals sync work and keep coverage tracking.
+- `git-commit` - before committing, pre-runs tests, reviews changed code, strips dead code and sensitive data, enforces clean commit messages, and validates the change won't break deployments.
+- `training-guide` - build an interactive, click-through visual course as a self-contained HTML page that teaches a subject one idea per screen, each with a hand-built diagram, an intuition reveal, and trick-question quizzes.
+- `variant-table` - render draft copy as a side-by-side comparison table, one row per logical unit with three genuinely distinct rewrite variations plus a top-pick column, for iterating on wording.
 
 <br>
 

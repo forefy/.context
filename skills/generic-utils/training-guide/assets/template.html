@@ -1,0 +1,359 @@
+<title>__TITLE__</title>
+<style>
+  :root{
+    --bg:#EDF2F0; --panel:#FFFFFF; --panel-2:#F5F9F7; --ink:#0F1E1A; --muted:#5B6E68;
+    --hair:#D3DED9; --accent:#0C8A72; --accent-ink:#0A6E5B; --accent-soft:#DCF1EB;
+    --warn:#A96A12; --warn-soft:#F6E9CF; --danger:#BE443D; --danger-soft:#F6DDDB;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --shadow:0 1px 2px rgba(16,32,28,.05),0 12px 40px rgba(16,32,28,.08);
+  }
+  /* THEME: pick a neutral biased toward your accent, and design both modes.
+     To reskin, change --accent / --accent-ink / --accent-soft (the ONE bold colour)
+     and the neutrals. Keep --warn (caution) and --danger (problem) as semantic-only. */
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0D1416; --panel:#141F1D; --panel-2:#192623; --ink:#E7F0EC; --muted:#8DA29B;
+      --hair:#25332F; --accent:#4FD5B7; --accent-ink:#7EE6CE; --accent-soft:#123029;
+      --warn:#E3A948; --warn-soft:#2A2411; --danger:#E86F65; --danger-soft:#2E1917;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 50px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1416; --panel:#141F1D; --panel-2:#192623; --ink:#E7F0EC; --muted:#8DA29B;
+    --hair:#25332F; --accent:#4FD5B7; --accent-ink:#7EE6CE; --accent-soft:#123029;
+    --warn:#E3A948; --warn-soft:#2A2411; --danger:#E86F65; --danger-soft:#2E1917;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 50px rgba(0,0,0,.4);
+  }
+  :root[data-theme="light"]{
+    --bg:#EDF2F0; --panel:#FFFFFF; --panel-2:#F5F9F7; --ink:#0F1E1A; --muted:#5B6E68;
+    --hair:#D3DED9; --accent:#0C8A72; --accent-ink:#0A6E5B; --accent-soft:#DCF1EB;
+    --warn:#A96A12; --warn-soft:#F6E9CF; --danger:#BE443D; --danger-soft:#F6DDDB;
+    --shadow:0 1px 2px rgba(16,32,28,.05),0 12px 40px rgba(16,32,28,.08);
+  }
+
+  *{box-sizing:border-box}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg); min-height:100vh;
+    display:flex; flex-direction:column; align-items:stretch; padding:14px; gap:12px}
+  .masthead{width:100%; display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:0 6px}
+  .brand{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-ink)}
+  .brand b{color:var(--muted); font-weight:400}
+  .masthead h1{font-size:19px; font-weight:600; margin:0; letter-spacing:-.01em; text-wrap:balance}
+  .masthead .sub{font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.04em}
+
+  .card{width:100%; flex:1 1 auto; background:var(--panel); border:1px solid var(--hair); border-radius:16px;
+    box-shadow:var(--shadow); overflow:hidden; display:grid; grid-template-columns:1fr; min-height:520px}
+  .col-vis{display:flex; flex-direction:column; min-width:0; min-height:0}
+  .col-read{display:flex; flex-direction:column; min-width:0}
+  .col-read .footer{margin-top:auto}
+  @media (min-width:900px){
+    .card{grid-template-columns:minmax(0,1.62fr) minmax(360px,1fr)}
+    .col-vis{border-right:1px solid var(--hair)}
+    /* align-items:center here overrides flex's default stretch, so
+       .stagewrap (the svg's flex-item parent) needs its own explicit
+       width:100% below - otherwise it shrinks to the svg's intrinsic
+       default size (~300x150) and every diagram renders tiny regardless
+       of how big the stage actually is. Do not remove that width rule. */
+    .stage{flex:1 1 auto; display:flex; align-items:center; justify-content:center; min-height:0}
+    .stage svg{max-height:100%; width:100%}
+  }
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); padding:18px 22px 0; display:flex; gap:10px; align-items:center}
+  .eyebrow .n{color:var(--accent-ink)}
+  .eyebrow .tag{margin-left:auto; letter-spacing:.1em}
+
+  .stage{margin:8px 14px 2px; background:var(--panel-2); border:1px solid var(--hair); border-radius:12px; padding:8px; position:relative; overflow:hidden}
+  .stage svg{display:block; width:100%; height:auto}
+  .grid-bg{position:absolute; inset:0; opacity:.5; pointer-events:none;
+    background-image:radial-gradient(var(--hair) 1px, transparent 1px); background-size:22px 22px}
+
+  .prose{padding:16px 22px 6px}
+  .prose h2{font-size:22px; line-height:1.25; margin:0 0 8px; font-weight:600; letter-spacing:-.015em; text-wrap:balance}
+  .prose p,.prose .ptext{font-size:15.5px; line-height:1.62; margin:0; color:var(--ink); max-width:64ch}
+  .prose .k{font-family:var(--mono); font-size:13.5px; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px; white-space:nowrap}
+  .quiz-opts{display:flex; flex-direction:column; gap:8px; max-width:64ch}
+  .quiz-opt{font-family:var(--sans); font-size:14.5px; text-align:left; padding:11px 13px; border-radius:10px; border:1px solid var(--hair); background:var(--panel-2); color:var(--ink); cursor:pointer; display:flex; gap:11px; align-items:center; transition:border-color .15s, background .15s}
+  .quiz-opt:hover{border-color:var(--muted)}
+  .quiz-opt .qk{font-family:var(--mono); font-size:12px; color:var(--muted); border:1px solid var(--hair); border-radius:6px; width:23px; height:23px; display:inline-flex; align-items:center; justify-content:center; flex:none}
+  .quiz-opt.correct{border-color:var(--accent); background:var(--accent-soft)}
+  .quiz-opt.correct .qk{color:var(--accent-ink); border-color:var(--accent)}
+  .quiz-opt.wrong{border-color:var(--danger); background:var(--danger-soft)}
+  .quiz-opt.wrong .qk{color:var(--danger); border-color:var(--danger)}
+  .quiz-opt:disabled{cursor:default}
+
+  .aha{margin:14px 22px 4px}
+  .aha button{font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--accent-ink); background:transparent;
+    border:1px dashed var(--accent); border-radius:8px; padding:8px 12px; cursor:pointer; display:inline-flex; gap:8px; align-items:center; transition:background .15s}
+  .aha button:hover{background:var(--accent-soft)}
+  .aha .body{margin-top:10px; background:var(--accent-soft); border:1px solid var(--accent); border-radius:10px; padding:13px 15px; font-size:14.5px; line-height:1.55; color:var(--ink); display:none}
+  .aha.open .body{display:block; animation:fade .35s ease both}
+  .aha .body b{color:var(--accent-ink)}
+
+  .footer{display:flex; align-items:center; gap:14px; padding:16px 22px 20px; margin-top:6px; border-top:1px solid var(--hair)}
+  .dots{display:flex; gap:7px; flex-wrap:wrap; flex:1}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--hair); border:none; padding:0; cursor:pointer; transition:transform .15s, background .15s}
+  .dot:hover{transform:scale(1.25)}
+  .dot.on{background:var(--accent); transform:scale(1.15)}
+  .dot.done{background:var(--muted)}
+  .nav{display:flex; gap:8px}
+  .btn{font-family:var(--sans); font-size:14px; font-weight:500; border-radius:9px; padding:9px 16px; cursor:pointer;
+    border:1px solid var(--hair); background:var(--panel-2); color:var(--ink); transition:border-color .15s, background .15s, opacity .15s}
+  .btn:hover{border-color:var(--muted)}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#04231C}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn:disabled{opacity:.4; cursor:default; pointer-events:none}
+
+  .legend{width:100%; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.03em}
+  .legend span{display:inline-flex; gap:6px; align-items:center}
+  .legend i{width:11px; height:11px; border-radius:3px; display:inline-block}
+
+  .chip{font-family:var(--mono); font-size:11px; font-weight:500; padding:2px 8px; border-radius:20px; letter-spacing:.05em}
+  .chip.accent{background:var(--accent-soft); color:var(--accent-ink)}
+  .chip.warn{background:var(--warn-soft); color:var(--warn)}
+  .chip.danger{background:var(--danger-soft); color:var(--danger)}
+
+  svg text{font-family:var(--mono)}
+  .draw{stroke-dasharray:400; stroke-dashoffset:400; animation:draw .9s ease forwards}
+  .flow{stroke-dasharray:6 7; animation:flow 1.1s linear infinite}
+  .pop{transform-box:fill-box; transform-origin:center; animation:pop .5s cubic-bezier(.2,.85,.3,1) both}
+  .fade{animation:fade .55s ease both}
+  .breathe{transform-box:fill-box; transform-origin:center; animation:breathe 2.4s ease-in-out infinite}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes flow{to{stroke-dashoffset:-26}}
+  @keyframes pop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  .stagewrap{width:100%; animation:stepin .4s ease both}
+  @keyframes stepin{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  @media (max-width:560px){.prose h2{font-size:19px}.masthead h1{font-size:17px}}
+</style>
+
+<div class="wrap">
+  <div class="masthead">
+    <div><div class="brand" id="brand"></div><h1 id="doctitle"></h1></div>
+    <div class="sub" id="counter">step 0 / 0</div>
+  </div>
+  <div class="card">
+    <div class="col-vis">
+      <div class="eyebrow"><span class="n" id="ey-n"></span> <span id="ey-t"></span> <span class="tag" id="ey-tag"></span></div>
+      <div class="stage"><div class="grid-bg"></div><div class="stagewrap" id="stage"></div></div>
+    </div>
+    <div class="col-read">
+      <div class="prose"><h2 id="title"></h2><div id="body" class="ptext"></div></div>
+      <div class="aha" id="aha"><button type="button" id="aha-btn"></button><div class="body" id="aha-body"></div></div>
+      <div class="footer">
+        <div class="dots" id="dots"></div>
+        <div class="nav"><button class="btn" id="back">Back</button><button class="btn primary" id="next"></button></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend" id="legend"></div>
+</div>
+
+<script>
+(function(){
+  /* ============================================================================
+     CONFIG - set the subject. Reskin the palette in the CSS :root blocks above.
+     ============================================================================ */
+  var CONFIG = {
+    brand: 'YOUR SUBJECT',            // small uppercase mono label, top-left
+    brandSub: '',                     // optional bolded second half of the brand line
+    title: 'A visual primer',         // the H1
+    legend: [                         // maps the 3 semantic colours to what they mean here
+      {c:'accent', t:'key idea'},
+      {c:'warn',   t:'caution'},
+      {c:'danger', t:'pitfall'}
+    ]
+  };
+
+  /* ============================================================================
+     COLOUR SHORTCUTS + SVG HELPERS  (do not change - the authoring API)
+     Coordinate space for every diagram is a 640 x 300 viewBox.
+     Safe drawing area: x 20..620, y 30..270. Put captions near y 250-270.
+     ============================================================================ */
+  var A="var(--accent)",AI="var(--accent-ink)",AS="var(--accent-soft)",H="var(--hair)",
+      P2="var(--panel-2)",INK="var(--ink)",MU="var(--muted)",D="var(--danger)",W="var(--warn)";
+
+  function defs(){
+    return '<defs>'+
+      '<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="'+MU+'"/></marker>'+
+      '<marker id="arA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="'+A+'"/></marker>'+
+      '<marker id="arD" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="'+D+'"/></marker>'+
+      '</defs>';
+  }
+  var VB='0 0 640 300';
+  function svg(inner){ return '<svg viewBox="'+VB+'" role="img">'+defs()+inner+'</svg>'; }
+
+  // box(x,y,w,h,label,sublabel,opts) - a rounded actor box. opts: {stroke,fill,tc,delay}
+  function box(x,y,w,h,label,sub,opt){
+    opt=opt||{}; var st=opt.stroke||H, fill=opt.fill||P2, tc=opt.tc||INK, d=opt.delay||0;
+    var s='<g class="pop" style="animation-delay:'+d+'s">';
+    s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="'+fill+'" stroke="'+st+'" stroke-width="1.5"/>';
+    s+='<text x="'+(x+w/2)+'" y="'+(y+h/2-(sub?4:-1))+'" text-anchor="middle" font-size="14" font-weight="500" fill="'+tc+'">'+label+'</text>';
+    if(sub) s+='<text x="'+(x+w/2)+'" y="'+(y+h/2+14)+'" text-anchor="middle" font-size="10.5" fill="'+MU+'">'+sub+'</text>';
+    s+='</g>'; return s;
+  }
+  // wire(x1,y1,x2,y2,opts) - a connector. opts: {color, marker:'ar'|'arA'|'arD', cls:'draw'|'flow', delay, w}
+  function wire(x1,y1,x2,y2,opt){opt=opt||{};var c=opt.color||MU,m=opt.marker||'ar',cls=opt.cls||'draw',d=opt.delay||0,w=opt.w||1.8;
+    return '<line class="'+cls+'" style="animation-delay:'+d+'s" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+w+'" marker-end="url(#'+m+')"/>';}
+  // lbl(x,y,text,opts) - a free text label. opts: {color, anchor:'start'|'middle'|'end', fs, fw, delay}
+  function lbl(x,y,t,opt){opt=opt||{};var c=opt.color||MU,a=opt.anchor||'middle',fs=opt.fs||11,d=opt.delay||0,fw=opt.fw||400;
+    return '<text class="fade" style="animation-delay:'+d+'s" x="'+x+'" y="'+y+'" text-anchor="'+a+'" font-size="'+fs+'" font-weight="'+fw+'" fill="'+c+'">'+t+'</text>';}
+  // seal(cx,cy,r,broken,delay) - a wax-seal glyph. broken=true draws a red crack, false a teal check.
+  function seal(cx,cy,r,broken,d){
+    var col=broken?D:A; var g='<g class="pop" style="animation-delay:'+d+'s">';
+    g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+(broken?'var(--danger-soft)':AS)+'" stroke="'+col+'" stroke-width="2" '+(broken?'':'class="breathe"')+'/>';
+    if(broken){g+='<path d="M'+(cx-6)+' '+(cy-8)+' L'+(cx+2)+' '+cy+' L'+(cx-5)+' '+(cy+2)+' L'+(cx+6)+' '+(cy+9)+'" fill="none" stroke="'+D+'" stroke-width="2.2" stroke-linecap="round"/>';}
+    else{g+='<path d="M'+(cx-6)+' '+cy+' l4 4 l8 -8" fill="none" stroke="'+A+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';}
+    g+='</g>'; return g;
+  }
+  // A reusable "?" motif for quiz screens.
+  function dQuiz(){
+    return svg('<g class="pop"><circle cx="320" cy="140" r="52" fill="'+AS+'" stroke="'+A+'" stroke-width="2" class="breathe"/>'+
+      '<text x="320" y="163" text-anchor="middle" font-size="60" font-weight="500" fill="'+AI+'">?</text></g>'+
+      lbl(320,226,'trick question &mdash; think twice',{color:MU,fs:12,delay:.3}));
+  }
+
+  /* ============================================================================
+     EXAMPLE DIAGRAMS - delete these and write one per concept. They only show
+     how the helpers compose. Stagger delays so the diagram assembles left-to-right.
+     ============================================================================ */
+  function dExFlow(){
+    var i='';
+    i+=box(40,124,130,54,'Input','what goes in',{delay:0});
+    i+=wire(170,151,240,151,{delay:.3,marker:'ar'});
+    i+=box(240,120,150,62,'Process','the transform',{stroke:A,fill:AS,tc:AI,delay:.4});
+    i+=wire(390,151,460,151,{delay:.7,color:A,marker:'arA'});
+    i+=box(460,124,140,54,'Output','the result',{delay:.8});
+    i+=lbl(320,250,'one clear idea, one clear picture',{color:MU,fs:11,delay:1.1});
+    return svg(i);
+  }
+  function dExCallout(){
+    var i='';
+    i+=box(60,120,150,60,'the happy path',null,{stroke:A,fill:AS,tc:AI,delay:0});
+    i+=wire(210,150,300,150,{delay:.3,color:D,marker:'arD',cls:'draw'});
+    i+=seal(340,150,26,true,.6);
+    i+=lbl(340,196,'where it breaks',{color:D,fs:11,delay:.9});
+    return svg(i);
+  }
+
+  /* ============================================================================
+     STEPS - the content. One object per screen, in teaching order.
+     Screen kinds:
+       concept  (default):  {ey, eyt, tag?, chip?, svg, title, body, aha, revealLabel?}
+       quiz:                {type:'quiz', ey, eyt, tag?, svg:dQuiz, q, opts:[{t,correct?}], explain}
+     Fields:
+       ey    = small uppercase eyebrow, top-left  (e.g. 'CONCEPT 1', 'GUT-CHECK', 'DEEP DIVE')
+       eyt   = eyebrow topic, next to ey
+       tag   = muted text, top-right  (omit if using chip)
+       chip  = {label:'KEY', tone:'accent'|'warn'|'danger'} - a pill top-right instead of tag
+       svg   = a diagram function from above
+       body  = HTML. Wrap first-use jargon in <span class="k">term</span>; <b> for emphasis; <br><br> to separate beats.
+       aha   = the reveal callout - put the ANALOGY / the "so what" here, not more facts.
+       revealLabel = button text (default 'reveal the intuition'; use 'the fix', 'why it matters', etc.)
+     ============================================================================ */
+  var steps=[
+    {ey:'START', eyt:'Visual primer', tag:'', svg:dExFlow,
+     title:'Replace me with your opening',
+     body:'One or two sentences on what this teaches and the promise. Build the idea up one piece at a time.',
+     aha:'Put the reason-to-care here, or how to read the course. Keep it warm and short.'},
+    {ey:'CONCEPT 1', eyt:'The first idea', tag:'foundation', svg:dExFlow,
+     title:'State the idea as a plain claim',
+     body:'Explain the mechanic. Introduce a <span class="k">term</span> the first time you use it, so later screens can lean on it.',
+     aha:'A concrete everyday <b>analogy</b> that makes the term stick.'},
+    {type:'quiz', ey:'GUT-CHECK', eyt:'Did it land?', tag:'trick question', svg:dQuiz,
+     q:'Ask a question whose intuitive answer is wrong.',
+     opts:[{t:'The tempting-but-wrong answer'},{t:'Another plausible wrong one'},{t:'The right one',correct:true}],
+     explain:'Explain WHY the intuitive answer fails and the right one holds. This is the real teaching moment.'},
+    {ey:'DEEP DIVE', eyt:'A gotcha', chip:{label:'KEY',tone:'accent'}, svg:dExCallout,
+     title:'An emphasized point (use a chip)',
+     body:'Use a chip for a screen that carries weight &mdash; a caveat, a key takeaway, a common mistake.<br><br>Separate beats with a blank line so it reads in layers.',
+     aha:'The fix / the takeaway.', revealLabel:'the takeaway'}
+  ];
+
+  /* ============================================================================
+     ENGINE - no need to edit below.
+     ============================================================================ */
+  var idx=0, N=steps.length;
+  var stage=document.getElementById('stage'), dots=document.getElementById('dots');
+  var eN=document.getElementById('ey-n'),eT=document.getElementById('ey-t'),eTag=document.getElementById('ey-tag');
+  var elTitle=document.getElementById('title'),elBody=document.getElementById('body');
+  var ahaWrap=document.getElementById('aha'),ahaBtn=document.getElementById('aha-btn'),ahaBody=document.getElementById('aha-body');
+  var back=document.getElementById('back'),next=document.getElementById('next'),counter=document.getElementById('counter');
+
+  document.getElementById('brand').innerHTML = CONFIG.brandSub ? CONFIG.brand+' &middot; <b>'+CONFIG.brandSub+'</b>' : CONFIG.brand;
+  document.getElementById('doctitle').textContent = CONFIG.title;
+  var lh=''; (CONFIG.legend||[]).forEach(function(x){ lh+='<span><i style="background:var(--'+x.c+')"></i> '+x.t+'</span>'; });
+  lh+='<span style="color:var(--muted)">&larr; &rarr; arrow keys &middot; Enter reveals</span>';
+  document.getElementById('legend').innerHTML=lh;
+
+  for(var k=0;k<N;k++){(function(k){var b=document.createElement('button');b.className='dot';b.setAttribute('aria-label','Go to step '+k);b.onclick=function(){go(k)};dots.appendChild(b);})(k);}
+
+  function render(){
+    var s=steps[idx];
+    stage.innerHTML=s.svg();
+    stage.classList.remove('stagewrap'); void stage.offsetWidth; stage.classList.add('stagewrap');
+    eN.textContent=s.ey; eT.textContent=s.eyt;
+    if(s.chip){ eTag.innerHTML='<span class="chip '+(s.chip.tone||'accent')+'">'+s.chip.label+'</span>'; }
+    else { eTag.textContent=s.tag||''; }
+    counter.textContent='step '+idx+' / '+(N-1);
+    back.disabled=(idx===0);
+    next.innerHTML = idx===0 ? 'Start &rarr;' : (idx===N-1 ? 'Done &#10003;' : 'Next &rarr;');
+    next.disabled=(idx===N-1);
+    var ds=dots.children;
+    for(var k=0;k<N;k++){ds[k].className='dot'+(k===idx?' on':(k<idx?' done':''));}
+    if(s.type==='quiz'){ renderQuiz(s); return; }
+    ahaBtn.style.display='';
+    elTitle.innerHTML=s.title; elBody.innerHTML=s.body;
+    ahaBody.innerHTML=s.aha; ahaWrap.style.display=''; ahaWrap.classList.remove('open');
+    ahaBtn.dataset.label=s.revealLabel||'reveal the intuition';
+    ahaBtn.innerHTML='&#9662; '+ahaBtn.dataset.label;
+  }
+  function renderQuiz(s){
+    elTitle.innerHTML=s.q;
+    var html='<div class="quiz-opts">';
+    for(var i=0;i<s.opts.length;i++){ html+='<button type="button" class="quiz-opt" data-i="'+i+'"><span class="qk">'+String.fromCharCode(65+i)+'</span><span>'+s.opts[i].t+'</span></button>'; }
+    html+='</div>'; elBody.innerHTML=html;
+    ahaBtn.style.display='none'; ahaWrap.style.display=''; ahaWrap.classList.remove('open'); ahaBody.innerHTML='';
+    var btns=elBody.querySelectorAll('.quiz-opt'), done=false;
+    btns.forEach(function(b){ b.addEventListener('click',function(){
+      if(done)return; done=true;
+      var ci=+b.getAttribute('data-i'), correct=!!s.opts[ci].correct;
+      btns.forEach(function(bb){ bb.disabled=true; if(s.opts[+bb.getAttribute('data-i')].correct) bb.classList.add('correct'); });
+      if(!correct) b.classList.add('wrong');
+      ahaBody.innerHTML='<b>'+(correct?'Right. ':'Not quite. ')+'</b>'+s.explain; ahaWrap.classList.add('open');
+    }); });
+  }
+  // ---- resume-on-reload: remember the current step across reloads ----
+  // A returning viewer lands back where they left off instead of at step 0,
+  // and #sN makes any step shareable/bookmarkable. Key is derived from
+  // CONFIG so two different courses in the same browser don't collide.
+  // Everything is guarded: the published artifact runs in a sandboxed
+  // iframe where localStorage / history.replaceState can throw a
+  // SecurityError, and file:// storage is flaky in some browsers. On any
+  // failure this silently no-ops and the deck just starts at step 0.
+  var STORE_KEY='tg:'+(CONFIG.brand||'')+':'+(CONFIG.title||'')+':step';
+  function persist(){
+    try{ history.replaceState(null,'','#s'+idx); }catch(e){}
+    try{ localStorage.setItem(STORE_KEY,String(idx)); }catch(e){}
+  }
+  function restore(){
+    var v=NaN, m=/^#s(\d+)$/.exec(location.hash||'');
+    if(m) v=parseInt(m[1],10);                 // an explicit #sN link wins
+    if(!(isFinite(v)&&v>=0&&v<N)){ try{ v=parseInt(localStorage.getItem(STORE_KEY),10); }catch(e){ v=NaN; } }
+    return (isFinite(v)&&v>=0&&v<N)?v:0;
+  }
+  function go(i){ if(i<0||i>N-1)return; idx=i; persist(); render(); }
+  next.onclick=function(){go(idx+1)};
+  back.onclick=function(){go(idx-1)};
+  ahaBtn.onclick=function(){var o=ahaWrap.classList.toggle('open'); var l=ahaBtn.dataset.label||'reveal the intuition'; ahaBtn.innerHTML=(o?'&#9652; hide':'&#9662; '+l);};
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight')go(idx+1);
+    else if(e.key==='ArrowLeft')go(idx-1);
+    else if(e.key==='Enter'&&steps[idx].type!=='quiz'){ahaBtn.click();}
+  });
+  idx=restore();
+  render();
+})();
+</script>
