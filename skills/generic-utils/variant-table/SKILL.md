@@ -1,6 +1,7 @@
 ---
 name: variant-table
-description: Render any draft copy as a comparison table - one row per logical unit (paragraph, line, bullet, cell, section), with 3 genuinely distinct rewrite variations per row plus a final "top pick" column. Use whenever the user is iterating on wording and wants options laid out side by side to compare and choose: LinkedIn/X posts, taglines, headlines, email lines, ad copy, bios, CTAs, product blurbs, doc sentences, commit messages, error strings, UI microcopy. Triggers on "give me variations", "show me options in a table", "compare rewrites", "3 versions of each line", "table with a pick column", or any request to optimize copy unit by unit.
+description: >-
+  Render any draft copy as a comparison table - one row per logical unit (paragraph, line, bullet, cell, section), with 3 genuinely distinct rewrite variations per row plus a final "top pick" column. Use whenever the user is iterating on wording and wants options laid out side by side to compare and choose: LinkedIn/X posts, taglines, headlines, email lines, ad copy, bios, CTAs, product blurbs, doc sentences, commit messages, error strings, UI microcopy. Triggers on "give me variations", "show me options in a table", "compare rewrites", "3 versions of each line", "table with a pick column", or any request to optimize copy unit by unit.
 ---
 
 # Variant Table
