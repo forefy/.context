@@ -1,10 +1,7 @@
 ---
 name: external-enumeration
 description: >
-  Full passive external enumeration of a company's domain/subdomain infrastructure.
-  Covers multi-source subdomain discovery, WHOIS/NS attribution, per-subdomain HTTP header harvest,
-  technology stack mapping, dual-CDN detection, open CORS/security flags, stealth CF bypass,
-  subsidiary research, and a structured markdown report.
+  Passive external enumeration of a company's domain/subdomain infrastructure.
   Use when asked to enumerate, recon, or map a company's external attack surface.
   Triggers: "enumerate domains", "subdomain recon", "map infrastructure", "osint on company",
   "what subdomains does X have", "attack surface", "external recon".
@@ -95,7 +92,7 @@ curl -s "https://rapiddns.io/subdomain/example.com?full=1" \
 ```
 
 ### 2.6 AlienVault OTX
-> Note: **Use `curl` - NOT Python urllib** (SSL verify errors). Rate limiting is aggressive; skip if blocked.
+> Note: Turn off ssl verification if using Python urllib. Rate limiting is aggressive; skip if blocked.
 ```bash
 curl -s "https://otx.alienvault.com/api/v1/indicators/domain/example.com/passive_dns" \
   | python3 -c "import sys,json; [print(r.get('hostname','')) for r in json.load(sys.stdin).get('passive_dns',[])]" \
@@ -128,8 +125,6 @@ while read sub; do
 done < subdomains_unique.txt
 ```
 
-Tag Cloudflare IPs: `173.245.x.x`, `103.21.x.x`, `103.22.x.x`, `103.31.x.x`, `104.16.x.x`, `104.17.x.x`, `104.18.x.x`, `104.19.x.x`, `104.20.x.x`, `104.21.x.x`, `108.162.x.x`, `162.158.x.x`, `172.64.x.x`, `172.65.x.x`, `172.66.x.x`, `172.67.x.x`, `188.114.x.x`, `190.93.x.x`, `197.234.x.x`, `198.41.x.x`
-
 ---
 
 ## Phase 4 - One-Pass Comprehensive Header Harvest
@@ -160,26 +155,6 @@ print(json.dumps({'subdomain': '$sub', 'status': '$status', 'ip': '$ip', **h}))
 "
 }
 ```
-
-### Headers to capture (all of these, every time):
-| Header | Why It Matters |
-|---|---|
-| `server` | Backend tech (cloudflare / gunicorn / nginx / apache) |
-| `via` | **Dual CDN leak** - `via: 1.1 *.cloudfront.net` through Cloudflare = CloudFront backend |
-| `x-amz-cf-pop` | AWS CloudFront PoP code → geographic location of CDN node |
-| `x-amz-cf-id` | Confirms CloudFront, useful for timing correlation |
-| `x-cache` | `HIT/MISS from cloudfront` confirms CF backend |
-| `cf-cache-status` | Cloudflare caching layer behavior |
-| `x-frame-options` | Security header (DENY / SAMEORIGIN / missing) |
-| `x-xss-protection` | Legacy XSS header presence |
-| `content-security-policy` | Reveals allowed origins, CDN domains, analytics, font CDNs |
-| `access-control-allow-origin` | **Flag if `*`** - open CORS |
-| `location` | Redirect target → reveals SaaS platform (HubSpot, Azure AD, LearnUpon, etc.) |
-| `set-cookie` | Cookie flags (Secure/HttpOnly), platform fingerprinting |
-| `x-runtime` | Ruby on Rails indicator |
-| `x-request-id` | Application framework fingerprint |
-| `alt-svc` | HTTP/3 / QUIC support |
-| `content-type` | API vs HTML vs XML |
 
 ---
 
@@ -292,9 +267,10 @@ const targets = [
 
 ---
 
-## Phase 8 - Port Scan (Second Pass)
+## Phase 8 - Nonintrusive Port Probe (Second Pass)
 
-Only run on **non-Cloudflare** IPs (CF-fronted domains rarely expose alternate ports).
+Don't run on Cloudflare IPs, don't run on WAFs/CDNs protected targets.
+Only look for applicative ports, don't overdo the web scan to more than a few strategic port decisions (passive-first approach).
 
 ```bash
 for host in direct-ip-1 direct-ip-2; do
@@ -390,11 +366,8 @@ Always produce the markdown report with this structure:
 
 | Pitfall | Correct Approach |
 |---|---|
-| Using `playwright-extra-plugin-stealth` | Package does not exist. Use `puppeteer-extra-plugin-stealth` |
-| Using Python urllib for OTX/VirusTotal | Use `curl` instead - Python SSL verify fails on these APIs |
 | Assuming WHOIS registrant names identify owner | Use NS correlation + MX + TXT instead (privacy protection hides names) |
 | Assuming `target.net` or `target.co` = same company | Verify NS + MX independently - often different owners |
 | Running crt.sh only for subdomain discovery | Always run 6+ sources in parallel |
 | Doing header harvest after initial recon | Collect ALL headers in the first live check pass |
 | Port scanning CF-fronted IPs | Pointless - Cloudflare terminates connections. Only port-scan direct/non-CF IPs |
-| Expecting acquired stealth startup to have a domain | Many acquisitions are stealth - zero DNS footprint is normal |
