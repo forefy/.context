@@ -1,10 +1,6 @@
 ---
 name: external-enumeration
-description: >
-  Passive external enumeration of a company's domain/subdomain infrastructure.
-  Use when asked to enumerate, recon, or map a company's external attack surface.
-  Triggers: "enumerate domains", "subdomain recon", "map infrastructure", "osint on company",
-  "what subdomains does X have", "attack surface", "external recon".
+description: Passively map a company's domains, subdomains, DNS ownership, tech stack, and CDNs. Use to recon an external attack surface or enumerate subdomains.
 ---
 
 # External Enumeration Skill

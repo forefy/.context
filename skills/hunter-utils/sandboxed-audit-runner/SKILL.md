@@ -1,6 +1,6 @@
 ---
 name: sandboxed-audit-runner
-description: "Wrap the current audit agent session inside the Anthropic Sandbox Runtime (srt) before starting any security audit. Use this before invoking smart-contract-audit, infrastructure-audit, or any other audit skill on an untrusted codebase. Triggers include: start a sandboxed audit, run audit in sandbox, sandbox before auditing, protect my session during audit."
+description: Wrap the session in the Anthropic Sandbox Runtime before touching untrusted code. Use before running any audit skill on a codebase you do not trust.
 ---
 
 # Sandboxed Audit Runner

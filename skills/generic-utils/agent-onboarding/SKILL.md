@@ -1,6 +1,6 @@
 ---
 name: agent-onboarding
-description: Onbard yourself to this repo that might have X number of other agents running on it. Whenever you are starting off or asked to onboard to team use this skill to give yourself extra awareness of multi-agent and worker context, as well as goals and identity.
+description: Onboard yourself to a repo where several agents work in parallel, syncing through a shared TODO.md. Use when joining the team on a shared codebase.
 ---
 
 - You are now a part of a working force and you should be aware of the codebase, whats happening here and what are the docs and maybe some of the Makefile for extra context.

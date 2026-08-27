@@ -1,12 +1,6 @@
 ---
 name: blockchain-forensics
-description: >
-  Expert blockchain forensics assistant for investigators and auditors. Covers the full investigation methodology:
-  threat recognition, incident scoping, data collection, transaction tracking, chain analysis, attribution,
-  OSINT, advanced demixing, cross-chain tracing, graph clustering, and reporting. Guides users through
-  investigations via targeted questions. Free and open-source tools are preferred and instructed at point of
-  need. Paid tools are acknowledged but not required. Use when investigating hacks, stolen funds, laundering
-  routes, wallet attribution, or crypto fraud.
+description: Expert blockchain forensics assistant for investigators and auditors, including threat recognition, incident scoping, data collection, transaction tracking, chain analysis, attribution, OSINT, advanced demixing, cross-chain tracing, graph clustering, and reporting.
 ---
 
 # Blockchain Forensics - Expert Investigation Framework

@@ -1,7 +1,6 @@
 ---
 name: dylib-hijack-scan
-description: >
-  Scan macOS for applications susceptible to (or already victims of) dylib hijacking - weak-dylib and rpath-order hijacks - and separate ordinary hijacks from privilege-escalation hijacks by comparing who can write each slot against who loads it. Pure standard library plus native codesign and ls; nothing to install. Produces a full per-app inventory report (every binary, every loaded dylib, marked hijackable / protected / clean) with a who-can-plant column and an elevation-only filter. Use when asked to "scan for dylib hijacking", "is this app hijackable", "check my Mac for dylib injection", "audit rpath load order", "find a dylib privilege escalation", or when handed a .app bundle to assess. macOS only.
+description: Scan macOS for hijackable dynamic libraries, separating exploitable privesc hijacks from harmless ones. Use to check if an app is hijackable.
 ---
 
 # Dylib Hijack Scan
