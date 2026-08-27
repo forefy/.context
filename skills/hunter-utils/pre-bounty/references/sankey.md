@@ -1,9 +1,9 @@
 # Ranked Sankey + ranked-list templates
 
 Two copy-paste widgets for the `visualize` `show_widget` tool. **Call the tool's
-`read_me` once before your first `show_widget`** (it requires it) — modules
+`read_me` once before your first `show_widget`** (it requires it) - modules
 `["diagram","data_viz"]` are enough. Then fill the single `A = [...]` data array
-in each template and render. Do not hand-author new diagram code per run — edit
+in each template and render. Do not hand-author new diagram code per run - edit
 the array only.
 
 Shared conventions:
@@ -19,7 +19,7 @@ Shared conventions:
   `Prime #639922 · Good #378ADD · Recon #BA7517 · Skip #E24B4A · Dead #9A9A90`.
 - Adjust the `$10k`/`$5k` ceiling strings to the actual program's top/half tier.
 
-## Template 1 — ranked list (best→worst)
+## Template 1 - ranked list (best→worst)
 
 ```html
 <h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;">Bug-bounty assets ranked best to worst by opportunity.</h2>
@@ -54,7 +54,7 @@ Shared conventions:
 </script>
 ```
 
-## Template 2 — ranked 3-stage Sankey (asset → setup → ROI)
+## Template 2 - ranked 3-stage Sankey (asset → setup → ROI)
 
 Left column ordered best (top) → worst (bottom); setup and ROI nodes are
 pre-ordered to minimize crossings for a rank-ordered left. Thread width = `v`.
@@ -71,7 +71,7 @@ Labels carry rank, volume, payout ceiling, and freshness date (green if `fresh`)
   // ...one object per in-scope asset, ordered best->worst (rk = rank)
  ];
  const setups=[['Hard','Hard · 1–2 days'],['Moderate','Moderate · 2–4 hrs'],['Trivial','Trivial · under 15 min']];
- const rois=[['Prime','Prime — best ROI'],['Good','Good'],['Recon','Recon lane'],['Skip','Skip — crowded'],['Dead','Dead']];
+ const rois=[['Prime','Prime - best ROI'],['Good','Good'],['Recon','Recon lane'],['Skip','Skip - crowded'],['Dead','Dead']];
  const rc={Skip:'#E24B4A',Dead:'#9A9A90',Recon:'#BA7517',Good:'#378ADD',Prime:'#639922'};
  const total=A.reduce((s,a)=>s+a.v,0)||1;
  const topPad=58,botPad=22,lx=316,c1=548,c2=756,bw=11,leftGap=5,gap=16,scale=1.3;

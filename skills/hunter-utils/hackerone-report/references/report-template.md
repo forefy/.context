@@ -1,6 +1,6 @@
 # HackerOne report writeup template
 
-Fill each section. Keep it plain and first-person. State each fact once. The `# Title` line is for the Title field only — do not paste it into the Description body.
+Fill each section. Keep it plain and first-person. State each fact once. The `# Title` line is for the Title field only - do not paste it into the Description body.
 
 ---
 
@@ -22,7 +22,7 @@ The vulnerable component + version, then a bullet per code location with a one-l
 
 * `path/to/file.go` - what's wrong here (the missing check / the bad trust).
 * `path/to/sink.go` - where the tainted value is consumed as a security decision.
-* (list every sink — a complete sink census pre-empts the "is this the only place?" question.)
+* (list every sink - a complete sink census pre-empts the "is this the only place?" question.)
 
 ## Steps To Reproduce
 
@@ -38,7 +38,7 @@ The vulnerable component + version, then a bullet per code location with a one-l
 8. **Scale** (if applicable) - how it generalizes (all nodes / all tenants / etc.).
 9. **Teardown** - tear down the throwaway environment.
 
-Optional variant: one short paragraph, only if it adds a distinct precondition/mitigation-defeat — not a restatement.
+Optional variant: one short paragraph, only if it adds a distinct precondition/mitigation-defeat - not a restatement.
 
 ## Supporting Material/References
 
