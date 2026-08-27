@@ -1,18 +1,6 @@
 ---
 name: training-guide
-description: >-
-  Build an interactive, click-through VISUAL training course as a self-contained HTML page
-  (published as an artifact and saved locally) that teaches a subject gradually - one idea per
-  screen, each with a hand-built diagram, a plain-language "reveal the intuition" analogy, and
-  occasional trick-question quizzes. The subject is inferred from the current conversation: a
-  report you just wrote, a codebase or system you explored, a paper, a protocol, a concept the
-  user is learning. Use this skill whenever the user wants to TEACH or EXPLAIN something visually
-  and step by step - phrases like "turn this into a visual guide / training / primer / walkthrough
-  / explainer / course", "teach me X visually", "explain this gradually with diagrams", "make an
-  onboarding for this", "help me understand this piece by piece", or "build a lesson from what we
-  just did". Prefer it over a static write-up or a single diagram any time the goal is guided
-  understanding that builds up term by term. Not for slide decks (use pptx), spreadsheets, or a
-  one-off single diagram with no progression.
+description: Build an interactive visual course as one self-contained HTML page, one idea per screen. Use to explain or teach a subject visually, step by step.
 ---
 
 # Training Guide - interactive visual primer

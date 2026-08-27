@@ -1,7 +1,6 @@
 ---
 name: endpoint-threat-hunt
-description: >
-  Live endpoint threat hunting skill. Systematically scans a system for malicious activity across all categories (Process, File, Network, Persistence, User Account, Registry, etc.) using only native OS tools. Covers macOS, Linux, and Windows at T1 (no privs) and T2 (sudo/admin) levels. Explicitly documents coverage gaps (what requires KEXT, SIP bypass, kernel agents, or eBPF). Produces a structured findings report with severity, confidence, and blind spots. Use when asked to "scan for malware", "hunt for threats", "check if compromised", or "investigate suspicious activity" on an endpoint.
+description: Hunt a live macOS, Linux, or Windows endpoint for malware across process, network, and persistence. Use to scan for threats or check for compromise.
 ---
 
 # Endpoint Threat Hunt Skill

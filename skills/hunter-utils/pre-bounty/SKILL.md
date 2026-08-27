@@ -1,19 +1,6 @@
 ---
 name: pre-bounty
-description: >-
-  Pre-engagement recon and target prioritization for a bug-bounty or VDP scope.
-  Given a program URL (HackerOne, Bugcrowd, Intigriti, YesWeHack, self-hosted
-  VDP) or a pasted list of in-scope assets/repos/APIs, it maps the scope, pulls
-  bug history (disclosed reports + public CVEs/writeups), extracts the
-  in/out-of-scope boundary gotchas, summarizes reward economics, then scores and
-  RANKS every asset best-to-worst by opportunity — payout ceiling, crowdedness,
-  replication-setup difficulty, and scope freshness — and renders a ranked
-  asset→setup→ROI Sankey. Use this WHENEVER the user is sizing up a bounty
-  program, asks "where should I hunt", "which target is worth my time", "what's
-  least crowded", wants pre-bounty recon / scope analysis / target selection, or
-  pastes a program link or scope table — even if they don't say the word
-  "pre-bounty". Do not use it to write or file a vulnerability report (that is a
-  separate reporting skill).
+description: Map a bug-bounty scope and rank targets by payout, crowding, and freshness. Use to size up a program or decide where to hunt before committing time.
 ---
 
 # Pre-bounty: scope recon & target prioritization

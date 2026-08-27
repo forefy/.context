@@ -1,6 +1,6 @@
 ---
 name: context-window-to-skill
-description: Takes the active conversation as reference to understand how a skill can be created, with all the lessons learned from the users need in the conversation.
+description: Takes the active conversation as reference to understand how a skill can be created, with all the lessons learned from the user's needs in the conversation.
 ---
 
 # Use Case:

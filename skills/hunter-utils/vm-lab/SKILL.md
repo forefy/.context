@@ -1,6 +1,6 @@
 ---
 name: vm-lab
-description: Spin up and drive disposable local VMs (macOS, Windows, Linux) for real cross-OS debugging over SSH - process/network/file/memory triage, live event capture, code-signing checks, dynamic instrumentation, malware/RE repro - on any of three free hypervisors (Parallels, VirtualBox, VMware Fusion/Workstation) with no paid CLIs. Use whenever a task needs to run commands or inspect a real, isolated macOS/Windows/Linux machine that is not this host. Covers picking a provider+guest, bootstrapping a fresh guest to SSH, per-OS "run commands reliably over SSH" gotchas, a task→tool matrix, arch-forked toolkit install recipes, and a verifier. Connection details live in config.local.env; ./verify.sh proves the toolkits are callable.
+description: Spin up disposable macOS, Windows, and Linux VMs and drive them over SSH for cross-OS debugging and repro. Use to run or inspect an isolated guest.
 ---
 
 # VM Lab - cross-OS debugging on any free hypervisor

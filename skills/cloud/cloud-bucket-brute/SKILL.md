@@ -1,6 +1,6 @@
 ---
 name: cloud-bucket-brute
-description: Active enumeration of publicly readable cloud-storage buckets - permutes a company name into candidate bucket names and probes AWS S3, Google Cloud, DigitalOcean, Alibaba, Oracle, and Vultr for anonymously accessible buckets. Use to find exposed or misconfigured cloud storage or leaked S3/GCS buckets for an authorized target.
+description: Discover publicly readable cloud storage by permuting a company name into likely bucket names and probing AWS S3, Google Cloud, DigitalOcean, Alibaba, Oracle, and Vultr. Use to find exposed buckets.
 ---
 
 ## Contents

@@ -1,6 +1,6 @@
 ---
 name: gdocs-audit-report
-description: Expert skill for creating, formatting, and maintaining security audit reports in Google Docs via the Docs API. Use when asked to write, update, style, or fix an audit report document - including finding formatting, summary tables, inline code styling, bullet conversion, cross-reference hyperlinks, and severity color schemes. Covers auth, index-drift safety, and all common formatting pitfalls.
+description: Write and format security-audit reports in Google Docs via the Docs API - findings, tables, and severity styling. Use to build or fix a report.
 ---
 
 # Google Docs Security Audit Report

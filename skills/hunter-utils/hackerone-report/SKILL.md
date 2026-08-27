@@ -1,6 +1,6 @@
 ---
 name: hackerone-report
-description: "Draft and file a security vulnerability report to a HackerOne bug-bounty program through the browser, and prepare its PoC package + a concise copy-paste README for a user-filmed demo video. Use when the user wants to submit, file, or draft a HackerOne report, disclose a vuln to a program (e.g. hackerone.com/<program>), prep a bug-bounty submission, or turn a finding into a submittable report with reproduction steps. Covers the whole flow: dedup pre-flight, writeup, PoC repro, browser form-fill (Asset / Weakness / CVSS / Title / Description / Impact), login handoff, and the final human-only Submit."
+description: Draft and file a HackerOne report in the browser, with a proof-of-concept package and demo-video notes. Use to submit or prepare a bug-bounty report.
 ---
 
 # Filing a HackerOne report

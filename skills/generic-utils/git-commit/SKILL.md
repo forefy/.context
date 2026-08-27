@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Commits github changes to repository safely and professionally. use this before any commit made to github.
+description: "Commit to Git safely: runs tests, security-reviews the diff, strips secrets and dead code, and enforces clean messages. Use before any commit or push."
 ---
 
 - Ensure before commit that tests run (and create tests to cover new crucial functionality)

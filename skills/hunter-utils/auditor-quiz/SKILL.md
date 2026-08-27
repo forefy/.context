@@ -1,6 +1,6 @@
 ---
 name: auditor-quiz
-description: Generate and administer interactive knowledge quizzes for security auditors based on repository documentation and code. Use when an auditor needs to be tested on their understanding of a codebase, protocol mechanics, security considerations, potential vulnerabilities, or core functionality. Triggers include requests like "quiz me on", "test my knowledge", "generate a quiz", or when preparing for security audits and code reviews.
+description: Quiz an auditor on a codebase's mechanics and vulnerabilities, drawn from its own code and docs. Use to test understanding before or during a review.
 ---
 
 # Auditor Quiz Skill

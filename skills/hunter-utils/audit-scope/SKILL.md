@@ -1,10 +1,6 @@
 ---
 name: audit-scope
-description: >
-  Generate a security audit scope document from one or more GitHub repo URLs
-  and/or API access descriptions. Outputs a 3-line protocol narrative (mission,
-  user story, attacker story) followed by a scope table with NSLOC, focus
-  areas, and days. Use when scoping a new audit engagement.
+description: Draft a security-audit scope from GitHub repos or API access, with a protocol narrative and a sizing table. Use when scoping a new engagement.
 ---
 
 # Audit Scope Skill
