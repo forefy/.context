@@ -96,6 +96,7 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 - `pre-bounty` - pre-engagement recon and target prioritization for a bounty/VDP scope; maps assets, mines bug history, extracts scope gotchas, then scores and ranks every asset best-to-worst by opportunity and renders a ranked asset -> setup -> ROI Sankey.
 - `hackerone-report` - drives a HackerOne submission end to end: dedup pre-flight, concise writeup, a video-ready PoC package, and browser form-fill, handing the irreversible login and Submit steps back to the user.
 - `external-enumeration` - passive external attack-surface mapping for a company; multi-source subdomain discovery, NS/MX/TXT ownership attribution, per-subdomain header harvest, tech-stack and dual-CDN detection, stealth Cloudflare bypass, and a structured recon report.
+- `vm-lab` - spins up disposable local VMs (macOS, Windows, Linux) and drives them over SSH for cross-OS repro and debugging; process/network/file/memory triage, live event capture, code-signing and injectability checks, dynamic instrumentation, and malware/RE repro on any free hypervisor (Parallels, VirtualBox, VMware) with no paid CLIs.
 
 <br>
 
