@@ -1,6 +1,6 @@
 # Video-ready PoC README pattern
 
-The README is a script for a user-filmed demo: every block copy-pastes in order, and the reader can narrate over it. One command per step. Verify the exact blocks on a clean environment before shipping — copy-paste repros fail in ways your mental model won't (auth/credential precedence, working-directory resets between shells, CLI flags that don't override config files).
+The README is a script for a user-filmed demo: every block copy-pastes in order, and the reader can narrate over it. One command per step. Verify the exact blocks on a clean environment before shipping - copy-paste repros fail in ways your mental model won't (auth/credential precedence, working-directory resets between shells, CLI flags that don't override config files).
 
 Structure:
 
@@ -43,5 +43,5 @@ Principles:
 
 - **The money shot is the before/after.** Command 1 (denied) and command 3 (succeeds) differ only by the exploited variable. That contrast is what the video sells.
 - **Prefer transparent commands over an opaque script.** If shared shell state (a captured token, a URL) is the only reason for a script, put it in a small helper function in the README and keep each proof line short and readable.
-- **Label plumbing.** Anything that's convenience, not vulnerability, says so — triagers must not mistake it for the bug.
+- **Label plumbing.** Anything that's convenience, not vulnerability, says so - triagers must not mistake it for the bug.
 - **Attach, don't inline secrets.** The user records `poc.mov`; the zip carries the runnable files. The report references both.
