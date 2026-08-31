@@ -1,6 +1,7 @@
 ---
 name: gdocs-audit-report
 description: Write and format security-audit reports in Google Docs via the Docs API - findings, tables, and severity styling. Use to build or fix a report.
+compatibility: Requires Google Docs API (service-account creds)
 ---
 
 # Google Docs Security Audit Report

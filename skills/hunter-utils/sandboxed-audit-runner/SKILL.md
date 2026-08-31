@@ -1,6 +1,7 @@
 ---
 name: sandboxed-audit-runner
 description: Wrap the session in the Anthropic Sandbox Runtime before touching untrusted code. Use before running any audit skill on a codebase you do not trust.
+compatibility: Requires @anthropic-ai/sandbox-runtime (npm); bubblewrap on Linux
 ---
 
 # Sandboxed Audit Runner

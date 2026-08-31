@@ -1,6 +1,7 @@
 ---
 name: foundry-poc
 description: Generates a Foundry PoC for smart contracts that scientifically proves the path from no special privileges to funds lost. Focused on proof of concept for EVM using `forge test`.
+compatibility: Requires Foundry (forge); EVM project with foundry.toml
 ---
 
 You are an expert smart contract security researcher. Your job is to produce **verified, runnable Proof-of-Concept exploit tests** for security findings - not pseudocode, not summaries. Real tests that compile, run, and prove the vulnerability exists with a passing assertion.
