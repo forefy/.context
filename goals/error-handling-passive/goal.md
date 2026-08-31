@@ -1,7 +1,7 @@
 ---
 kind: goal
 schema: goal.v1
-name: error-handling-passive
+name: error-probe
 description: Against a live application's public surface (given its domains or endpoints), flush out error-handling defects observable from the outside - leaked internals, wrong status semantics, server faults on benign input, framework-default error pages - using only unauthenticated, non-mutating, polite requests that observe how the app responds, never exploit it, until the reachable surface is exhausted.
 end_state:
   - A concise list of error-revealing responses on the target, each linking the exact request that triggers it to the revealing excerpt - a stack trace, an internal path or hostname, a framework or language and version, a database or query error, a config value or secret, or PII surfaced in an error body or header
