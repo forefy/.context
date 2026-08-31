@@ -1,6 +1,7 @@
 ---
 name: dylib-hijack-scan
 description: Scan macOS for hijackable dynamic libraries, separating exploitable privesc hijacks from harmless ones. Use to check if an app is hijackable.
+compatibility: macOS only; requires otool, codesign, python3
 ---
 
 # Dylib Hijack Scan

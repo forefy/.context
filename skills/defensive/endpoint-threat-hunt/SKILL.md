@@ -1,6 +1,7 @@
 ---
 name: endpoint-threat-hunt
 description: Hunt a live macOS, Linux, or Windows endpoint for malware across process, network, and persistence. Use to scan for threats or check for compromise.
+compatibility: macOS/Linux/Windows; full coverage needs sudo/admin
 ---
 
 # Endpoint Threat Hunt Skill

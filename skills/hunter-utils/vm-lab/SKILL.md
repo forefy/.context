@@ -1,6 +1,7 @@
 ---
 name: vm-lab
 description: Spin up disposable macOS, Windows, and Linux VMs and drive them over SSH for cross-OS debugging and repro. Use to run or inspect an isolated guest.
+compatibility: Requires a hypervisor (Parallels/VirtualBox/VMware) and SSH to the guest
 ---
 
 # VM Lab - cross-OS debugging on any free hypervisor
