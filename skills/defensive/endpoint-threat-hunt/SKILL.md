@@ -22,6 +22,9 @@ Load on demand:
 | `references/linux-checks.md` | OS = Linux |
 | `references/windows-checks.md` | OS = Windows |
 | `references/ioc-patterns.md` | Analyzing output, any OS |
+| `references/known-attacks-macos.md` | OS = macOS - cross-check named campaigns |
+| `references/known-attacks-linux.md` | OS = Linux - cross-check named campaigns |
+| `references/known-attacks-windows.md` | OS = Windows - cross-check named campaigns |
 | `references/coverage-constraints.md` | Building coverage gap section |
 
 ---
