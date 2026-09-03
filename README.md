@@ -108,14 +108,17 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 - `git-commit` - before committing, pre-runs tests, reviews changed code, strips dead code and sensitive data, enforces clean commit messages, and validates the change won't break deployments.
 - `training-guide` - build an interactive, click-through visual course as a self-contained HTML page that teaches a subject one idea per screen, each with a hand-built diagram, an intuition reveal, and trick-question quizzes.
 - `variant-table` - render draft copy as a side-by-side comparison table, one row per logical unit with three genuinely distinct rewrite variations plus a top-pick column, for iterating on wording.
+- `self-improve` - audit a finished conversation for corrections and dead ends, then commit the generalizable lessons back into the repo so the next run does not repeat them.
 
 <br>
 
 ## Defensive
 
-`skills/defensive/` - blue-team and DFIR.
+`skills/defensive/` - blue-team, DFIR, and agent-side defense.
 
 - `endpoint-threat-hunt` - live endpoint threat hunting across process/file/network/persistence/registry categories using native OS tools (macOS/Linux/Windows), producing a structured findings report with explicit coverage gaps.
+- `dylib-hijack-scan` - scan macOS for applications susceptible to weak-dylib and rpath-order hijacks, scored by whether library validation actually blocks the attack.
+- `parse-security` - the last gate before untrusted instruction content is ingested; screens a fetched skill, goal or workflow for prompt injection on the assumption its author wrote it to defeat this exact review, covering instruction override, fabricated authorization, exfiltration, persistence, concealment and manipulation aimed at the reviewer's own verdict.
 
 <br>
 
