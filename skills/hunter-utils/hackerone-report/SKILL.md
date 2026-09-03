@@ -1,6 +1,7 @@
 ---
 name: hackerone-report
 description: Draft and file a HackerOne report in the browser, with a proof-of-concept package and demo-video notes. Use to submit or prepare a bug-bounty report.
+compatibility: Requires an automation-capable browser (in-app Browser or Claude-in-Chrome) to file; drafting/PoC work needs none
 ---
 
 # Filing a HackerOne report
