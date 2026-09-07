@@ -83,6 +83,16 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 
 <br>
 
+## LLMs
+
+`skills/llms/` - security testing for LLM applications, agents, and the protocol surface around them.
+
+- `prompt-injection-audit` - audits an LLM application for indirect prompt injection by composing objective x technique payloads, delivering them through the channels the agent actually reads (pages, tool responses, files, tickets, RAG), and proving impact with an out-of-band callback rather than a judge where one is not needed.
+- `mcp-server-pentest` - pentests an MCP server for authentication bypass, confused-deputy SSRF, and tool-argument injection; black-box from the server URL, deeper with repo or host access.
+- `llm-fuzz-tools` - runs several LLM red-team scanners against one target, normalizes their output to a common schema, dedupes across them, and reports honest coverage instead of a summed probe count.
+
+<br>
+
 ## Hunter utils
 
 `skills/hunter-utils/` - general auditing methodology and workflow tooling picked up naturally as you travel through a codebase.
