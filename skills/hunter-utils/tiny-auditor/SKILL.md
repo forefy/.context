@@ -30,6 +30,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Some findings' impact is just an inflation/duplication of whatever is written on the description ending, in which case it is redundant
 - Almost all of the points to use `;` are redundant - the point of descriptions and writing in a repot are to be read humanly, natural flow sentences rather than ";" or similar
 - Description + Impact should usually be no longer than 12 lines (excluding bullets), and recommendations between 2~3. If it's more - ask yourself why.
+- Screenshots - using available browser tools (or asking users where lacking) for screenshots to walkthrough the finding (key points only and poc) are helpful, their standardized location is under or between the lines of description (like short story with pictures consecutive style, in the following image xxx)
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
