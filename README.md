@@ -148,17 +148,5 @@ And are CI-validated by in-repo, versioned json-schema files:
 
 # Contributions
 
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/forefy">
-            <img src="https://avatars.githubusercontent.com/u/166978930?v=4" width="100;" alt="forefy"/>
-            <br />
-            <sub><b>forefy</b></sub>
-        </a>
-    </td>
-</tr>
-</table>
-
 Your research knowledge is the only skill required to contribute, whether its a methodology, specific knowledge on a protocol or language or even corrections - everything's highly welcome! help secure and improve the community!
 
