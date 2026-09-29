@@ -32,6 +32,8 @@
 
 ## Table of Contents - Findings
 
+<!-- anchor-check: ignore - the entries below are format examples; the headings they name are written per engagement -->
+
 ### Critical Findings
 - [C-1 [Impact] via [Weakness] in [Feature]](#c-1-impact-via-weakness-in-feature) (VALID)
 - [C-2 [Impact] via [Weakness] in [Feature]](#c-2-impact-via-weakness-in-feature) (QUESTIONABLE)
