@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Auth](#auth)
-- [Index Drift - The Golden Rule](#index-drift--the-golden-rule)
+- [Index Drift - The Golden Rule](#index-drift---the-golden-rule)
 - [Common Op Templates](#common-op-templates)
   - [Style a text range](#style-a-text-range)
   - [Delete a range](#delete-a-range)
