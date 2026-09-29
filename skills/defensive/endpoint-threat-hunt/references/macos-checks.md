@@ -7,43 +7,44 @@
 ## Contents
 
 - [Phase 1: Process Activity](#phase-1-process-activity)
-  - [1.1 - Full Process Listing with Paths](#11--full-process-listing-with-paths)
-  - [1.2 - Processes with Unlinked (Deleted) Executables](#12--processes-with-unlinked-deleted-executables)
-  - [1.3 - Open Files and Network Connections for Suspicious Process](#13--open-files-and-network-connections-for-suspicious-process)
-  - [1.4 - Parent Process Relationships](#14--parent-process-relationships)
-  - [1.5 - Activity Monitor CLI Snapshot](#15--activity-monitor-cli-snapshot)
+  - [1.1 - Full Process Listing with Paths](#11---full-process-listing-with-paths)
+  - [1.2 - Processes with Unlinked (Deleted) Executables](#12---processes-with-unlinked-deleted-executables)
+  - [1.3 - Open Files and Network Connections for Suspicious Process](#13---open-files-and-network-connections-for-suspicious-process)
+  - [1.4 - Parent Process Relationships](#14---parent-process-relationships)
+  - [1.5 - Resource Anomalies (CPU Burn and Process Lifetime)](#15---resource-anomalies-cpu-burn-and-process-lifetime)
+  - [1.6 - Injected Libraries and Tool Integrity](#16---injected-libraries-and-tool-integrity)
 - [Phase 2: Network Activity](#phase-2-network-activity)
-  - [2.1 - All Network Connections with Owning Processes](#21--all-network-connections-with-owning-processes)
-  - [2.2 - Listening Ports](#22--listening-ports)
-  - [2.3 - DNS Configuration](#23--dns-configuration)
-  - [2.4 - Hosts File](#24--hosts-file)
-  - [2.5 - Network Connections (Summarized by Process)](#25--network-connections-summarized-by-process)
+  - [2.1 - All Network Connections with Owning Processes](#21---all-network-connections-with-owning-processes)
+  - [2.2 - Listening Ports](#22---listening-ports)
+  - [2.3 - DNS Configuration](#23---dns-configuration)
+  - [2.4 - Hosts File](#24---hosts-file)
+  - [2.5 - Network Connections (Summarized by Process)](#25---network-connections-summarized-by-process)
 - [Phase 3: Persistence Mechanisms](#phase-3-persistence-mechanisms)
-  - [3.1 - LaunchAgents and LaunchDaemons (Primary macOS Persistence)](#31--launchagents-and-launchdaemons-primary-macos-persistence)
-  - [3.2 - Crontab](#32--crontab)
-  - [3.3 - Login Items (macOS 13+ Background Task Management)](#33--login-items-macos-13-background-task-management)
-  - [3.4 - Configuration Profiles (MDM/Malicious Profiles)](#34--configuration-profiles-mdmmalicious-profiles)
+  - [3.1 - LaunchAgents and LaunchDaemons (Primary macOS Persistence)](#31---launchagents-and-launchdaemons-primary-macos-persistence)
+  - [3.2 - Crontab](#32---crontab)
+  - [3.3 - Login Items (macOS 13+ Background Task Management)](#33---login-items-macos-13-background-task-management)
+  - [3.4 - Configuration Profiles (MDM/Malicious Profiles)](#34---configuration-profiles-mdmmalicious-profiles)
 - [Phase 4: File Activity](#phase-4-file-activity)
-  - [4.1 - Files in Temp Directories](#41--files-in-temp-directories)
-  - [4.2 - Scripts in Library Directories](#42--scripts-in-library-directories)
-  - [4.3 - Recently Installed Applications](#43--recently-installed-applications)
-  - [4.4 - Code Signing Verification for Suspicious Files](#44--code-signing-verification-for-suspicious-files)
+  - [4.1 - Files in Temp Directories](#41---files-in-temp-directories)
+  - [4.2 - Scripts in Library Directories](#42---scripts-in-library-directories)
+  - [4.3 - Recently Installed Applications](#43---recently-installed-applications)
+  - [4.4 - Code Signing Verification for Suspicious Files](#44---code-signing-verification-for-suspicious-files)
 - [Phase 5: User & Account Activity](#phase-5-user--account-activity)
-  - [5.1 - Local User Accounts](#51--local-user-accounts)
-  - [5.2 - Login History](#52--login-history)
-  - [5.3 - SSH Configuration and Authorized Keys](#53--ssh-configuration-and-authorized-keys)
-  - [5.4 - T2: Authentication Logs](#54--t2-authentication-logs)
+  - [5.1 - Local User Accounts](#51---local-user-accounts)
+  - [5.2 - Login History](#52---login-history)
+  - [5.3 - SSH Configuration and Authorized Keys](#53---ssh-configuration-and-authorized-keys)
+  - [5.4 - T2: Authentication Logs](#54---t2-authentication-logs)
 - [Phase 6: Driver/Module Activity](#phase-6-drivermodule-activity)
-  - [6.1 - System Extensions (macOS 10.15+)](#61--system-extensions-macos-1015)
-  - [6.2 - Kernel Extensions (Legacy, Still Active)](#62--kernel-extensions-legacy-still-active)
+  - [6.1 - System Extensions (macOS 10.15+)](#61---system-extensions-macos-1015)
+  - [6.2 - Kernel Extensions (Legacy, Still Active)](#62---kernel-extensions-legacy-still-active)
 - [Phase 7: Script & Command Execution](#phase-7-script--command-execution)
-  - [7.1 - Shell History](#71--shell-history)
-  - [7.2 - Application Script Artifacts](#72--application-script-artifacts)
-  - [7.3 - T2: XProtect and MRT Logs](#73--t2-xprotect-and-mrt-logs)
+  - [7.1 - Shell History](#71---shell-history)
+  - [7.2 - Application Script Artifacts](#72---application-script-artifacts)
+  - [7.3 - T2: XProtect and MRT Logs](#73---t2-xprotect-and-mrt-logs)
 - [Phase 8: EDR/Security Tool Status](#phase-8-edrsecurity-tool-status)
-  - [8.1 - Detect Running Security Agents](#81--detect-running-security-agents)
-  - [8.2 - macOS Built-in Security Status](#82--macos-built-in-security-status)
-  - [8.3 - T2: TCC Privacy Database](#83--t2-tcc-privacy-database)
+  - [8.1 - Detect Running Security Agents](#81---detect-running-security-agents)
+  - [8.2 - macOS Built-in Security Status](#82---macos-built-in-security-status)
+  - [8.3 - T2: TCC Privacy Database](#83---t2-tcc-privacy-database)
 - [Quick Reference: macOS IOC Severity Ratings](#quick-reference-macos-ioc-severity-ratings)
 
 ---
@@ -129,17 +130,72 @@ ps -eo pid,ppid,user,comm,args | head -80
 
 ---
 
-### 1.5 - Activity Monitor CLI Snapshot
+### 1.5 - Resource Anomalies (CPU Burn and Process Lifetime)
 **Tier:** T1  
 
 ```bash
+# Lifetime-average CPU. ELAPSED format: [[dd-]hh:]mm:ss
 ps -eo pid,ppid,%cpu,%mem,etime,user,comm | sort -k3 -nr | head -30
+
+# Same data filtered to the miner profile: 80%+ average CPU sustained over 3h
+ps -eo pid,ppid,pcpu,etime,user,comm | awk 'NR==1{print;next} {e=$4;d=0; if(e~/-/){split(e,a,"-");d=a[1];e=a[2]} n=split(e,t,":"); s=(n==3)?t[1]*3600+t[2]*60+t[3]:t[1]*60+t[2]; s+=d*86400; if($3>=80 && s>=10800) print}'
+
+# Instantaneous sample - ps %cpu is a lifetime average and hides throttled miners
+top -l 2 -n 15 -o cpu -stats pid,command,cpu,time | tail -20
+```
+
+**Note:** `%cpu` is percent of one core, so multithreaded processes legitimately exceed 100.
+
+**Flag:**
+- `%cpu` >= 80 with `etime` over 3h on a process that maps to no workload you can name - cryptominer profile, the most common macOS resource abuse
+- `%cpu` >= 25 with `etime` in days (`dd-hh:mm:ss`) on a binary nobody launched - throttled long-haul miner or a malware retry loop
+- High CPU in `top` but low `%cpu` in `ps` - miner that idles while the user is active and spins up when the machine is unattended. The divergence between the two readings IS the indicator
+- Sustained CPU inside `bash`, `zsh`, `python`, `osascript` or `curl` - these are not compute workloads, check args in 1.1
+- Process wearing an Apple daemon name (`mdworker_shared`, `cloudd`, `nsurlsessiond`) burning CPU from a path outside `/usr/libexec`, `/System` or `/usr/sbin` - masquerade, cross-ref 1.1
+- Any of the above from `/tmp`, `/var/folders`, `~/Library/Application Support`, or with a deleted binary - cross-ref 1.1 and 1.2, escalate to Critical
+
+**False+:**
+- `kernel_task` - high CPU IS its job, it soaks cycles to hold the CPU temperature down
+- `mds`, `mds_stores`, `mdworker_shared` - Spotlight, legitimately hours of high CPU after a large write or an OS update
+- `backupd`, `photoanalysisd`, `mediaanalysisd`, `photolibraryd` - Time Machine and Photos ML, long high-CPU runs by design
+- `WindowServer`, browsers and their `Helper (Renderer)` children, Electron apps, `Xcode`, `clang`, `swift-frontend`, `node`, `ffmpeg`, `com.docker.hyperkit`, `qemu` - legit heavy compute
+- Long `etime` alone means nothing for `launchd`, `loginwindow`, `UserEventAgent` and per-session agents - they live as long as the boot or login session. Lifetime only matters paired with CPU burn
+
+**Cross-ref:** A miner needs a pool. Check Phase 2 for `stratum`, pool ports (3333, 4444, 5555, 7777, 8888, 14444, 45700) or pool domains on the same PID - that pairing turns this from Suspicious into Confirmed. If 1.5 comes back clean on a host you have other reasons to suspect, run 1.6 before believing it.
+
+---
+
+### 1.6 - Injected Libraries and Tool Integrity
+**Tier:** T1 (own processes) / T2 (all processes)  
+
+**Run this before trusting 1.1 through 1.5.** SIP is what makes the Phase 1 tooling trustworthy: with it on, `/bin/ps` cannot be replaced and `DYLD_INSERT_LIBRARIES` is stripped for platform binaries. With it off, every reading in this phase is advisory.
+
+```bash
+# SIP first - it decides whether anything below can be trusted
+csrutil status
+
+# Per-process injected libraries (T2 for other users' environments)
+ps auxeww 2>/dev/null | grep -i 'DYLD_INSERT_LIBRARIES' | grep -v grep
+
+# Global injection - applies to everything launchd spawns from boot
+launchctl getenv DYLD_INSERT_LIBRARIES
+
+# Integrity of the binaries Phase 1 reads from
+codesign -vv --strict /bin/ps /usr/bin/top /usr/sbin/lsof 2>&1
 ```
 
 **Flag:**
-- High CPU/memory processes not well-known apps
-- Very long `etime` unknown processes - persistent background
-- Anomalous CPU = miners or compute-intensive malware
+- `csrutil status` anything but `enabled` - `/bin/ps` becomes replaceable and platform binaries honor `DYLD_INSERT_LIBRARIES`. Treat all of Phase 1 as advisory and cross-ref Phase 8
+- `DYLD_INSERT_LIBRARIES` in any process environment that is not a debugging or profiling session you can account for
+- `launchctl getenv DYLD_INSERT_LIBRARIES` returning a value - everything launchd starts is injected from boot onward
+- `codesign` reporting anything other than a valid signature on `/bin/ps`, `/usr/bin/top` or `/usr/sbin/lsof` - the tool has been replaced, and nothing in Phase 1 can be believed
+
+**False+:**
+- SIP is legitimately off on kernel-development and some CI machines - confirm intent with the owner before reading it as compromise
+- `DYLD_INSERT_LIBRARIES` shows up in real profiling and instrumentation sessions and in some crash reporters
+- `ps auxeww` reveals other users' environments only at T2, so a T1 run can miss an injected daemon entirely
+
+**Cross-ref:** Dylib injection into an already-running process is not visible here at all - see `coverage-constraints.md`.
 
 ---
 
@@ -698,3 +754,6 @@ sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
 | Unusual authorized_keys entry | High | Remote access backdoor |
 | WMI-equivalent: unusual LaunchDaemon | High | Persistence mechanism |
 | `osascript` in history | Medium | Could be automation or malware |
+| Sustained 80%+ CPU over 3h on an unaccounted process | High | Cryptominer profile - Critical if paired with a stratum or pool connection |
+| `DYLD_INSERT_LIBRARIES` set globally via `launchctl` | Critical | Library injection into everything launchd spawns |
+| SIP disabled (`csrutil status`) | High | Phase 1 tooling and platform binaries no longer protected |

@@ -59,7 +59,7 @@ None available to ad-hoc terminal session.
 
 **CAN detect (partial):**
 - Network connections FROM injected legit process - activity still shows up
-- Anomalous behavior FROM legit process (unusual CPU, unexpected network)
+- Anomalous behavior FROM legit process (sustained CPU, unexpected network) - the Phase 1 resource-anomaly check catches miners and other compute-heavy payloads; a low-footprint implant that only beacons stays invisible here
 - Disk artifacts if dropper wrote to disk before deleting
 
 **Fix:** Deploy memory forensics. Volatility + `osxpmem` for post-incident.

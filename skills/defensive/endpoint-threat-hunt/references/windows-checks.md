@@ -7,43 +7,45 @@
 ## Contents
 
 - [Phase 1: Process Activity](#phase-1-process-activity)
-  - [1.1 - Recent Processes with Full Details](#11--recent-processes-with-full-details)
-  - [1.2 - Process Details with Command Lines and Parent PIDs](#12--process-details-with-command-lines-and-parent-pids)
-  - [1.3 - Processes Running from Suspicious Locations](#13--processes-running-from-suspicious-locations)
-  - [1.4 - Authenticode Signature Verification for Running Processes](#14--authenticode-signature-verification-for-running-processes)
-  - [1.5 - Parent Process Anomalies](#15--parent-process-anomalies)
+  - [1.1 - Recent Processes with Full Details](#11---recent-processes-with-full-details)
+  - [1.2 - Process Details with Command Lines and Parent PIDs](#12---process-details-with-command-lines-and-parent-pids)
+  - [1.3 - Processes Running from Suspicious Locations](#13---processes-running-from-suspicious-locations)
+  - [1.4 - Authenticode Signature Verification for Running Processes](#14---authenticode-signature-verification-for-running-processes)
+  - [1.5 - Parent Process Anomalies](#15---parent-process-anomalies)
+  - [1.6 - Resource Anomalies (CPU Burn and Process Lifetime)](#16---resource-anomalies-cpu-burn-and-process-lifetime)
+  - [1.7 - Process Listing Integrity](#17---process-listing-integrity)
 - [Phase 2: Network Activity](#phase-2-network-activity)
-  - [2.1 - Listening Ports](#21--listening-ports)
-  - [2.2 - Established Outbound Connections](#22--established-outbound-connections)
-  - [2.3 - DNS Cache](#23--dns-cache)
-  - [2.4 - HOSTS File](#24--hosts-file)
+  - [2.1 - Listening Ports](#21---listening-ports)
+  - [2.2 - Established Outbound Connections](#22---established-outbound-connections)
+  - [2.3 - DNS Cache](#23---dns-cache)
+  - [2.4 - HOSTS File](#24---hosts-file)
 - [Phase 3: Persistence Mechanisms](#phase-3-persistence-mechanisms)
-  - [3.1 - Registry Run Keys](#31--registry-run-keys)
-  - [3.2 - Winlogon and BootExecute](#32--winlogon-and-bootexecute)
-  - [3.3 - Startup Folders](#33--startup-folders)
-  - [3.4 - Scheduled Tasks](#34--scheduled-tasks)
-  - [3.5 - Running Services with Full Paths](#35--running-services-with-full-paths)
-  - [3.6 - WMI Event Subscriptions (Critical - High Fidelity IOC)](#36--wmi-event-subscriptions-critical--high-fidelity-ioc)
+  - [3.1 - Registry Run Keys](#31---registry-run-keys)
+  - [3.2 - Winlogon and BootExecute](#32---winlogon-and-bootexecute)
+  - [3.3 - Startup Folders](#33---startup-folders)
+  - [3.4 - Scheduled Tasks](#34---scheduled-tasks)
+  - [3.5 - Running Services with Full Paths](#35---running-services-with-full-paths)
+  - [3.6 - WMI Event Subscriptions (Critical - High Fidelity IOC)](#36---wmi-event-subscriptions-critical---high-fidelity-ioc)
 - [Phase 4: File Activity](#phase-4-file-activity)
-  - [4.1 - Executable Files in Temp Locations](#41--executable-files-in-temp-locations)
-  - [4.2 - Authenticode Verification for Suspicious Files](#42--authenticode-verification-for-suspicious-files)
-  - [4.3 - VBScript/JScript/HTA Artifacts](#43--vbscriptjscripthta-artifacts)
+  - [4.1 - Executable Files in Temp Locations](#41---executable-files-in-temp-locations)
+  - [4.2 - Authenticode Verification for Suspicious Files](#42---authenticode-verification-for-suspicious-files)
+  - [4.3 - VBScript/JScript/HTA Artifacts](#43---vbscriptjscripthta-artifacts)
 - [Phase 5: User & Account Activity](#phase-5-user--account-activity)
-  - [5.1 - Local User Accounts](#51--local-user-accounts)
-  - [5.2 - Local Administrators Group](#52--local-administrators-group)
-  - [5.3 - T2: Windows Security Event Log - Authentication Events](#53--t2-windows-security-event-log--authentication-events)
+  - [5.1 - Local User Accounts](#51---local-user-accounts)
+  - [5.2 - Local Administrators Group](#52---local-administrators-group)
+  - [5.3 - T2: Windows Security Event Log - Authentication Events](#53---t2-windows-security-event-log---authentication-events)
 - [Phase 6: Driver Activity](#phase-6-driver-activity)
-  - [6.1 - T2: Driver Query](#61--t2-driver-query)
-  - [6.2 - T2: Named Pipes (C2 Framework Indicator)](#62--t2-named-pipes-c2-framework-indicator)
+  - [6.1 - T2: Driver Query](#61---t2-driver-query)
+  - [6.2 - T2: Named Pipes (C2 Framework Indicator)](#62---t2-named-pipes-c2-framework-indicator)
 - [Phase 7: Script & Command Execution](#phase-7-script--command-execution)
-  - [7.1 - PowerShell Command History](#71--powershell-command-history)
-  - [7.2 - T2: PowerShell Script Block Logging (Event 4104)](#72--t2-powershell-script-block-logging-event-4104)
-  - [7.3 - PowerShell Transcription Logs](#73--powershell-transcription-logs)
-  - [7.4 - BITS Transfer Jobs](#74--bits-transfer-jobs)
+  - [7.1 - PowerShell Command History](#71---powershell-command-history)
+  - [7.2 - T2: PowerShell Script Block Logging (Event 4104)](#72---t2-powershell-script-block-logging-event-4104)
+  - [7.3 - PowerShell Transcription Logs](#73---powershell-transcription-logs)
+  - [7.4 - BITS Transfer Jobs](#74---bits-transfer-jobs)
 - [Phase 8: EDR/Security Tool Status](#phase-8-edrsecurity-tool-status)
-  - [8.1 - Windows Defender Status](#81--windows-defender-status)
-  - [8.2 - Third-Party EDR Agent Processes](#82--third-party-edr-agent-processes)
-  - [8.3 - T2: Security Audit Policy](#83--t2-security-audit-policy)
+  - [8.1 - Windows Defender Status](#81---windows-defender-status)
+  - [8.2 - Third-Party EDR Agent Processes](#82---third-party-edr-agent-processes)
+  - [8.3 - T2: Security Audit Policy](#83---t2-security-audit-policy)
 - [Quick Reference: Windows IOC Severity Ratings](#quick-reference-windows-ioc-severity-ratings)
 
 ---
@@ -154,6 +156,85 @@ Get-WmiObject Win32_Process | Where-Object {$_.Name -in @('powershell.exe','cmd.
 - `svchost.exe` → `cmd.exe` / `powershell.exe` (unusual - svchost doesn't spawn shells)
 - `chrome.exe` / `firefox.exe` → `cmd.exe` / `powershell.exe` (browser exploitation)
 - Any process → `[DEAD/UNKNOWN]` parent (orphaned - parent was dropper that exited)
+
+---
+
+### 1.6 - Resource Anomalies (CPU Burn and Process Lifetime)
+**Tier:** T1 (own processes) / T2 (all - `StartTime` and `Path` on other users' processes need elevation)  
+
+```powershell
+# Lifetime-average CPU percent with run length in hours
+Get-Process | Where-Object {$_.CPU -and $_.StartTime} | Select-Object Name, Id, Path, Company,
+  @{n='RunHours';e={[math]::Round(((Get-Date)-$_.StartTime).TotalHours,2)}},
+  @{n='CpuSec';e={[math]::Round($_.CPU,0)}},
+  @{n='CpuPctAvg';e={[math]::Round($_.CPU/((Get-Date)-$_.StartTime).TotalSeconds*100,1)}} |
+  Sort-Object CpuPctAvg -Descending | Select-Object -First 25 | Format-Table -AutoSize
+
+# Filtered to the miner profile: 80%+ average CPU sustained over 3h
+Get-Process | Where-Object {$_.CPU -and $_.StartTime -and ((Get-Date)-$_.StartTime).TotalHours -ge 3 -and ($_.CPU/((Get-Date)-$_.StartTime).TotalSeconds*100) -ge 80} | Select-Object Name, Id, Path, Company, StartTime, CPU | Format-List
+
+# Instantaneous sample - CPU is cumulative processor seconds and hides throttled miners
+(Get-Counter '\Process(*)\% Processor Time' -SampleInterval 2 -MaxSamples 1).CounterSamples |
+  Where-Object {$_.InstanceName -notin @('_total','idle') -and $_.CookedValue -gt 5} |
+  Sort-Object CookedValue -Descending | Select-Object -First 15 InstanceName, @{n='Pct';e={[math]::Round($_.CookedValue,1)}}
+```
+
+**Note:** `Get-Process.CPU` is cumulative processor seconds across all cores, so `CpuPctAvg` is percent of one core and multithreaded processes legitimately exceed 100. `Get-Counter` sums cores the same way, up to 100 x core count.
+
+**Flag:**
+- `CpuPctAvg` >= 80 with `RunHours` >= 3 on a process that maps to no workload you can name - cryptominer profile
+- `CpuPctAvg` >= 25 with `RunHours` in the hundreds on a binary nobody launched - throttled long-haul miner or a malware retry loop
+- High `Get-Counter` percent but low `CpuPctAvg` - miner that idles while the user is active and spins up when the machine is unattended. The divergence between the two readings IS the indicator
+- Sustained CPU inside `powershell.exe`, `cmd.exe`, `wscript.exe`, `mshta.exe` or `rundll32.exe` - these are not compute workloads, check the command line in 1.2
+- `svchost.exe`, `dllhost.exe`, `taskhostw.exe` or `WmiPrvSE.exe` burning sustained CPU from a `Path` outside `C:\Windows\System32\` - masquerade, cross-ref 1.3 and 1.4
+- `System` (PID 4) or `Idle` (PID 0) reporting a non-empty `Path` - impossible for the real ones, name theft
+- Sustained CPU with `Company` empty and `Path` in `%TEMP%`, `%APPDATA%`, `%LOCALAPPDATA%` or `ProgramData` - cross-ref 1.3, escalate to Critical
+
+**False+:**
+- `Idle` - its CPU IS the machine's idle time
+- `System` (PID 4) - kernel and driver work, runs high under heavy IO
+- `MsMpEng.exe` - Defender, hours of high CPU once a full scan starts
+- `TiWorker.exe`, `TrustedInstaller.exe`, and the `svchost.exe` hosting `wuauserv` - Windows Update servicing
+- `SearchIndexer.exe`, `SearchProtocolHost.exe` - indexing after a large write
+- `CompatTelRunner.exe`, `MoUsoCoreWorker.exe` - telemetry and update orchestration
+- Browsers and their renderer children, `Teams.exe`, `Code.exe`, `devenv.exe`, `MSBuild.exe`, `node.exe`, `ffmpeg.exe` - legit heavy compute
+- Long `RunHours` alone means nothing for `System`, `wininit.exe`, `services.exe`, `lsass.exe`, `explorer.exe` - lifetime only matters paired with CPU burn
+
+**Cross-ref:** A miner needs a pool. Check Phase 2 for `stratum`, pool ports (3333, 4444, 5555, 7777, 8888, 14444, 45700) or pool domains on the same PID - that pairing turns this from Suspicious into Confirmed. If 1.6 comes back clean on a host you have other reasons to suspect, run 1.7 before believing it.
+
+---
+
+### 1.7 - Process Listing Integrity
+**Tier:** T1 (partial) / T2 (full)  
+
+**Run this before trusting 1.1 through 1.6.** A user-mode rootkit hooks an enumeration API, and it usually hooks one rather than all of them, so three independent listings disagree where one alone looks clean.
+
+```powershell
+# Three independent enumerations of the same thing
+$a = (Get-Process).Id | Sort-Object
+$b = (Get-CimInstance Win32_Process).ProcessId | Sort-Object
+$c = (tasklist /fo csv | ConvertFrom-Csv).PID | ForEach-Object {[int]$_} | Sort-Object
+Compare-Object $a $b | Format-Table -AutoSize
+Compare-Object $a $c | Format-Table -AutoSize
+
+# DLL injected into every user-mode process (see also 3.2)
+Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" | Select-Object AppInit_DLLs, LoadAppInit_DLLs
+
+# Integrity of the tools the hunt reads from
+Get-AuthenticodeSignature "$env:SystemRoot\System32\tasklist.exe","$env:SystemRoot\System32\wbem\WMIC.exe" | Select-Object Status, Path | Format-Table -AutoSize
+```
+
+**Flag:**
+- A PID in one listing and absent from another - an enumeration API is being filtered. Strongest single sign that Phase 1 output cannot be trusted
+- `Status` other than `Valid` on `tasklist.exe` or `WMIC.exe` - the tool has been replaced or patched
+- `AppInit_DLLs` non-empty with `LoadAppInit_DLLs` set to 1 - a DLL loads into every user-mode process, cross-ref 3.2
+
+**False+:**
+- The three listings race: processes start and exit between reads, so a one-off single-PID difference is normal. Re-run it. A real hidden PID persists
+- `Get-Process` omits protected processes at T1 that `Get-CimInstance` returns - elevate before reading a difference as a rootkit
+- WMIC is deprecated and absent on recent builds - a missing `WMIC.exe` is removal, not tampering
+
+**Cross-ref:** A kernel-mode rootkit defeats all three listings at once; see `coverage-constraints.md`.
 
 ---
 
@@ -699,3 +780,5 @@ Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Syste
 | Unsigned driver loaded | High | Potential kernel rootkit |
 | `mshta.exe` with URL argument | High | HTML Application execution - LOLBin abuse |
 | Guest account enabled | Medium | Reduces security posture |
+| Sustained 80%+ CPU over 3h on an unaccounted process | High | Cryptominer profile - Critical if paired with a stratum or pool connection |
+| PID present in one enumeration and missing from another | Critical | Enumeration API hooked - all Phase 1 output untrustworthy |

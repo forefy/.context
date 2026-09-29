@@ -35,6 +35,24 @@ Near-universal indicator - legit software almost never deletes own executable wh
 
 ---
 
+### Sustained High CPU on a Long-Lived Process
+**Severity:** High  
+**Pattern:** Lifetime-average CPU at or above 80% of one core held for 3h or more, on a process that maps to no workload the machine's role explains:
+- macOS/Linux: `ps` `%cpu` paired with `etime`/`etimes`
+- Windows: `Get-Process` `CPU` (cumulative processor seconds) divided by elapsed seconds
+
+Plus the throttled variant: low lifetime average but high instantaneous CPU in `top` or `Get-Counter`, meaning the process only spins up while the machine is unattended.
+
+**Why malicious:** This is the cryptominer profile, and mining is the most common payload on an opportunistically compromised host. Unlike a C2 implant, the attacker's revenue requires burning CPU continuously, so the payload cannot hide its cost. The same shape fits a password-cracking job staged on the box and a malware loop stuck retrying.
+
+**Why the pair matters:** Lifetime alone is worthless - every boot-time daemon is long-lived. CPU burn alone is worthless too - indexers, backups, media analysis and compilers all burn hard for hours. The indicator is both at once, on a process nobody can account for.
+
+**False+:** High. Spotlight and Windows Search indexing, Defender scans, Time Machine, Photos ML analysis, VM and container runtimes, browsers, and any build or render job produce identical numbers. Resolve the binary's path and signer before calling it anything.
+
+**Escalate when:** The process also runs from a temp or world-writable path, has a deleted binary, is unsigned, wears a system daemon's name from the wrong path, or holds a connection carrying `stratum` or a pool port (3333, 4444, 5555, 7777, 8888, 14444, 45700) or a pool domain (`*pool*`, `*xmr*`, `minexmr`, `supportxmr`, `nanopool`, `f2pool`, `ethermine`). CPU burn plus a pool connection is confirmed cryptojacking, not a suspicion.
+
+---
+
 ### Unsigned or Self-Signed Binaries in Unexpected Locations
 **Severity:** High  
 **Pattern:**
@@ -307,6 +325,18 @@ ExecStart=/dev/shm/.hidden_service
 
 ---
 
+### /etc/ld.so.preload Present
+**Severity:** Critical  
+**Pattern:** `/etc/ld.so.preload` exists, listing one or more `.so` files. Every dynamically linked process on the host loads them before anything else.
+
+**Why malicious:** This is the standard Linux userland rootkit mechanism - the injected library wraps libc so `ps`, `top`, `ls`, `lsof` and `crontab` return filtered results. It hides the attacker's processes, files and connections from the very tools a hunt depends on, which makes a clean Phase 1 meaningless while it is in place. perfctl ships exactly this as `libgcwrap.so`.
+
+**Corroborate with:** A PID present in `/proc` but missing from `ps` output, and `dpkg -V`/`rpm -Va` checksum changes on `coreutils`, `procps` or `lsof`.
+
+**False+:** Low but real. A few hardening tools, profilers and APM agents use it, and some managed images ship one. Resolve the `.so` to an owning package before deciding.
+
+---
+
 ### Kernel Module Not in Distribution
 **Severity:** High  
 **Pattern:** `lsmod` output shows modules not in:
@@ -472,3 +502,7 @@ Multiple indicators together → escalate severity:
 5. **EDR not running** (High) + **any other finding** = **Escalate all findings one level** - attacker may have disabled defenses first
 
 6. **Log files cleared** (High) + **any other finding** = **Escalate** - attacker covering tracks, aware of detection
+
+7. **Sustained 80%+ CPU over 3h** (High) + **connection carrying `stratum` or a mining pool port/domain** (High) = **CRITICAL - confirmed cryptojacking, the payload is running right now**
+
+8. **Hooked or filtered process listing** (`/etc/ld.so.preload`, hidden PID, enumeration mismatch) + **any clean phase** = **Do not report that phase as PASS.** Mark it `SUSPICIOUS - output unreliable, listing is filtered` and say so in Coverage Gaps. A rootkit turns a clean result into no result

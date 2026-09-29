@@ -7,44 +7,46 @@
 ## Contents
 
 - [Phase 1: Process Activity](#phase-1-process-activity)
-  - [1.1 - Process Tree (Full)](#11--process-tree-full)
-  - [1.2 - Process Executable Paths from /proc](#12--process-executable-paths-from-proc)
-  - [1.3 - Processes with Deleted Executables](#13--processes-with-deleted-executables)
-  - [1.4 - Memory Maps of Suspicious Process](#14--memory-maps-of-suspicious-process)
-  - [1.5 - Open File Descriptors](#15--open-file-descriptors)
+  - [1.1 - Process Tree (Full)](#11---process-tree-full)
+  - [1.2 - Process Executable Paths from /proc](#12---process-executable-paths-from-proc)
+  - [1.3 - Processes with Deleted Executables](#13---processes-with-deleted-executables)
+  - [1.4 - Memory Maps of Suspicious Process](#14---memory-maps-of-suspicious-process)
+  - [1.5 - Open File Descriptors](#15---open-file-descriptors)
+  - [1.6 - Resource Anomalies (CPU Burn and Process Lifetime)](#16---resource-anomalies-cpu-burn-and-process-lifetime)
+  - [1.7 - Userland Rootkit and Tool Integrity](#17---userland-rootkit-and-tool-integrity)
 - [Phase 2: Network Activity](#phase-2-network-activity)
-  - [2.1 - All Connections and Listeners](#21--all-connections-and-listeners)
-  - [2.2 - DNS Configuration](#22--dns-configuration)
-  - [2.3 - Hosts File](#23--hosts-file)
-  - [2.4 - Raw Network Connections via /proc](#24--raw-network-connections-via-proc)
+  - [2.1 - All Connections and Listeners](#21---all-connections-and-listeners)
+  - [2.2 - DNS Configuration](#22---dns-configuration)
+  - [2.3 - Hosts File](#23---hosts-file)
+  - [2.4 - Raw Network Connections via /proc](#24---raw-network-connections-via-proc)
 - [Phase 3: Persistence Mechanisms](#phase-3-persistence-mechanisms)
-  - [3.1 - Cron (All Methods)](#31--cron-all-methods)
-  - [3.2 - Systemd Services and Timers](#32--systemd-services-and-timers)
-  - [3.3 - Shell Profile Injection](#33--shell-profile-injection)
-  - [3.4 - SSH Authorized Keys](#34--ssh-authorized-keys)
-  - [3.5 - RC Scripts and Init.d](#35--rc-scripts-and-initd)
+  - [3.1 - Cron (All Methods)](#31---cron-all-methods)
+  - [3.2 - Systemd Services and Timers](#32---systemd-services-and-timers)
+  - [3.3 - Shell Profile Injection](#33---shell-profile-injection)
+  - [3.4 - SSH Authorized Keys](#34---ssh-authorized-keys)
+  - [3.5 - RC Scripts and Init.d](#35---rc-scripts-and-initd)
 - [Phase 4: File Activity](#phase-4-file-activity)
-  - [4.1 - Files in World-Writable Directories](#41--files-in-world-writable-directories)
-  - [4.2 - SUID/SGID Binaries](#42--suidsgid-binaries)
-  - [4.3 - Recently Modified Configuration Files](#43--recently-modified-configuration-files)
-  - [4.4 - Scripts in Suspicious Locations](#44--scripts-in-suspicious-locations)
+  - [4.1 - Files in World-Writable Directories](#41---files-in-world-writable-directories)
+  - [4.2 - SUID/SGID Binaries](#42---suidsgid-binaries)
+  - [4.3 - Recently Modified Configuration Files](#43---recently-modified-configuration-files)
+  - [4.4 - Scripts in Suspicious Locations](#44---scripts-in-suspicious-locations)
 - [Phase 5: User & Account Activity](#phase-5-user--account-activity)
-  - [5.1 - Users with Shells (Login-Capable)](#51--users-with-shells-login-capable)
-  - [5.2 - Privileged Group Membership](#52--privileged-group-membership)
-  - [5.3 - Login History](#53--login-history)
-  - [5.4 - T2: Authentication and Auth Logs](#54--t2-authentication-and-auth-logs)
+  - [5.1 - Users with Shells (Login-Capable)](#51---users-with-shells-login-capable)
+  - [5.2 - Privileged Group Membership](#52---privileged-group-membership)
+  - [5.3 - Login History](#53---login-history)
+  - [5.4 - T2: Authentication and Auth Logs](#54---t2-authentication-and-auth-logs)
 - [Phase 6: Driver/Module Activity](#phase-6-drivermodule-activity)
-  - [6.1 - Loaded Kernel Modules](#61--loaded-kernel-modules)
-  - [6.2 - T2: Module Load Events](#62--t2-module-load-events)
-  - [6.3 - T2: eBPF Programs](#63--t2-ebpf-programs)
+  - [6.1 - Loaded Kernel Modules](#61---loaded-kernel-modules)
+  - [6.2 - T2: Module Load Events](#62---t2-module-load-events)
+  - [6.3 - T2: eBPF Programs](#63---t2-ebpf-programs)
 - [Phase 7: Script & Command Execution](#phase-7-script--command-execution)
-  - [7.1 - Shell History](#71--shell-history)
-  - [7.2 - Script Artifacts](#72--script-artifacts)
-  - [7.3 - Encoded Commands in History](#73--encoded-commands-in-history)
+  - [7.1 - Shell History](#71---shell-history)
+  - [7.2 - Script Artifacts](#72---script-artifacts)
+  - [7.3 - Encoded Commands in History](#73---encoded-commands-in-history)
 - [Phase 8: EDR/Security Tool Status](#phase-8-edrsecurity-tool-status)
-  - [8.1 - Security Agent Process Check](#81--security-agent-process-check)
-  - [8.2 - Auditd Status](#82--auditd-status)
-  - [8.3 - System Logging Status](#83--system-logging-status)
+  - [8.1 - Security Agent Process Check](#81---security-agent-process-check)
+  - [8.2 - Auditd Status](#82---auditd-status)
+  - [8.3 - System Logging Status](#83---system-logging-status)
 - [Quick Reference: Linux IOC Severity Ratings](#quick-reference-linux-ioc-severity-ratings)
 
 ---
@@ -145,6 +147,82 @@ ls -la /proc/<PID>/fd 2>/dev/null
 # Or using lsof
 lsof -p <PID> 2>/dev/null
 ```
+
+---
+
+### 1.6 - Resource Anomalies (CPU Burn and Process Lifetime)
+**Tier:** T1  
+
+```bash
+# Lifetime-average CPU with elapsed time in seconds
+ps -eo pid,ppid,pcpu,pmem,etimes,etime,user,comm --sort=-pcpu | head -30
+
+# Filtered to the miner profile: 80%+ average CPU sustained over 3h (10800s)
+ps -eo pid,ppid,pcpu,etimes,user,comm --sort=-pcpu | awk 'NR==1 || ($3>=80 && $4>=10800)'
+
+# Instantaneous sample - pcpu is a lifetime average and hides throttled miners
+top -b -n 2 -d 1 | awk '/^ *PID/{p++} p==2' | head -20
+
+# Confirm a single PID over three one-second samples
+command -v pidstat >/dev/null && pidstat -u -p <PID> 1 3
+```
+
+**Note:** `pcpu` is percent of one core, so multithreaded processes legitimately exceed 100.
+
+**Flag:**
+- `pcpu` >= 80 with `etimes` >= 10800 on a process that maps to no workload you can name - cryptominer profile, the most common payload on an opportunistically compromised Linux host
+- `pcpu` >= 25 with `etimes` in the hundreds of thousands (days) on a binary nobody launched - throttled long-haul miner or a malware retry loop
+- High CPU in `top` but low `pcpu` in `ps` - miner that idles under user or workload activity. The divergence between the two readings IS the indicator
+- Bracketed kernel-thread name (`[kworker/0:2]`, `[kswapd0]`, `[ksoftirqd/0]`) that has a readable `/proc/<PID>/exe` or a PPID other than 2 - userland miner wearing a kernel thread's name. Real kernel threads descend from PID 2 and have no exe: `ls -l /proc/<PID>/exe; ps -o ppid= -p <PID>`
+- Sustained CPU inside `bash`, `sh`, `python`, `perl` or `curl` - these are not compute workloads, check cmdline in 1.1
+- Any of the above from `/tmp`, `/dev/shm`, `/var/tmp`, `/run/user/*/`, or with a deleted binary - cross-ref 1.2 and 1.3, escalate to Critical
+- Sustained CPU in a cgroup that does not match the process name: `cat /proc/<PID>/cgroup` - injection into a service slice or a container breakout
+
+**False+:**
+- `[kworker/*]`, `[ksoftirqd/*]`, `[kswapd0]`, `[jbd2/*]`, `[migration/*]` - genuine kernel threads, verified by PPID 2 and no exe
+- `systemd-journald`, `rngd`, `irqbalance`, `packagekitd`, `unattended-upgr`, `apt`/`dnf` mid-transaction
+- `mysqld`, `postgres`, `java`, `containerd`, `dockerd`, `kubelet` under real load - ask whether the load matches a workload the host is supposed to run
+- Build and CI jobs (`cc1plus`, `rustc`, `gcc`, `make`, `ld`, `node`, `ffmpeg`) - legitimately above 100% for hours
+- Long `etimes` alone means nothing for `systemd`, `sshd`, `agetty`, `getty` or any boot-time daemon - lifetime only matters paired with CPU burn
+
+**Cross-ref:** A miner needs a pool. Check Phase 2 for `stratum`, pool ports (3333, 4444, 5555, 7777, 8888, 14444, 45700) or pool domains on the same PID - that pairing turns this from Suspicious into Confirmed. If 1.6 comes back clean on a host you have other reasons to suspect, run 1.7 before believing it.
+
+---
+
+### 1.7 - Userland Rootkit and Tool Integrity
+**Tier:** T1 (partial) / T2 (full)  
+
+**Run this before trusting 1.1 through 1.6.** A userland rootkit hooks libc in every dynamically linked process, so `ps`, `top` and `lsof` return whatever it chooses - a process burning 100% CPU can simply be absent from the listing 1.6 depends on. perfctl does exactly this via `/etc/ld.so.preload` and replaces `top`, `lsof`, `ldd` and `crontab` outright (see `known-attacks-linux.md`).
+
+```bash
+# Global preload - mainstream distros ship no such file
+cat /etc/ld.so.preload 2>/dev/null; ls -la /etc/ld.so.preload 2>/dev/null
+
+# Preload injected per process
+for d in /proc/[0-9]*; do tr '\0' '\n' < $d/environ 2>/dev/null | sed -n "s|^LD_PRELOAD=|${d#/proc/} LD_PRELOAD=|p"; done
+
+# Integrity of the tools the hunt reads from
+command -v dpkg >/dev/null && dpkg -V coreutils procps lsof 2>/dev/null
+command -v rpm  >/dev/null && rpm -Va coreutils procps-ng lsof 2>/dev/null
+
+# Cross-check the process listing against the kernel's own - the executable form of
+# the ps-vs-/proc heuristic in coverage-constraints.md
+diff <(ps -eo pid --no-headers | tr -d ' ' | sort -n) <(ls -d /proc/[0-9]* | xargs -n1 basename | sort -n)
+```
+
+**Flag:**
+- `/etc/ld.so.preload` present at all - near-universal rootkit indicator, nothing mainstream installs it
+- A `.so` listed in it that no package owns - confirm with `dpkg -S <path>` or `rpm -qf <path>`
+- `LD_PRELOAD` in the environment of a daemon nobody configured that way
+- `dpkg -V` or `rpm -Va` reporting a checksum change on `coreutils`, `procps`/`procps-ng` or `lsof` - the binaries 1.1 through 1.6 read from have been replaced
+- A PID in `/proc` that `ps` does not list - the listing is being filtered. This is the strongest single sign that Phase 1 output cannot be trusted
+
+**False+:**
+- `/etc/ld.so.preload` is used legitimately by a few hardening, profiling and APM agents, and on some managed hosts - resolve the `.so` to a package before calling it
+- `dpkg -V` reports config-file drift constantly - only checksum changes on binaries matter
+- The `/proc` diff races: processes start and exit between the two reads. Re-run it. A real hidden PID persists across runs, a race does not
+
+**Escalate:** A hidden PID together with a sustained-CPU finding from 1.6 is an active miner with a rootkit in front of it - Critical. Note that a kernel-mode rootkit defeats this whole check; see `coverage-constraints.md`.
 
 ---
 
@@ -735,6 +813,9 @@ ls -la /var/log/auth.log /var/log/syslog /var/log/messages 2>/dev/null
 | `/etc/passwd` modified recently | High | Unauthorized account creation |
 | Unauthorized `authorized_keys` entry | High | SSH backdoor |
 | Systemd service pointing to `/tmp` | High | Persistent malware |
+| Sustained 80%+ CPU over 3h on an unaccounted process | High | Cryptominer profile - Critical if paired with a stratum or pool connection |
+| `/etc/ld.so.preload` present | Critical | Userland rootkit - hooks libc everywhere, hides from `ps`/`top`/`lsof` |
+| PID in `/proc` but absent from `ps` | Critical | Process listing is being filtered - all Phase 1 output untrustworthy |
 | eBPF program from unknown process | High | Potential kernel-level spy/rootkit |
 | Profile file (`~/.bashrc`) modified | High | Persistence via shell initialization |
 | `auditd` not running | Medium | Detection capability missing - investigate why |
