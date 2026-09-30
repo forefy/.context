@@ -24,7 +24,7 @@ desktop app > mobile app > jailbreak/root-gated, in descending crowd.
 
 ### 3. Setup / replication difficulty (a MOAT, not a cost)
 How hard it is to stand up a faithful test/repro environment. This is the axis
-the skill exists to weaponize: a hard rig **thins the field**, so it *raises*
+the skill exists to leverage: a hard rig **thins the field**, so it *raises*
 opportunity when the ceiling is high. Tier it with a time estimate:
 - **Trivial · <15 min** - open a browser, `npm i`, clone a public repo.
 - **Moderate · 2–4 hrs** - reverse a browser extension, stand up an SDK against a

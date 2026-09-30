@@ -4,7 +4,7 @@ description: Browse the nuclei-templates library, recommend a scoped template se
 compatibility: nuclei-templates, nuclei binary
 ---
 
-Use nuclei and templates to empower a bug bounty or pentest engagement hunt to the full capabilities of crowdsourced security. see `./references/install.md` for first installation of nuclei on the environment
+Use nuclei and templates to empower a bug bounty or authorized assessment engagement hunt to the full capabilities of crowdsourced security. see `./references/install.md` for first installation of nuclei on the environment
 
 # Methodology
 
