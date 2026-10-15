@@ -1,6 +1,6 @@
 ---
 name: no-aispeak
-description: 
+description: Generate textual content as the user will normally write without the disliked common AI way of writing
 ---
 
 ## General guidelines
