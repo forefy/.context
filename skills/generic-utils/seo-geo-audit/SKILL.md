@@ -1,5 +1,5 @@
 ---
-name: geo-mature
+name: seo-geo-audit
 description: Turn a public-facing website into SEO and GEO-optimized site by using all efficient means
 ---
 
