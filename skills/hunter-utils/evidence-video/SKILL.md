@@ -49,6 +49,7 @@ Two hard rules the tool enforces, and you must not work around:
 5. **Write the wire scene (optional) and the closer (required).**
    - `--http <json>`: one real request and response to feature as its own scene (`after_step`, `eyebrow`, `title`, `lines`, `highlight`, `meta`). Pull it from Burp history and redact it.
    - `--insight <json>`: the required closer. `severity` (critical|high|medium|low|info), `headline`, `insight`, `impact`, `risk`, and `verify` (a list). Add `impact_map` to draw the blast radius: `center`, `hub`, and `nodes` (each `{kind, label, sub}`, kinds routine|connector|session|project|data). Every claim must be grounded in what the captures show; never invent a risk.
+   - **State the impact, then prove it.** There is the impact you argue and the impact you actually demonstrated. Whenever you obtained real proof of the gain, attach it on the same impact page: the exfiltrated record, the executed action's response, the balance that changed, the data a lower-privileged session should not have read. Capture it as a real frame like any step, redact secrets in-frame, and point the `impact` line at it. Argued impact tells the reader what is at stake; attached proof removes the argument. A severity with proof outranks the same severity without it.
 
 6. **Build, check, render.**
    ```
@@ -57,6 +58,8 @@ Two hard rules the tool enforces, and you must not work around:
    cd <hf-project> && npx hyperframes check && npx hyperframes render -o story.mp4
    ```
    The build writes one HyperFrames sub-composition per scene. `check` must pass with zero findings before you render. Snapshot a scene midpoint with `npx hyperframes snapshot --at <s>` and eyeball it before rendering the whole thing.
+
+7. **Replay and critique before you ship.** `check` proves the composition is valid, not that it reads well. Play the rendered video back, or snapshot every scene across its span (`npx hyperframes snapshot --frames 4`), and review it as a viewer would. Confirm: no focus box or highlight is mistimed, lands on the wrong element, or covers the text it should point at; every zoom punch settles on its target and leaves captions legible; nothing overlaps or runs off-frame; each scene holds long enough to read and not so long it drags; the markings appear in step with what they explain. Fix what feels off and re-render. Ship only once the replay feels right, not merely once it validates.
 
 ## Scene order
 
