@@ -1,6 +1,6 @@
 ---
 name: seo-geo-audit
-description: Turn a public-facing website into SEO and GEO-optimized site by using all efficient means
+description: Turn a public-facing website into optimized for search engines and generative search engines by using all efficient means
 ---
 
 Go over the source code and live site (ask the user) and optimize GEO and SEO according to obvious judgement, but don’t leave out any of these:
