@@ -50,6 +50,7 @@ Two hard rules the tool enforces, and you must not work around:
    - `--http <json>`: one real request and response to feature as its own scene (`after_step`, `eyebrow`, `title`, `lines`, `highlight`, `meta`). Pull it from Burp history and redact it.
    - `--insight <json>`: the required closer. `severity` (critical|high|medium|low|info), `headline`, `insight`, `impact`, `risk`, and `verify` (a list). Add `impact_map` to draw the blast radius: `center`, `hub`, and `nodes` (each `{kind, label, sub}`, kinds routine|connector|session|project|data). Every claim must be grounded in what the captures show; never invent a risk.
    - **State the impact, then prove it.** There is the impact you argue and the impact you actually demonstrated. Whenever you obtained real proof of the gain, attach it on the same impact page: the exfiltrated record, the executed action's response, the balance that changed, the data a lower-privileged session should not have read. Capture it as a real frame like any step, redact secrets in-frame, and point the `impact` line at it. Argued impact tells the reader what is at stake; attached proof removes the argument. A severity with proof outranks the same severity without it.
+   - **Add `divergence` to show the user story against the attacker story.** This drives the fork scene (the beat between the steps and the closer). `intended` (`label`, `sub`, `steps`) is the normal use of the feature; `attacker` (`label`, `sub`, `steps`, `divert_at`) is where it gets diverted. Line the two up step for step so the fork reads at a glance, and set `divert_at` to the index of the step where normal use becomes abuse. Ground both paths in the real flow you captured, not a generic attack. Without `divergence` the scene falls back to the hash chain.
 
 6. **Build, check, render.**
    ```
@@ -63,7 +64,7 @@ Two hard rules the tool enforces, and you must not work around:
 
 ## Scene order
 
-title -> one scene per captured step (with an optional wire scene after a chosen step) -> hash chain -> insight/impact/risk -> blast-radius map. The chain is the trust mechanism; insight and the map are the payoff.
+title -> one scene per captured step (with an optional wire scene after a chosen step) -> user story vs attacker story (or the hash chain when no `divergence` is given) -> insight/impact/risk -> blast-radius map. Every frame still carries its own hash and the manifest still verifies, so the fork scene spends that beat on meaning, intended use against abuse, instead of a wall of hashes. Insight and the map are the payoff.
 
 ## Manifest and data shapes
 
