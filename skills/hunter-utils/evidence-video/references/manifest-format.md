@@ -38,10 +38,10 @@ This is what makes the video trustworthy: a reader re-runs `verify` against the 
 
 ```
 {
-  "after_step": 2,
+  "after_step": 1,
   "eyebrow": "WHAT ACTUALLY WENT OVER THE WIRE",
-  "title": "Sign in = one POST /api/token",
-  "lines": ["POST /api/token HTTP/2", "Host: target", "Cookie: [redacted 1489 chars]", "", "email=user%40example.com&password=[redacted]", "", "<- HTTP/2 200 OK   (273 ms)"],
+  "title": "Sign in = one POST /api/login",
+  "lines": ["POST /api/login HTTP/2", "Host: target", "Cookie: [redacted]", "", "email=user%40example.com&password=[redacted]", "", "<- HTTP/2 200 OK   (180 ms)"],
   "highlight": [0, 4, 6],
   "meta": "Burp proxy history, <time>. Secrets redacted; original request sha256 <16 hex>..."
 }
