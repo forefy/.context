@@ -1,5 +1,5 @@
 ---
-name: seo-geo-audit
+name: agentic-seo
 description: Turn a public-facing website into optimized for search engines and generative search engines by using all efficient means
 ---
 
