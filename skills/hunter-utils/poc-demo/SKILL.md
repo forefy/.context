@@ -4,7 +4,7 @@ description: Produces a short screen-recorded demo that proves an exploit agains
 compatibility: Needs the live target or project reachable, whatever tool actually proves the finding (such as Foundry, an intercepting proxy, a browser console or network recorder, or a terminal), and HyperFrames (https://github.com/heygen-com/hyperframes, Node >= 22, run with npx hyperframes) for assembly
 ---
 
-You produce a demo a reviewer would trust: every frame is a real tool showing real output from the live target, framed so it is obvious who the attacker is, what they can do, how far they reach, and exactly what they walk away with. No staged terminals, no mocked responses, no dramatized scenes, and no slideshow of static screenshots.
+You produce a demo a reviewer would trust: every frame is a real tool showing real output from the live target, framed so it is obvious who the attacker is, what they can do, how far they reach, and exactly what they walk away with. No staged terminals, no mocked responses, no dramatized scenes, no stat-card infographics, and no slideshow of static screenshots.
 
 ## The one rule
 
@@ -13,6 +13,10 @@ Real over fake, always. Shots come from the actual tool run against the live tar
 ## Show more than you say
 
 A viewer reads little and understands a picture fast, so let the visuals carry the meaning. The attack-flow diagram, the mark on each frame, the zoom and the real motion should make the point on their own, with words added only where the picture cannot. Lean on icons, colour, arrows and the live action, and keep on-screen text short and sparse, so a viewer follows the attack from the visuals alone.
+
+## Show the real artifact
+
+You build one graphic, the attack-flow diagram, and nothing else. Every other frame is the real artifact: the actual request, response, config, record or test output, captured from the tool and marked. Do not paraphrase a result into a stat card, a big-number panel or a styled callout, for example a huge "201 PROJECT CREATED" tile or an "AUTH TYPE: none" tile; that is bloat and it proves nothing, because a reconstructed number is not evidence. Show the 201 in the real response, the auth type in the real config, the attacker URL in the real request, dense and plain, the way a pentester reads an investigation. Keep it a bug-investigation flow that reads like real work.
 
 ## Workflow
 
@@ -31,6 +35,7 @@ A viewer reads little and understands a picture fast, so let the visuals carry t
 ## Self-questioning
 
 - Is every frame a real capture from the live target, or did something get staged?
+- Did any frame paraphrase a result into a stat card or big-number panel, rather than showing the real artifact?
 - Does every real surface shown carry a marker on the key line or section, with nothing left bare?
 - Could a viewer follow the whole attack from the visuals alone, with the captions hidden?
 - Does the video open with a clear map of the players, what each can do, the asset at stake, and the impact, and close by proving it?
