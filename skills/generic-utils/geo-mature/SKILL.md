@@ -1,9 +1,7 @@
 ---
-name: geo-mature
+name: geo-optimize
 description: Turn a public-facing website into SEO and GEO-optimized site by using all efficient means
 ---
-
-# geo-mature
 
 Go over the source code and live site (ask the user) and optimize GEO and SEO according to obvious judgement, but don’t leave out any of these:
 
@@ -16,6 +14,7 @@ Go over the source code and live site (ask the user) and optimize GEO and SEO ac
 - Ensure correctly generating sitemap.xml (with entries that won’t lower our score)
 - Use a browser driver to go to https://search.google.com/ and ensure the site is listed on Google Search Console as an asset, the sitemap is submitted lately, and inspect any page issues and fix them.
 - Adapt keywords per page for the content and highly optimize for specific search queries (best if you consult with the user on what you think is the right set)
+- Ensure accessibility, privacy, terms, are applied to high extend (unless the user opts out of privacy/terms) to best results
 
 # Limits to realize
 
