@@ -79,6 +79,30 @@ Redact every secret before the request enters this file. `lines` is already-reda
 
 `severity` colors the chip. `impact_map` draws a node graph from `center` through `hub` to up to five `nodes`; `kind` colors each edge and card (routine, connector, session, project, data). Keep every node grounded in an endpoint, object or UI element the captures actually show.
 
+## `divergence` (user story vs attacker story)
+
+Add it to the `--insight` object (or at the manifest root) to replace the hash-chain scene with the fork between normal use and abuse.
+
+```
+"divergence": {
+  "eyebrow": "USER STORY  vs  ATTACKER STORY",
+  "intended": {
+    "label": "INTENDED USE",
+    "sub": "what the feature is for",
+    "steps": ["Sign in", "Open the feature", "Act on your own data"]
+  },
+  "attacker": {
+    "label": "ATTACKER'S PATH",
+    "sub": "where it gets diverted",
+    "divert_at": 0,
+    "steps": ["Obtain a session illegitimately", "Open the feature", "Act on the victim's data"]
+  },
+  "footer": "Same feature. The fork is one step; everything after it is identical."
+}
+```
+
+`intended` is the normal flow, `attacker` is the diverted flow. Line the two `steps` lists up position for position so the fork reads across. `divert_at` is the 0-based index in `attacker.steps` of the step where normal use becomes abuse; that row is highlighted. Keep both paths grounded in the captured flow. When `divergence` is absent the scene renders the hash chain instead: one card per step with its frame hash and the `verify` command.
+
 ## CLI
 
 ```

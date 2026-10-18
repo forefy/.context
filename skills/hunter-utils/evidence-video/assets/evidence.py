@@ -68,14 +68,17 @@ def cmd_build(a):
     if not insight:
         sys.stderr.write('WARNING: no insight block — a story video must END with insight/impact/risk. Pass --insight or add m["insight"].\n')
     imap=(insight or {}).get('impact_map')
+    div=(insight or {}).get('divergence') or m.get('divergence')
     T_TITLE,T_STEP,T_HTTP,T_CHAIN,T_INSIGHT,T_IMPACT,GAP=2.6,3.6,4.2,3.4,6.0,6.5,0.0
+    T_DIVERGE=6.0
     scenes=[]; t=0.0
     scenes.append(('title',t,T_TITLE)); t+=T_TITLE
     for s in m['steps']:
         scenes.append(('step',t,T_STEP,s)); t+=T_STEP
         if http and s['n']==http.get('after_step'):
             scenes.append(('http',t,T_HTTP)); t+=T_HTTP
-    scenes.append(('chain',t,T_CHAIN)); t+=T_CHAIN
+    _tc=T_DIVERGE if div else T_CHAIN
+    scenes.append(('chain',t,_tc)); t+=_tc
     if insight:
         scenes.append(('insight',t,T_INSIGHT,insight)); t+=T_INSIGHT
     if imap:
@@ -147,17 +150,46 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
         tw(f'tl.fromTo("#h-meta",{{opacity:0}},{{opacity:1,duration:.4}},{0+2.3});')
         tw(f'tl.to("#root .http-wrap",{{opacity:0,duration:.3,ease:"power2.in"}},{0+dur-0.32});')
     cs=[x for x in scenes if x[0]=='chain'][0]; st=cs[1]; dur=cs[2]
-    links=''.join(f'<div class="link" id="k{s["n"]}"><span class="kn">{s["n"]:02d}</span><code>{s["sha256"][:14]}</code><span class="arrow">→</span></div>' for s in m['steps'])
-    add(f'''<section id="s-chain" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
+    div=(insight or {}).get('divergence') or m.get('divergence')
+    if div:
+        def col(side,c,default_lab):
+            c=c or {}; steps=c.get('steps',[]); dv=c.get('divert_at')
+            rows=''
+            for i,s in enumerate(steps):
+                cls='dv-step'+(' divert' if dv is not None and i==dv else '')
+                tag='<span class="tag">DIVERTS HERE</span>' if dv is not None and i==dv else ''
+                rows+=f'<div class="{cls}" id="dv-{side}-{i}"><span class="n">{i+1}</span><span class="tx">{esc(s)}</span>{tag}</div>'
+            return f'''<div class="dv-col dv-{side}" id="dv-{side}">
+    <div class="dv-head"><span class="dv-dot {'ok' if side=='L' else 'bad'}"></span>{esc(c.get('label',default_lab))}</div>
+    <div class="dv-sub">{esc(c.get('sub',''))}</div>{rows}</div>'''
+        foot=div.get('footer','Every frame above is a real capture. Run verify to re-check the chain.')
+        add(f'''<section id="s-chain" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
+  <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
+  <div class="dv-eye" id="k-eye">{esc(div.get('eyebrow','USER STORY  vs  ATTACKER STORY'))}</div>
+  {col('L',div.get('intended'),'INTENDED USE')}
+  {col('R',div.get('attacker'),"ATTACKER'S PATH")}
+  <div class="dv-footer" id="dv-foot">{esc(foot)}</div>
+</section>''')
+        tw(f'tl.fromTo("#k-eye",{{y:-20,opacity:0}},{{y:0,opacity:1,duration:.5,ease:"power3.out"}},0.1);')
+        tw(f'tl.fromTo("#dv-L .dv-head, #dv-L .dv-sub",{{x:-30,opacity:0}},{{x:0,opacity:1,duration:.45,stagger:.1,ease:"power3.out"}},0.3);')
+        tw(f'tl.fromTo("#dv-L .dv-step",{{x:-24,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.14,ease:"power2.out"}},0.6);')
+        tw(f'tl.fromTo("#dv-R .dv-head, #dv-R .dv-sub",{{x:30,opacity:0}},{{x:0,opacity:1,duration:.45,stagger:.1,ease:"power3.out"}},1.1);')
+        tw(f'tl.fromTo("#dv-R .dv-step",{{x:24,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.14,ease:"power2.out"}},1.4);')
+        tw(f'tl.fromTo("#dv-R .dv-step.divert",{{boxShadow:"0 0 0 1px rgba(240,106,106,.5)"}},{{boxShadow:"0 0 24px rgba(240,106,106,.65)",duration:.7,yoyo:true,repeat:3,ease:"sine.inOut"}},2.4);')
+        tw(f'tl.fromTo("#dv-foot",{{opacity:0}},{{opacity:1,duration:.5}},2.6);')
+        tw(f'tl.fromTo("#root .glow",{{scale:1}},{{scale:1.12,duration:{dur},ease:"sine.inOut"}},0);')
+    else:
+        links=''.join(f'<div class="link" id="k{s["n"]}"><span class="kn">{s["n"]:02d}</span><code>{s["sha256"][:14]}</code><span class="arrow">→</span></div>' for s in m['steps'])
+        add(f'''<section id="s-chain" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
   <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
   <div class="chain-wrap"><div class="eyebrow" id="k-eye">HASH CHAIN · {len(m['steps'])} STEPS</div>
   <div class="links">{links}<div class="link last" id="k-end"><span class="kn">✓</span><code>verify: evidence.py verify</code></div></div>
   <div class="meta" id="k-meta">Every frame is a real capture. Each step hashes the previous one. Swap one frame and the chain breaks.</div></div>
 </section>''')
-    tw(f'tl.fromTo("#k-eye",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.45,ease:"power3.out"}},{0+0.05});')
-    tw(f'tl.fromTo("#root .link",{{x:-30,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.16,ease:"power3.out"}},{0+0.3});')
-    tw(f'tl.fromTo("#k-meta",{{opacity:0}},{{opacity:1,duration:.5}},{0+1.6});')
-    tw(f'tl.fromTo("#root .glow",{{scale:1}},{{scale:1.15,duration:{dur},ease:"sine.inOut"}},0);')
+        tw(f'tl.fromTo("#k-eye",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.45,ease:"power3.out"}},{0+0.05});')
+        tw(f'tl.fromTo("#root .link",{{x:-30,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.16,ease:"power3.out"}},{0+0.3});')
+        tw(f'tl.fromTo("#k-meta",{{opacity:0}},{{opacity:1,duration:.5}},{0+1.6});')
+        tw(f'tl.fromTo("#root .glow",{{scale:1}},{{scale:1.15,duration:{dur},ease:"sine.inOut"}},0);')
     ins=[x for x in scenes if x[0]=='insight']
     if ins:
         _,st,dur,d=ins[0]; sev=(d.get('severity') or 'info').lower()
@@ -256,6 +288,20 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
 .link{display:flex;align-items:center;gap:14px;background:var(--bg2);border-radius:14px;padding:18px 24px;font-size:28px;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
 .link .kn{font-weight:800;color:var(--acc)} .link code{font-family:ui-monospace,monospace} .link .arrow{color:var(--mute)}
 .link.last .kn{color:var(--ok)}
+.dv-eye{position:absolute;left:120px;top:72px;font-size:26px;letter-spacing:.14em;color:var(--acc);font-weight:800}
+.dv-col{position:absolute;top:190px;width:760px}
+.dv-L{left:120px;border-left:3px solid rgba(91,211,154,.45);padding-left:28px}
+.dv-R{left:1040px;border-left:3px solid rgba(240,106,106,.45);padding-left:28px}
+.dv-head{font-size:40px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:14px}
+.dv-dot{width:16px;height:16px;border-radius:50%;flex:none} .dv-dot.ok{background:var(--ok)} .dv-dot.bad{background:var(--bad)}
+.dv-sub{font-size:22px;color:var(--mute);margin:6px 0 26px}
+.dv-step{display:flex;gap:16px;align-items:center;padding:16px 20px;border-radius:12px;background:rgba(255,255,255,.035);margin-bottom:14px;font-size:26px;line-height:1.28}
+.dv-step .n{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:20px;background:rgba(255,255,255,.06)}
+.dv-L .dv-step .n{color:var(--ok)} .dv-R .dv-step .n{color:var(--bad)}
+.dv-step .tx{flex:1}
+.dv-step.divert{background:rgba(240,106,106,.12);box-shadow:0 0 0 1px rgba(240,106,106,.5)}
+.dv-step .tag{flex:none;font-size:15px;font-weight:800;letter-spacing:.08em;color:var(--bad)}
+.dv-footer{position:absolute;left:120px;right:120px;bottom:56px;font-size:22px;color:var(--mute)}
 .ins-wrap{position:absolute;left:140px;right:140px;top:150px}
 .ins-head{display:flex;align-items:center;justify-content:space-between}
 .sev{font-size:22px;font-weight:800;letter-spacing:.1em;padding:10px 22px;border-radius:999px}
