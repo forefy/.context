@@ -6,7 +6,7 @@ description: Turn a public-facing website into optimized for search engines and 
 Go over the source code and live site (ask the user) and optimize GEO and SEO according to obvious judgement, but don’t leave out any of these:
 
 - Go to https://schema.org/docs/schemas.html and browse schemas we should use, as well as breadcrumbs, for rich results and JSON-LD content for search engines
-- Drive a browser to https://www.seoptimer.com/ and run a free login-less site audit and apply all code adjustments to satisfy and get a top score.
+- Drive a browser to https://www.seoptimer.com/ and run a free login-less site audit and apply all code adjustments to satisfy and get a top score (has 3 attempts a day, alternative fallback to https://www.seobility.net/en/seocheck)
 - Use the Open Graph checker https://www.opengraph.xyz/ to ensure that when sites are sent over social media, Open Graph is optimized per page or important page we are sharing in-app.
 - User might have a CDN like Cloudflare that does caching, or any other infrastructural service that we don’t want to conflict with; we can use the browser and ask the user to log in there too for tweaks.
 - Run a generic security audit because stuff like immature security headers revealing technologies, stack traces, and console log errors may lower SEO
@@ -15,6 +15,7 @@ Go over the source code and live site (ask the user) and optimize GEO and SEO ac
 - Use a browser driver to go to https://search.google.com/ and ensure the site is listed on Google Search Console as an asset, the sitemap is submitted lately, and inspect any page issues and fix them.
 - Adapt keywords per page for the content and highly optimize for specific search queries (best if you consult with the user on what you think is the right set)
 - Ensure accessibility, privacy, terms, are applied to high extend (unless the user opts out of privacy/terms) to best results
+- Also use LightHouse for page speed insights https://pagespeed.web.dev/analysis
 
 # Limits to realize
 
