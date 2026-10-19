@@ -19,6 +19,7 @@ Go over the source code and live site (ask the user) and optimize GEO and SEO ac
 
 # Limits to realize
 
+- Using harness's native browsers sometimes easily give us off as bots, so we might want to involve the user in using his native browser to his choice, and click any captcha screen verifications or etc.
 - We don’t want to break anything or over-optimize, especially in non-significant, riskier areas.
 - Always cross-check optimizations to see we aren’t breaking anything.
 - Don’t stray into creating content or feature additions that might improve SEO if the user hadn’t asked for it- but you may very well suggest those.
