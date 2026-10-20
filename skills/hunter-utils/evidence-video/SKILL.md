@@ -10,7 +10,9 @@ Build a narrated-by-structure video from real captures only. The generator refus
 Two hard rules the tool enforces, and you must not work around:
 
 - **No scene without a real capture.** Every step is a screenshot the tool took, hashed into a manifest. Never hand-draw a UI, never fabricate a frame, never claim a step you did not capture.
-- **Always end with insight, impact and risk.** The hash chain proves the frames are real; it is not the point. The last beats say who is affected, what is at stake, and what to verify, and visualize the blast radius. A video that stops at "the frames are real" is unfinished.
+- **Never fabricate on-screen content.** Every URL, path, status code, number, label, and request or response line shown on the video must come from a real capture or a real source file. If you do not have the real value, leave it out. Do not invent a plausible URL, a round-number timing, a status, an endpoint, or a label to fill a gap. One made-up detail turns the whole thing from evidence into a mockup, and the hash chain cannot catch a fabricated caption, only a swapped frame, so this discipline is yours. When in doubt, show less.
+- **Keep the hash chain off the video.** It is the integrity mechanism, not viewer content: the chain lives in the manifest and `verify`, never as an on-screen scene or a hash printed on a frame. The video's job is the story and its meaning.
+- **Always end with insight, impact and risk.** It is the point of the video: who is affected, what is at stake, what to verify, and the blast radius. A video that stops at the walkthrough is unfinished.
 
 ## Dependencies
 
@@ -66,7 +68,7 @@ Hard-won, in the order they bite:
    - `--http <json>`: one real request and response to feature as its own scene (`after_step`, `eyebrow`, `title`, `lines`, `highlight`, `meta`). Pull it from Burp history and redact it.
    - `--insight <json>`: the required closer. `severity` (critical|high|medium|low|info), `headline`, `insight`, `impact`, `risk`, and `verify` (a list). Add `impact_map` to draw the blast radius: `center`, `hub`, and `nodes` (each `{kind, label, sub}`, kinds routine|connector|session|project|data). Every claim must be grounded in what the captures show; never invent a risk.
    - **State the impact, then prove it.** There is the impact you argue and the impact you actually demonstrated. Whenever you obtained real proof of the gain, attach it on the same impact page: the exfiltrated record, the executed action's response, the balance that changed, the data a lower-privileged session should not have read. Capture it as a real frame like any step, redact secrets in-frame, and point the `impact` line at it. Argued impact tells the reader what is at stake; attached proof removes the argument. A severity with proof outranks the same severity without it.
-   - **Add `divergence` to show the user story against the attacker story.** This drives the fork scene (the beat between the steps and the closer). `intended` (`label`, `sub`, `steps`) is the normal use of the feature; `attacker` (`label`, `sub`, `steps`, `divert_at`) is where it gets diverted. Line the two up step for step so the fork reads at a glance, and set `divert_at` to the index of the step where normal use becomes abuse. Ground both paths in the real flow you captured, not a generic attack. Without `divergence` the scene falls back to the hash chain.
+   - **Add `divergence` to show the user story against the attacker story.** This drives the fork scene (the beat between the steps and the closer). `intended` (`label`, `sub`, `steps`) is the normal use of the feature; `attacker` (`label`, `sub`, `steps`, `divert_at`) is where it gets diverted. Line the two up step for step so the fork reads at a glance, and set `divert_at` to the index of the step where normal use becomes abuse. Ground both paths in the real flow you captured, not a generic attack. Without a `divergence` block this beat is simply omitted; it never falls back to showing hashes.
 
 6. **Build, check, render.**
    ```
@@ -80,8 +82,8 @@ Hard-won, in the order they bite:
 
 ## Scene order
 
-title -> one scene per captured step (with an optional wire scene after a chosen step) -> user story vs attacker story (or the hash chain when no `divergence` is given) -> insight/impact/risk -> blast-radius map. Every frame still carries its own hash and the manifest still verifies, so the fork scene spends that beat on meaning, intended use against abuse, instead of a wall of hashes. Insight and the map are the payoff.
+title -> one scene per captured step (with an optional wire scene after a chosen step) -> user story vs attacker story (only when a `divergence` block is given, else omitted) -> insight/impact/risk -> blast-radius map. The manifest still hashes and verifies every frame, but no hash is shown on the video. Insight and the map are the payoff.
 
 ## Manifest and data shapes
 
-See `references/manifest-format.md` for the manifest entry, the `--http`, `--insight` and `impact_map` JSON, and how the hash chain is computed and verified.
+See `references/manifest-format.md` for the manifest entry, the `--http`, `--insight`, `impact_map` and `divergence` JSON, and how the hash chain is computed and verified (in the manifest, never on the video).
