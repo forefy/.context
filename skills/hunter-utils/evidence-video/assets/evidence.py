@@ -64,6 +64,7 @@ def cmd_build(a):
     m=load(a.manifest); base=os.path.dirname(os.path.abspath(a.manifest)); proj=a.project
     assets=os.path.join(proj,'assets'); os.makedirs(assets,exist_ok=True)
     http=json.load(open(a.http)) if a.http else None
+    annot=json.load(open(a.annotate)) if getattr(a,'annotate',None) else {}
     insight=json.load(open(a.insight)) if a.insight else m.get('insight')
     if not insight:
         sys.stderr.write('WARNING: no insight block — a story video must END with insight/impact/risk. Pass --insight or add m["insight"].\n')
@@ -74,7 +75,9 @@ def cmd_build(a):
     scenes=[]; t=0.0
     scenes.append(('title',t,T_TITLE)); t+=T_TITLE
     for s in m['steps']:
-        scenes.append(('step',t,T_STEP,s)); t+=T_STEP
+        _k=len(annot.get(str(s['n'])) or [])
+        _d=round(T_STEP+0.35*max(0,_k-2),2)
+        scenes.append(('step',t,_d,s)); t+=_d
         if http and s['n']==http.get('after_step'):
             scenes.append(('http',t,T_HTTP)); t+=T_HTTP
     _tc=T_DIVERGE if div else T_CHAIN
@@ -106,12 +109,31 @@ def cmd_build(a):
         fw,fh=s['frame']['w'],s['frame']['h']
         cw,ch=1230,692; sc=min(cw/fw,ch/fh); dw,dh=fw*sc,fh*sc
         focus=s.get('focus'); punch=''
+        anns=list(annot.get(str(n)) or [])
+        def zoom_to(rx,ry,rw,rh):
+            cx=(rx+rw/2)*sc; cy=(ry+rh/2)*sc; hw=max(1,rw*sc/2); hh=max(1,rh*sc/2)
+            z=min(1.6,min(cx,dw-cx)/hw,min(cy,dh-cy)/hh)
+            return (cx,cy,z) if z>=1.12 else None
+        zt=None
+        regs=anns+([focus] if focus else [])
+        if regs:
+            x0=min(r['x'] for r in regs); y0=min(r['y'] for r in regs)
+            x1=max(r['x']+r['w'] for r in regs); y1=max(r['y']+r['h'] for r in regs)
+            zt=zoom_to(x0,y0,x1-x0,y1-y0)
         if focus:
-            cx=(focus['x']+focus['w']/2)*sc; cy=(focus['y']+focus['h']/2)*sc
-            punch=f'''tl.fromTo("#f{n}-zoom",{{scale:1}},{{scale:1.6,duration:1.1,ease:"power2.inOut",transformOrigin:"{cx:.0f}px {cy:.0f}px"}},{0+1.4});
-tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,ease:"back.out(2)"}},{0+1.2});'''
             box=f'<div class="focus-box" id="f{n}-box" style="left:{focus["x"]*sc:.0f}px;top:{focus["y"]*sc:.0f}px;width:{focus["w"]*sc:.0f}px;height:{focus["h"]*sc:.0f}px"></div>'
-        else: box=''
+            punch=f'tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,ease:"back.out(2)"}},1.2);'
+        else:
+            box=''
+        if zt:
+            punch+=f'\ntl.fromTo("#f{n}-zoom",{{scale:1}},{{scale:{zt[2]:.2f},duration:1.1,ease:"power2.inOut",transformOrigin:"{zt[0]:.0f}px {zt[1]:.0f}px"}},{max(1.4,0.6+0.35*len(anns)):.2f});'
+        for j,mm in enumerate(anns):
+            L=mm['x']*sc; T=mm['y']*sc; Wm=mm['w']*sc; lab=esc(mm.get('label',''))
+            left=min(L,max(0,dw-470))
+            box+=f'<div class="mk" id="f{n}-mk{j}" style="left:{L:.0f}px;top:{T:.0f}px;width:{Wm:.0f}px;height:{mm["h"]*sc:.0f}px"></div>'
+            box+=f'<span class="mk-tag" id="f{n}-mt{j}" style="left:{left:.0f}px;top:{T:.0f}px"><b>{j+1}</b>{(" "+lab) if lab else ""}</span>'
+            punch+=f'\ntl.fromTo("#f{n}-mk{j}",{{opacity:0,scale:1.25}},{{opacity:1,scale:1,duration:.35,ease:"back.out(2)"}},{0.5+j*0.35:.2f});'
+            punch+=f'\ntl.fromTo("#f{n}-mt{j}",{{opacity:0,y:6}},{{opacity:1,y:0,duration:.3,ease:"power2.out"}},{0.62+j*0.35:.2f});'
         net=''.join(f'<li class="req" id="r{n}-{i}"><b class="m">{esc(r["method"])}</b><span class="u">{esc(r["path"])}</span><i class="st st-{str(r["status"])[0]}">{r["status"]}</i></li>' for i,r in enumerate(s['network'][:7]))
         add(f'''<section id="s{n}" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
   <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
@@ -122,7 +144,7 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
   <aside class="panel" id="p{n}">
     <div class="num">{n:02d}<span>/{len(m['steps']):02d}</span></div>
     <h2>{esc(s['title'])}</h2>
-    <p class="act">{esc(s['action'])}</p>
+    {('' if anns else f'<p class=\"act\">{esc(s["action"])}</p>')}
     <ul class="net">{net}</ul>
     <div class="hash"><span>frame sha256</span><code>{s['frame']['sha256'][:16]}…</code><span>captured</span><code>{esc(s['captured_at'])}</code></div>
   </aside>
@@ -266,6 +288,9 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
 .shot{position:relative;flex:1;overflow:hidden}
 .zoom{position:absolute;inset:0;will-change:transform}
 .zoom img{display:block;width:100%;height:100%;object-fit:cover}
+.mk{position:absolute;border:3px solid #f5b942;border-radius:8px;box-shadow:0 0 0 2px rgba(10,12,20,.55),0 0 18px rgba(245,185,66,.45)}
+.mk-tag{position:absolute;white-space:nowrap;background:#f5b942;color:#1a1300;font:700 17px/1 ui-sans-serif,system-ui,sans-serif;padding:6px 10px;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+.mk-tag b{display:inline-block;margin-right:6px;padding:0 6px;border-radius:5px;background:#1a1300;color:#f5b942}
 .focus-box{position:absolute;border:4px solid var(--acc);border-radius:10px;box-shadow:0 0 0 4000px rgba(10,12,20,.35),0 0 30px rgba(124,92,255,.6)}
 .panel{position:absolute;left:1360px;top:120px;width:480px;height:736px}
 .num{font-size:96px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--fg)}
@@ -336,9 +361,13 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
 .node.n-session{border-left-color:#8fb7ff} .node.n-project{border-left-color:var(--ok)} .node.n-routine{border-left-color:var(--acc)}
 """
     comps=os.path.join(proj,'compositions'); os.makedirs(comps,exist_ok=True)
+    def _sid(kind,rest):
+        return {'title':'s-title','http':'s-http','chain':'s-chain','insight':'s-insight','impactmap':'s-impact'}.get(kind) or f"s{rest[0]['n']}"
+    times={f"sc-{_sid(k,rest)}":(st,dur) for k,st,dur,*rest in scenes}
     hosts=[]
-    for (kind,st,dur,*rest),html,tws in zip(scenes,out,tl_groups):
+    for html,tws in zip(out,tl_groups):
         sid=re.search(r'id="([^"]+)"',html).group(1); cid=f'sc-{sid}'
+        st,dur=times[cid]
         inner=re.sub(r'^<section[^>]*>','',html.strip()); inner=re.sub(r'</section>$','',inner)
         local='\n'.join(t.replace('{ST}',f'{0}') for t in tws)
         sub=f"""<!doctype html>
@@ -359,18 +388,19 @@ window.__timelines["{cid}"] = tl;
 </body></html>"""
         fn=f'compositions/{cid}.html'; open(os.path.join(proj,fn),'w').write(sub)
         hosts.append(f'<div id="{cid}" data-composition-id="{cid}" data-composition-src="{fn}" data-start="{st}" data-duration="{dur}" data-track-index="0" data-width="{W}" data-height="{H}"></div>')
+    root_id=re.sub(r'[^a-z0-9]+','-',os.path.basename(os.path.abspath(proj)).lower()).strip('-') or 'story'
     html=f"""<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width={W}, height={H}">
 <title>{esc(m['story'][:60])}</title>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>body{{margin:0;background:#0e1017}} #root{{position:relative;width:100%;height:100%;overflow:hidden}}</style>
 </head><body>
-<div id="root" data-composition-id="story" data-start="0" data-width="{W}" data-height="{H}" data-duration="{total}">
+<div id="root" data-composition-id="{root_id}" data-start="0" data-width="{W}" data-height="{H}" data-duration="{total}">
 {chr(10).join(hosts)}
 </div>
 <script>
 const tl = gsap.timeline({{ paused: true }});
-window.__timelines["story"] = tl;
+window.__timelines["{root_id}"] = tl;
 </script>
 </body></html>"""
     open(os.path.join(proj,'index.html'),'w').write(html)
@@ -380,5 +410,5 @@ p=argparse.ArgumentParser(); sp=p.add_subparsers(dest='cmd',required=True)
 q=sp.add_parser('init'); q.add_argument('--manifest',required=True); q.add_argument('--story',required=True); q.add_argument('--subject',default=''); q.add_argument('--tool',default='')
 q=sp.add_parser('add'); q.add_argument('--manifest',required=True); q.add_argument('--title',required=True); q.add_argument('--action',required=True); q.add_argument('--url',default=''); q.add_argument('--frame',required=True); q.add_argument('--focus'); q.add_argument('--network'); q.add_argument('--burp')
 q=sp.add_parser('verify'); q.add_argument('--manifest',required=True)
-q=sp.add_parser('build'); q.add_argument('--manifest',required=True); q.add_argument('--project',required=True); q.add_argument('--http'); q.add_argument('--insight')
+q=sp.add_parser('build'); q.add_argument('--manifest',required=True); q.add_argument('--project',required=True); q.add_argument('--http'); q.add_argument('--insight'); q.add_argument('--annotate')
 a=p.parse_args(); globals()['cmd_'+a.cmd](a)
