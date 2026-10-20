@@ -80,8 +80,8 @@ def cmd_build(a):
         scenes.append(('step',t,_d,s)); t+=_d
         if http and s['n']==http.get('after_step'):
             scenes.append(('http',t,T_HTTP)); t+=T_HTTP
-    _tc=T_DIVERGE if div else T_CHAIN
-    scenes.append(('chain',t,_tc)); t+=_tc
+    if div:
+        scenes.append(('chain',t,T_DIVERGE)); t+=T_DIVERGE
     if insight:
         scenes.append(('insight',t,T_INSIGHT,insight)); t+=T_INSIGHT
     if imap:
@@ -146,7 +146,7 @@ def cmd_build(a):
     <h2>{esc(s['title'])}</h2>
     {('' if anns else f'<p class=\"act\">{esc(s["action"])}</p>')}
     <ul class="net">{net}</ul>
-    <div class="hash"><span>frame sha256</span><code>{s['frame']['sha256'][:16]}…</code><span>captured</span><code>{esc(s['captured_at'])}</code></div>
+    <div class="hash"><span>captured</span><code>{esc(s['captured_at'])}</code></div>
   </aside>
 </section>''')
         tw(f'tl.fromTo("#c{n}",{{x:-60,opacity:0}},{{x:0,opacity:1,duration:.55,ease:"power3.out"}},{0+0.05});')
@@ -171,9 +171,9 @@ def cmd_build(a):
         tw(f'tl.fromTo("#h-code .hl",{{backgroundColor:"rgba(124,92,255,0)"}},{{backgroundColor:"rgba(124,92,255,.28)",duration:.4}},{0+1.9});')
         tw(f'tl.fromTo("#h-meta",{{opacity:0}},{{opacity:1,duration:.4}},{0+2.3});')
         tw(f'tl.to("#root .http-wrap",{{opacity:0,duration:.3,ease:"power2.in"}},{0+dur-0.32});')
-    cs=[x for x in scenes if x[0]=='chain'][0]; st=cs[1]; dur=cs[2]
-    div=(insight or {}).get('divergence') or m.get('divergence')
-    if div:
+    cs=[x for x in scenes if x[0]=='chain']
+    if cs and div:
+        st=cs[0][1]; dur=cs[0][2]
         def col(side,c,default_lab):
             c=c or {}; steps=c.get('steps',[]); dv=c.get('divert_at')
             rows=''
@@ -184,13 +184,13 @@ def cmd_build(a):
             return f'''<div class="dv-col dv-{side}" id="dv-{side}">
     <div class="dv-head"><span class="dv-dot {'ok' if side=='L' else 'bad'}"></span>{esc(c.get('label',default_lab))}</div>
     <div class="dv-sub">{esc(c.get('sub',''))}</div>{rows}</div>'''
-        foot=div.get('footer','Every frame above is a real capture. Run verify to re-check the chain.')
+        foot=div.get('footer','')
         add(f'''<section id="s-chain" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
   <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
   <div class="dv-eye" id="k-eye">{esc(div.get('eyebrow','USER STORY  vs  ATTACKER STORY'))}</div>
   {col('L',div.get('intended'),'INTENDED USE')}
   {col('R',div.get('attacker'),"ATTACKER'S PATH")}
-  <div class="dv-footer" id="dv-foot">{esc(foot)}</div>
+  {(f'<div class="dv-footer" id="dv-foot">{esc(foot)}</div>') if foot else ''}
 </section>''')
         tw(f'tl.fromTo("#k-eye",{{y:-20,opacity:0}},{{y:0,opacity:1,duration:.5,ease:"power3.out"}},0.1);')
         tw(f'tl.fromTo("#dv-L .dv-head, #dv-L .dv-sub",{{x:-30,opacity:0}},{{x:0,opacity:1,duration:.45,stagger:.1,ease:"power3.out"}},0.3);')
@@ -198,19 +198,8 @@ def cmd_build(a):
         tw(f'tl.fromTo("#dv-R .dv-head, #dv-R .dv-sub",{{x:30,opacity:0}},{{x:0,opacity:1,duration:.45,stagger:.1,ease:"power3.out"}},1.1);')
         tw(f'tl.fromTo("#dv-R .dv-step",{{x:24,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.14,ease:"power2.out"}},1.4);')
         tw(f'tl.fromTo("#dv-R .dv-step.divert",{{boxShadow:"0 0 0 1px rgba(240,106,106,.5)"}},{{boxShadow:"0 0 24px rgba(240,106,106,.65)",duration:.7,yoyo:true,repeat:3,ease:"sine.inOut"}},2.4);')
-        tw(f'tl.fromTo("#dv-foot",{{opacity:0}},{{opacity:1,duration:.5}},2.6);')
+        if foot: tw(f'tl.fromTo("#dv-foot",{{opacity:0}},{{opacity:1,duration:.5}},2.6);')
         tw(f'tl.fromTo("#root .glow",{{scale:1}},{{scale:1.12,duration:{dur},ease:"sine.inOut"}},0);')
-    else:
-        links=''.join(f'<div class="link" id="k{s["n"]}"><span class="kn">{s["n"]:02d}</span><code>{s["sha256"][:14]}</code><span class="arrow">→</span></div>' for s in m['steps'])
-        add(f'''<section id="s-chain" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
-  <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
-  <div class="chain-wrap"><div class="eyebrow" id="k-eye">HASH CHAIN · {len(m['steps'])} STEPS</div>
-  <div class="links">{links}<div class="link last" id="k-end"><span class="kn">✓</span><code>verify: evidence.py verify</code></div></div>
-  <div class="meta" id="k-meta">Every frame is a real capture. Each step hashes the previous one. Swap one frame and the chain breaks.</div></div>
-</section>''')
-        tw(f'tl.fromTo("#k-eye",{{y:20,opacity:0}},{{y:0,opacity:1,duration:.45,ease:"power3.out"}},{0+0.05});')
-        tw(f'tl.fromTo("#root .link",{{x:-30,opacity:0}},{{x:0,opacity:1,duration:.4,stagger:.16,ease:"power3.out"}},{0+0.3});')
-        tw(f'tl.fromTo("#k-meta",{{opacity:0}},{{opacity:1,duration:.5}},{0+1.6});')
         tw(f'tl.fromTo("#root .glow",{{scale:1}},{{scale:1.15,duration:{dur},ease:"sine.inOut"}},0);')
     ins=[x for x in scenes if x[0]=='insight']
     if ins:
