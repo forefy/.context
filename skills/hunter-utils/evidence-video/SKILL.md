@@ -33,6 +33,7 @@ Hard-won, in the order they bite:
 - **The generator emits one sub-composition per scene on purpose.** `lint` rejects a top-level timed section that nests elements (`nested_structure_needs_subcomposition`), so each scene is its own file. If you hand-edit scenes, keep that shape.
 - **`check` must be zero findings before you render.** Common fixes: mark deliberate overflow (a glow, a zoom crop) with `data-layout-allow-overflow`; give any looping tween a finite `repeat` count, never `repeat: -1`, under a finite duration; keep small colored text at AA contrast; never pair a CSS `transform` with a GSAP tween on the same property.
 - **Render is `-o <path>`, not `--out`.** And the composition `index.html` must be served over HTTP (`npx hyperframes preview`); opening it as `file://` blocks the sub-scene fetches and shows nothing. The deliverable is the rendered `.mp4`, which opens anywhere on disk; the HTML is source, never the thing you hand over.
+- **Mark what to look at inside the image, once.** A capture holds many details; say which one matters by boxing and labelling it on the pixels, not beside them. Use `focus.label` for the one region, or `marks` for several on a dense screen, especially a Burp request or response. Then do not restate that detail as separate text: the side panel carries the one-line narration and the checkable artifacts (frame hash, ids, the requests that fired), never a second copy of what the highlight already shows. Marked on the image beats isolated in text, and doing both is noise.
 - **Correlate surfaces across scenes.** To show Burp, the browser, and a code snippet together, chain one capture per scene in order (wire scene, then the browser step, then the code). Each stays a real, hashable capture.
 - **Demonstrating code: link to the live source.** When a step shows code and that file exists in a local checkout, carry a `vscode://file/<absolute-path>:<line>` reference in the step (put it in the caption or `action`, and record it in the manifest) so a reviewer can open the exact line in VSCode, not just read the still. Render the snippet for the video and keep the deep link beside it. Only emit the link when the file resolves locally; a `vscode://` that opens nothing is worse than none.
 
@@ -54,7 +55,7 @@ Hard-won, in the order they bite:
      --url "https://target/login" --frame evidence/frames/01.png \
      --focus '{"x":545,"y":262,"w":260,"h":82}' --network net-01.json
    ```
-   `--focus` is an optional region in frame pixels that gets a punch-in and a highlight box. `--network` is an optional JSON array of `{method, path, status}` rows observed on that step. Run `verify` any time to confirm the chain:
+   `--focus` is an optional region in frame pixels (`{x, y, w, h, label}`) that gets a punch-in and a labelled highlight box drawn on the image. Add `marks` to the step (a list of `{x, y, w, h, label}`) to call out several parts of one dense capture at once, each boxed and labelled on the pixels, no zoom. `--network` is an optional JSON array of `{method, path, status}` rows observed on that step. Run `verify` any time to confirm the chain:
    ```
    python3 assets/evidence.py verify --manifest evidence/manifest.json
    ```

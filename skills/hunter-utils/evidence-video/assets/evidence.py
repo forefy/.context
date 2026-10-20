@@ -105,19 +105,23 @@ def cmd_build(a):
         shutil.copyfile(os.path.join(base,s['frame']['path']),os.path.join(proj,img))
         fw,fh=s['frame']['w'],s['frame']['h']
         cw,ch=1230,692; sc=min(cw/fw,ch/fh); dw,dh=fw*sc,fh*sc
-        focus=s.get('focus'); punch=''
+        focus=s.get('focus'); marks=s.get('marks') or []; punch=''; box=''
         if focus:
-            cx=(focus['x']+focus['w']/2)*sc; cy=(focus['y']+focus['h']/2)*sc
-            punch=f'''tl.fromTo("#f{n}-zoom",{{scale:1}},{{scale:1.6,duration:1.1,ease:"power2.inOut",transformOrigin:"{cx:.0f}px {cy:.0f}px"}},{0+1.4});
+            flab=f'<span class="focus-label">{esc(focus["label"])}</span>' if focus.get('label') else ''
+            box=f'<div class="focus-box" id="f{n}-box" style="left:{focus["x"]*sc:.0f}px;top:{focus["y"]*sc:.0f}px;width:{focus["w"]*sc:.0f}px;height:{focus["h"]*sc:.0f}px">{flab}</div>'
+            if not marks:
+                cx=(focus['x']+focus['w']/2)*sc; cy=(focus['y']+focus['h']/2)*sc
+                punch=f'''tl.fromTo("#f{n}-zoom",{{scale:1}},{{scale:1.6,duration:1.1,ease:"power2.inOut",transformOrigin:"{cx:.0f}px {cy:.0f}px"}},{0+1.4});
 tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,ease:"back.out(2)"}},{0+1.2});'''
-            box=f'<div class="focus-box" id="f{n}-box" style="left:{focus["x"]*sc:.0f}px;top:{focus["y"]*sc:.0f}px;width:{focus["w"]*sc:.0f}px;height:{focus["h"]*sc:.0f}px"></div>'
-        else: box=''
+            else:
+                punch=f'tl.fromTo("#f{n}-box",{{opacity:0,scale:1.2}},{{opacity:1,scale:1,duration:.4,ease:"back.out(2)"}},{0+1.0});'
+        mark_html=''.join(f'<div class="mark-box" id="m{n}-{i}" style="left:{mk["x"]*sc:.0f}px;top:{mk["y"]*sc:.0f}px;width:{mk["w"]*sc:.0f}px;height:{mk["h"]*sc:.0f}px"><span class="mark-label">{esc(mk.get("label",""))}</span></div>' for i,mk in enumerate(marks))
         net=''.join(f'<li class="req" id="r{n}-{i}"><b class="m">{esc(r["method"])}</b><span class="u">{esc(r["path"])}</span><i class="st st-{str(r["status"])[0]}">{r["status"]}</i></li>' for i,r in enumerate(s['network'][:7]))
         add(f'''<section id="s{n}" class="clip" data-start="{st}" data-duration="{dur}" data-track-index="0">
   <div class="bg"></div><div class="glow" data-layout-allow-overflow></div>
   <div class="card" id="c{n}" style="width:{dw:.0f}px;height:{dh:.0f}px">
     <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">{esc(s['url'])}</span></div>
-    <div class="shot"><div class="zoom" id="f{n}-zoom" data-layout-allow-overflow><img src="{img}" width="{dw:.0f}" height="{dh:.0f}" alt="">{box}</div></div>
+    <div class="shot"><div class="zoom" id="f{n}-zoom" data-layout-allow-overflow><img src="{img}" width="{dw:.0f}" height="{dh:.0f}" alt="">{box}{mark_html}</div></div>
   </div>
   <aside class="panel" id="p{n}">
     <div class="num">{n:02d}<span>/{len(m['steps']):02d}</span></div>
@@ -132,6 +136,7 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
         if s['network']: tw(f'tl.fromTo("#p{n} .req",{{x:30,opacity:0}},{{x:0,opacity:1,duration:.35,stagger:.09,ease:"power2.out"}},{0+0.8});')
         tw(f'tl.fromTo("#p{n} .hash",{{opacity:0}},{{opacity:1,duration:.4}},{0+1.6});')
         if punch: tw(punch)
+        if marks: tw(f'tl.fromTo("#s{n} .mark-box",{{opacity:0,scale:1.15}},{{opacity:1,scale:1,duration:.4,stagger:.2,ease:"back.out(2)"}},{0+1.0});')
         tw(f'tl.to("#root .card, #s{n} .panel",{{opacity:0,duration:.3,ease:"power2.in"}},{0+dur-0.32});')
     for kind,st,dur,*rest in scenes:
         if kind!='http': continue
@@ -267,6 +272,9 @@ tl.fromTo("#f{n}-box",{{opacity:0,scale:1.3}},{{opacity:1,scale:1,duration:.45,e
 .zoom{position:absolute;inset:0;will-change:transform}
 .zoom img{display:block;width:100%;height:100%;object-fit:cover}
 .focus-box{position:absolute;border:4px solid var(--acc);border-radius:10px;box-shadow:0 0 0 4000px rgba(10,12,20,.35),0 0 30px rgba(124,92,255,.6)}
+.focus-label{position:absolute;bottom:100%;left:-4px;margin-bottom:8px;white-space:nowrap;background:var(--acc);color:#fff;font-size:18px;font-weight:700;padding:5px 11px;border-radius:7px;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.mark-box{position:absolute;border:3px solid var(--acc);border-radius:8px;box-shadow:0 0 18px rgba(124,92,255,.5)}
+.mark-box .mark-label{position:absolute;bottom:100%;left:-3px;margin-bottom:6px;white-space:nowrap;background:var(--acc);color:#fff;font-size:17px;font-weight:700;padding:4px 9px;border-radius:6px;box-shadow:0 5px 14px rgba(0,0,0,.45)}
 .panel{position:absolute;left:1360px;top:120px;width:480px;height:736px}
 .num{font-size:96px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--fg)}
 .num span{font-size:36px;color:var(--mute);font-weight:600;margin-left:6px}

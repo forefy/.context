@@ -22,7 +22,8 @@ This is what makes the video trustworthy: a reader re-runs `verify` against the 
       "url": "https://target/login",
       "captured_at": "<UTC ISO8601, frame mtime>",
       "frame": {"path": "frames/01.png", "sha256": "<64 hex>", "w": 1568, "h": 590},
-      "focus": {"x": 545, "y": 262, "w": 260, "h": 82},
+      "focus": {"x": 545, "y": 262, "w": 260, "h": 82, "label": "the sign-in form"},
+      "marks": [{"x": 628, "y": 250, "w": 462, "h": 60, "label": "prompt that runs agents"}],
       "network": [{"method": "GET", "path": "/login", "status": 200}],
       "burp": [4550],
       "prev_sha256": "<64 hex or 0*64>",
@@ -32,7 +33,7 @@ This is what makes the video trustworthy: a reader re-runs `verify` against the 
 }
 ```
 
-`focus`, `network` and `burp` are optional. `burp` records the Burp history ids a step came from, for traceability back to the proxy project.
+`focus`, `marks`, `network` and `burp` are optional. `focus` is the one region to call out; its `label` is drawn on the box, and a single `focus` with no `marks` also gets a zoom punch-in. `marks` is a list of further regions, each boxed and labelled on the image with no zoom, for pointing at several parts of one dense capture (a Burp request or response, a crowded screen). All coordinates are in frame pixels. Keep labels to a few words, and do not repeat a marked detail as text elsewhere in the scene. `burp` records the Burp history ids a step came from, for traceability back to the proxy project.
 
 ## `--http` (one real request and response as a scene)
 
