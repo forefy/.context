@@ -32,7 +32,22 @@ This is what makes the video trustworthy: a reader re-runs `verify` against the 
 }
 ```
 
-`focus`, `network` and `burp` are optional. `burp` records the Burp history ids a step came from, for traceability back to the proxy project.
+`focus`, `network` and `burp` are optional. `focus` is the one region to call out on this step's frame: `{x, y, w, h, label}` in frame pixels, drawn as a labelled box and given a zoom punch-in. `burp` records the Burp history ids a step came from, for traceability back to the proxy project.
+
+## `--annotate` (on-image marks for a dense capture)
+
+Pass a separate JSON file to `build --annotate <file>` to draw several labelled boxes on a step's frame, for pointing at the parts that matter on a crowded screen (a Burp request or response, a busy UI). Keyed by step number:
+
+```
+{
+  "4": [
+    {"x": 628, "y": 250, "w": 462, "h": 60, "label": "prompt that runs agents"},
+    {"x": 628, "y": 358, "w": 462, "h": 72, "label": "scheduled routines"}
+  ]
+}
+```
+
+Each box is drawn on the frame with a numbered flag at its top-left. Coordinates are in frame pixels. Marks are a **presentation overlay, not part of the hashed chain**: the frame is the evidence, the marks only say where to look, so you can reposition or relabel them without breaking `verify` or re-capturing. Keep labels to a few words, and do not repeat a marked detail as text elsewhere in the scene; when a step has marks the generator already drops its side-panel prose so the image carries it.
 
 ## `--http` (one real request and response as a scene)
 
