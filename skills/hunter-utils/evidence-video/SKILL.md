@@ -34,6 +34,7 @@ Hard-won, in the order they bite:
 - **`check` must be zero findings before you render.** Common fixes: mark deliberate overflow (a glow, a zoom crop) with `data-layout-allow-overflow`; give any looping tween a finite `repeat` count, never `repeat: -1`, under a finite duration; keep small colored text at AA contrast; never pair a CSS `transform` with a GSAP tween on the same property.
 - **Render is `-o <path>`, not `--out`.** And the composition `index.html` must be served over HTTP (`npx hyperframes preview`); opening it as `file://` blocks the sub-scene fetches and shows nothing. The deliverable is the rendered `.mp4`, which opens anywhere on disk; the HTML is source, never the thing you hand over.
 - **Correlate surfaces across scenes.** To show Burp, the browser, and a code snippet together, chain one capture per scene in order (wire scene, then the browser step, then the code). Each stays a real, hashable capture.
+- **Demonstrating code: link to the live source.** When a step shows code and that file exists in a local checkout, carry a `vscode://file/<absolute-path>:<line>` reference in the step (put it in the caption or `action`, and record it in the manifest) so a reviewer can open the exact line in VSCode, not just read the still. Render the snippet for the video and keep the deep link beside it. Only emit the link when the file resolves locally; a `vscode://` that opens nothing is worse than none.
 
 ## Workflow
 
