@@ -23,6 +23,7 @@ Go over the source code and live site (ask the user) and optimize GEO and SEO ac
 - We don’t want to break anything or over-optimize, especially in non-significant, riskier areas.
 - Always cross-check optimizations to see we aren’t breaking anything.
 - Don’t stray into creating content or feature additions that might improve SEO if the user hadn’t asked for it- but you may very well suggest those.
+- Some site warnings are on code we can't control (like analytics 3rd parties, cdn-added scripts etc - we can ignore those.
 
 # Verification
 Your goal is only done after site with all fixes went to prod, we verified everything is healthy, and seoptimer, opengraph, google search and all the tools we used the browser to optimize are now close to perfect or as best as we can achieve without sacrificing app logic or user intents.
