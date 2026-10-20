@@ -21,6 +21,20 @@ Two hard rules the tool enforces, and you must not work around:
   - A browser you can drive and screenshot (Claude in Chrome, or the built-in browser pane) for the UI frames and live network list.
   - Terminal screenshots for a CLI or a Foundry or `forge test` reproduction, where each step is a command and its real output.
 
+## Setup and pitfalls
+
+Hard-won, in the order they bite:
+
+- **Node 22+ or nothing.** HyperFrames hard-errors on older Node. Run `node -v`, and `nvm use 22` (or equivalent) before any `hyperframes` command, including inside scripts.
+- **Drive a browser you control; read Burp.** Use Claude in Chrome or the built-in browser pane for the UI frames, because you can navigate and screenshot them. Burp's own browser is read-only to automation and its DevTools port is locked, so use Burp only to read HTTP history, not to click through the flow.
+- **Do not copy a browser profile to reuse a login.** Session cookies are encrypted to the origin browser and will not decrypt in a copy; it opens logged out. Sign in in the browser you can drive instead.
+- **Start network tracking before you navigate.** The request reader only captures from its first call onward. Call it once to clear, then navigate, then read, or the page's own load requests are missed and you get an empty list.
+- **Redact at capture time, never later.** No secret enters a frame or an `--http` file. Record the original request's hash and show `[redacted]`. A browser or proxy capture can hold cookies and tokens in view, so crop or blank them before the frame is saved.
+- **The generator emits one sub-composition per scene on purpose.** `lint` rejects a top-level timed section that nests elements (`nested_structure_needs_subcomposition`), so each scene is its own file. If you hand-edit scenes, keep that shape.
+- **`check` must be zero findings before you render.** Common fixes: mark deliberate overflow (a glow, a zoom crop) with `data-layout-allow-overflow`; give any looping tween a finite `repeat` count, never `repeat: -1`, under a finite duration; keep small colored text at AA contrast; never pair a CSS `transform` with a GSAP tween on the same property.
+- **Render is `-o <path>`, not `--out`.** And the composition `index.html` must be served over HTTP (`npx hyperframes preview`); opening it as `file://` blocks the sub-scene fetches and shows nothing. The deliverable is the rendered `.mp4`, which opens anywhere on disk; the HTML is source, never the thing you hand over.
+- **Correlate surfaces across scenes.** To show Burp, the browser, and a code snippet together, chain one capture per scene in order (wire scene, then the browser step, then the code). Each stays a real, hashable capture.
+
 ## Workflow
 
 1. **Write the steps first, then prove them.** Decide the ordered steps of the story up front. The tool executes nothing; you capture each step for real, and the tool only chains and renders what you captured. If a step has no capture, the build aborts on that step.
