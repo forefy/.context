@@ -19,3 +19,4 @@ This skill should only be invoked at times of frustration, when the agent is act
 # Strict no-nos
 - don't notify or send a message or interact with people - that much you can open a banner with what you want to say and I can approve
 - don't install dependencies without a prompt for me to allow it, after you've considered stuff like star counts and skeptical barriers that we should solve together
+- no shortcuts - we complete the mission, we don't lazy-out or half-do features that the user requested for
