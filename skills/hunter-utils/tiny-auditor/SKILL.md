@@ -72,11 +72,13 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Threat model helps us think and frame the attack as relevant to the protocol, as quality is important and we don’t want false positives, its a helpful thinking exercise
 
 # Audit aggression
+
 Audits can vary in aggression score, which is CRUCIAL to verify before starting with the user (ask once, remember throughout the entire session):
-stealth - Gather information without directly interacting with the target (read github code, commit history, browser sitemap, user-behavior browsing the site to collect data 
-passive - everything in stealth + occasionally sending probe requests under reasonable time diffs and finding the sweet spot between a couple of requests, but not at any way risking DOS or target takedown or massive scan or active sweeps. taking key strategic to consideration and looking for leads and criticals that might not require heavy active interaction with target (e.g. public bucket url in sourcemap).
-passive +3rd party - everything in passive + including to scope 3rd party integrations that don't necessarily belong to target (e.g. hosting provider vercel etc)
-active - everything is allowed within the agreed scope
+
+- stealth: Gather information without directly interacting with the target (read github code, commit history, browser sitemap, user-behavior browsing the site to collect data 
+- passive: everything in stealth + occasionally sending probe requests under reasonable time diffs and finding the sweet spot between a couple of requests, but not at any way risking DOS or target takedown or massive scan or active sweeps. taking key strategic to consideration and looking for leads and criticals that might not require heavy active interaction with target (e.g. public bucket url in sourcemap).
+- passive +3rd party: everything in passive + including to scope 3rd party integrations that don't necessarily belong to target (e.g. hosting provider vercel etc)
+- active: everything is allowed within the agreed scope
 
 # Self-validation loop
 - Self-validation loop is not something to update in the report, just like a quality voice in the background to ensure high-grade reports
