@@ -78,13 +78,6 @@ passive - everything in stealth + occasionally sending probe requests under reas
 passive +3rd party - everything in passive + including to scope 3rd party integrations that don't necessarily belong to target (e.g. hosting provider vercel etc)
 active - everything is allowed within the agreed scope
 
-| Audit Type | Score | Explanation | Example |
-|---|---:|---|---|
-| **Stealth** | 0 | Gather information without directly interacting with the target. | Reviewing publicly available company information. |
-| **Passive** | +1 | Observe the target without actively probing its systems. | Reviewing DNS records or public WHOIS data. |
-| **Passive + 3rd Party** | +2 | Gather information using external sources or providers. | Checking a company's exposure through a third-party threat-intelligence platform. |
-| **Active** | +3 | Directly interact with the target's systems, potentially triggering alerts. | Running an authorized port scan against a company server. |
-
 # Self-validation loop
 - Self-validation loop is not something to update in the report, just like a quality voice in the background to ensure high-grade reports
 - At each turn double-check the accuracy and quality of the produced findings
