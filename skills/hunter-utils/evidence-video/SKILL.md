@@ -5,14 +5,25 @@ description: Turn a user story or a bug reproduction into a short, evidence-back
 
 # Evidence video
 
-Build a narrated-by-structure video from real captures only. The generator refuses to emit a scene without a real frame behind it, each step hashes the one before it, and the closer explains what the flow means. This is for proving a reproduction, walking a reviewer through an auth or access flow, or showing a user story end to end.
+Make a short video that proves a reproduction, walks a reviewer through an auth or access flow, or tells a user story end to end, and that a reader trusts because every piece of evidence in it is a real capture.
 
-Two hard rules the tool enforces, and you must not work around:
+Two layers, kept separate. The **evidence** is real and tamper-evident: real captures, hash-chained in a manifest, re-checkable with `verify`. The **visualization** is yours to compose: design it for this subject with HyperFrames and the guidelines below, do not stamp it from a fixed template. `assets/evidence.py` owns the evidence layer and can scaffold a first pass, but the look, the rhythm and the metaphor should fit the story in front of you, not render every story the same way.
+
+These rules are the guardrails; inside them, use judgment and craft:
 
 - **No scene without a real capture.** Every step is a screenshot the tool took, hashed into a manifest. Never hand-draw a UI, never fabricate a frame, never claim a step you did not capture.
 - **Never fabricate on-screen content.** Every URL, path, status code, number, label, and request or response line shown on the video must come from a real capture or a real source file. If you do not have the real value, leave it out. Do not invent a plausible URL, a round-number timing, a status, an endpoint, or a label to fill a gap. One made-up detail turns the whole thing from evidence into a mockup, and the hash chain cannot catch a fabricated caption, only a swapped frame, so this discipline is yours. When in doubt, show less.
 - **Keep the hash chain off the video.** It is the integrity mechanism, not viewer content: the chain lives in the manifest and `verify`, never as an on-screen scene or a hash printed on a frame. The video's job is the story and its meaning.
 - **Always end with insight, impact and risk.** It is the point of the video: who is affected, what is at stake, what to verify, and the blast radius. A video that stops at the walkthrough is unfinished.
+
+## Compose for the subject, do not fill a template
+
+The scaffold produces the same handful of boxes for every story; a good evidence video does not look like that. Design the composition for what this one is actually about.
+
+- **Let the subject pick the form.** A race condition wants a timeline; a privilege jump wants two lanes that cross; a data leak wants the record pulled into view; an auth flow wants the wire step foregrounded. Reach for the shape that explains this mechanism, not the shape you used last time.
+- **Use the full toolbox.** HyperFrames does real motion, keyframed camera moves, diagrams, data-viz, registry effects and sub-compositions. Load the `/hyperframes` skills and compose with them; the captured frames are your material, not a slideshow to click through.
+- **Make it beautiful and legible.** One accent, deliberate pacing, a designed open and close, captions only where the image needs them. The craft is what makes a reviewer watch to the end.
+- **The scaffold is a starting point, never the deliverable.** If you build from `evidence.py`, reshape what it gives you: cut beats that do not serve this story, redesign the ones that do, and never ship the template unchanged.
 
 ## Dependencies
 
@@ -77,13 +88,13 @@ Hard-won, in the order they bite:
      --http http.json --insight insight.json
    cd <hf-project> && npx hyperframes check && npx hyperframes render -o story.mp4
    ```
-   The build writes one HyperFrames sub-composition per scene. `check` must pass with zero findings before you render. Snapshot a scene midpoint with `npx hyperframes snapshot --at <s>` and eyeball it before rendering the whole thing.
+   The build writes one HyperFrames sub-composition per scene as a scaffold. Before you treat it as the design, open it and shape it to the subject (see **Compose for the subject**): reshape beats, add the motion or diagram this story needs, cut what does not serve it. `check` must pass with zero findings before you render. Snapshot a scene midpoint with `npx hyperframes snapshot --at <s>` and eyeball it before rendering the whole thing.
 
 7. **Replay and critique before you ship.** `check` proves the composition is valid, not that it reads well. Play the rendered video back, or snapshot every scene across its span (`npx hyperframes snapshot --frames 4`), and review it as a viewer would. Confirm: no focus box or highlight is mistimed, lands on the wrong element, or covers the text it should point at; every zoom punch settles on its target and leaves captions legible; nothing overlaps or runs off-frame; each scene holds long enough to read and not so long it drags; the markings appear in step with what they explain. Fix what feels off and re-render. Ship only once the replay feels right, not merely once it validates.
 
-## Scene order
+## A default rhythm, to adapt
 
-title -> one scene per captured step (with an optional wire scene after a chosen step) -> user story vs attacker story (only when a `divergence` block is given, else omitted) -> insight/impact/risk -> blast-radius map. The manifest still hashes and verifies every frame, but no hash is shown on the video. Insight and the map are the payoff.
+A reasonable default is: open -> one beat per captured step (foreground the wire step when the HTTP is the point) -> the user story against the attacker story when there is a fork -> close on insight, impact and risk with the blast radius. Treat it as a rhythm to vary, not an order to obey: merge beats, reorder them, or invent the one this subject needs. Two things never move: no hash is shown on the video (it stays in the manifest and `verify`), and the close is always insight, impact and risk.
 
 ## Manifest and data shapes
 
