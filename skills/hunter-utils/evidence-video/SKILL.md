@@ -7,6 +7,8 @@ description: Turn a user story or a bug reproduction into a short, evidence-back
 
 Make a short video that proves a reproduction, walks a reviewer through an auth or access flow, or tells a user story end to end, and that a reader trusts because every piece of evidence in it is a real capture.
 
+Use https://github.com/heygen-com/hyperframes locally its features and its studio
+
 Two layers, kept separate. The **evidence** is real and tamper-evident: real captures, hash-chained in a manifest, re-checkable with `verify`. The **visualization** is yours to compose: design it for this subject with HyperFrames and the guidelines below, do not stamp it from a fixed template.
 
 These rules are the guardrails; inside them, use judgment and craft:
@@ -26,9 +28,9 @@ The scaffold produces the same handful of boxes for every story; a good evidence
 
 ## Dependencies
 
-- HyperFrames for rendering: `npx hyperframes` (Node 22+). `check` validates, `render` writes the MP4.
+- HyperFrames for rendering: `npx hyperframes`. `check` validates, `render` writes the MP4.
 - A capture source. Any one of:
-  - Burp proxy history over the `reburp` REST API (`http://127.0.0.1:9090`) for the real HTTP request and response behind a step. See the `burp-interaction` usage if present.
+  - Burp proxy history over existing setup or offer the `reburp` REST API (`http://127.0.0.1:9090`) for the real HTTP request and response behind a step. See the `burp-interaction` usage if present.
   - A browser you can drive and screenshot (Claude in Chrome, or the built-in browser pane) for the UI frames and live network list.
   - Terminal screenshots for a CLI or a Foundry or `forge test` reproduction, where each step is a command and its real output.
   - Github code paths
