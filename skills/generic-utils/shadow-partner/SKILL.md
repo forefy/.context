@@ -1,6 +1,6 @@
 ---
 name: shadow-partner
-description: Mine one X persona's own posts for ALPHA - the transferable tips, tools, workflows and rules of thumb to pick up for a task.
+description: Use X MCP to aggregate a persona's posts for alpha - the transferable tips, tools, workflows and rules of thumb to pick up for a task.
 ---
 
 # shadow-partner
