@@ -121,6 +121,7 @@ Skills are grouped into category folders under `skills/`. Discovery is flat, so 
 - `training-guide` - build an interactive, click-through visual course as a self-contained HTML page that teaches a subject one idea per screen, each with a hand-built diagram, an intuition reveal, and trick-question quizzes.
 - `variant-table` - render draft copy as a side-by-side comparison table, one row per logical unit with three genuinely distinct rewrite variations plus a top-pick column, for iterating on wording.
 - `self-improve` - audit a finished conversation for corrections and dead ends, then commit the generalizable lessons back into the repo so the next run does not repeat them.
+- `keen-eyes` - tighten agent chat turns when a run drifts or stalls; keep replies concise for a technical reader, batch questions to early turns, drive tasks 90% of the way before handing back only the irreducible blanks, and hold to the original goal without wandering.
 
 <br>
 
