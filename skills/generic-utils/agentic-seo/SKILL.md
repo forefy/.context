@@ -16,6 +16,7 @@ Go over the source code and live site (ask the user) and optimize GEO and SEO ac
 - Adapt keywords per page for the content and highly optimize for specific search queries (best if you consult with the user on what you think is the right set)
 - Ensure accessibility, privacy, terms, are applied to high extend (unless the user opts out of privacy/terms) to best results
 - Also use LightHouse for page speed insights https://pagespeed.web.dev/analysis
+- If the site is on Cloudflare, turn on `Crawler Hints`, otherwise, use IndexNow
 
 # Limits to realize
 
