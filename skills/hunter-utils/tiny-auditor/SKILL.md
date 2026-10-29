@@ -46,7 +46,6 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Uncertain probabilities - if a finding probability is undetermined / unknown it should automatically be low, it’s either we can prove some issue exists or we can’t
 - Impact proof exhaustion - it's never enough to say we got to some impact, we only showed a part of what can be done, but its potentially possible to do more - that's like saying a better auditor can do more - we want to completely show worst case scenario impact and impress the board which each finding
 
-
 ## Scope
 - Scope specificity should be directly specified (even if it’s “all” - it should be specified)
 - Team-acknowledged issues must be mapped from code comments, docs and call summaries and be well-known as acknowledged findings. “acknowledged” means that the protocol is provenly aware of the issue and chose to ignore it as a business decision, in which case it does not fit a whole finding page but a bullet point explaining if its intended behavior, accepted risk, or mitigated outside visible scope.
@@ -96,3 +95,4 @@ Audits can vary in aggression score, which is CRUCIAL to verify before starting 
   - Is the finding assuming a privileged breach level? and if so - wouldn’t that privilege being breached would be devistating either way, making the security workaround for it almost redundant?
   - Is the impact at the end of the description aligned enough to the real mature version of the exploitation and certain?
 - Is the severity classification changed and do we need to update it anywhere?
+- Did we speak with over-defensiveness? for example "real burp evidence proven real" but we can just say "burp", no need to overexplain what explain itself
