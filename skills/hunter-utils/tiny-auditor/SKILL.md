@@ -31,10 +31,11 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Almost all of the points to use `;` are redundant - the point of descriptions and writing in a repot are to be read humanly, natural flow sentences rather than ";" or similar
 - Description + Impact should usually be no longer than 12 lines (excluding bullets), and recommendations between 2~3. If it's more - ask yourself why.
 - Screenshots - using available browser tools (or asking users where lacking) for screenshots to walkthrough the finding (key points only and poc) are helpful, their standardized location is under or between the lines of description (like short story with pictures consecutive style, in the following image xxx)
+- Never add unrelated data to the official report, a log of operations is not needed (e.g. "proof wired" "took 3 screenshots") or anything operational that's not the report and findings.
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
-  - Risk calculation should be abstracted away and not written other than the resulting Severity and Probability.
+- Risk calculation should be abstracted away and not written other than the resulting Severity and Probability.
 - Attacks that require a privileged pre-requisite (e.g. admin role) are instantly Low probability, with the exception of bugs that can arise due to normal routine done by a privileged admin
 - Attacks that don’t have a strong attacker incentive (attackonomics) are instantly low probability
 - Comparative severity - in the same report, a Critical can’t be of less severity than a Low
@@ -43,6 +44,8 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - If a bug has a very easy, ricochet-free mitigation plan - it can slightly increase its severity score
 - Severity hierarchy - sometimes findings get removed added or reclassified which affects the order, so if we are enforcing a C1,C2,H1,M1,M2 hierarchy (in ToC, finding table, finding headings and possible cross-references) and a change occurred, e.g. a new High was introduced which is more risk than existing H1, then H1->H2 and H1 takes its place and we update that everywhere on the page where needed
 - Uncertain probabilities - if a finding probability is undetermined / unknown it should automatically be low, it’s either we can prove some issue exists or we can’t
+- Impact proof exhaustion - it's never enough to say we got to some impact, we only showed a part of what can be done, but its potentially possible to do more - that's like saying a better auditor can do more - we want to completely show worst case scenario impact and impress the board which each finding
+
 
 ## Scope
 - Scope specificity should be directly specified (even if it’s “all” - it should be specified)
