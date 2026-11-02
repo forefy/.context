@@ -45,6 +45,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Severity hierarchy - sometimes findings get removed added or reclassified which affects the order, so if we are enforcing a C1,C2,H1,M1,M2 hierarchy (in ToC, finding table, finding headings and possible cross-references) and a change occurred, e.g. a new High was introduced which is more risk than existing H1, then H1->H2 and H1 takes its place and we update that everywhere on the page where needed
 - Uncertain probabilities - if a finding probability is undetermined / unknown it should automatically be low, it’s either we can prove some issue exists or we can’t
 - Impact proof exhaustion - it's never enough to say we got to some impact, we only showed a part of what can be done, but its potentially possible to do more - that's like saying a better auditor can do more - we want to completely show worst case scenario impact and impress the board which each finding
+- If raised issues speak to the same core problem always strive to make it a granular, high-order issue with the clauses in which it manifests
 
 ## Scope
 - Scope specificity should be directly specified (even if it’s “all” - it should be specified)
