@@ -33,6 +33,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Screenshots - using available browser tools (or asking users where lacking) for screenshots to walkthrough the finding (key points only and poc) are helpful, their standardized location is under or between the lines of description (like short story with pictures consecutive style, in the following image xxx)
 - Never add unrelated data to the official report, a log of operations is not needed (e.g. "proof wired" "took 3 screenshots") or anything operational that's not the report and findings.
 - Don't asterisk-decorate, state any extra good-to-knows plainly with calibrated confidence. No unnecessary asterisks or excuses, natural.
+- Don't overuse dots. paragraphs like description should read explanatory and not with a dot every few words. instead, flowing complete concise sentences.
 
 ## Severity classification
 - Bug severity (C=4/H=3/M=2/L=1) should always be derived from severity = (risk x probability) when the highest severity is 16 and the lowest is 1 (end result low severity 1-4, medium severity 5-8, high severity 9-11, critical severity 12-16) - we never specify the risk numbers directly, though
