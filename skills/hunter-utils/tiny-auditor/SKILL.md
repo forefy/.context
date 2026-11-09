@@ -28,7 +28,7 @@ description: Audit codebase to uncover critical issues explicitly without false 
 - Every title in the finding body (e.g. description) should be a in its own line and have a newline before the text begins (description -> new line -> description text)
 - For impact, name the realistic actor (could also be a fat-fingering operator / lazy dev / curious user, not always a genius attacker), state the loss in plain terms, and be honest about reachability. If you can't name a realistic actor, the impact is "hardening," not "attack."
 - Some findings' impact is just an inflation/duplication of whatever is written on the description ending, in which case it is redundant
-- Almost all of the points to use `;` are redundant - the point of descriptions and writing in a repot are to be read humanly, natural flow sentences rather than ";" or similar
+- Almost all of the points to use `;` are redundant - the point of descriptions and writing in a repot are to be read humanly, natural flow sentences rather than ";" or similar (a lot of times ":" are not needed too)
 - Description + Impact should usually be no longer than 12 lines (excluding bullets), and recommendations between 2~3. If it's more - ask yourself why.
 - Screenshots - using available browser tools (or asking users where lacking) for screenshots to walkthrough the finding (key points only and poc) are helpful, their standardized location is under or between the lines of description (like short story with pictures consecutive style, in the following image xxx)
 - Never add unrelated data to the official report, a log of operations is not needed (e.g. "proof wired" "took 3 screenshots") or anything operational that's not the report and findings.
