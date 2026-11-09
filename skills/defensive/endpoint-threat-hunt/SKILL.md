@@ -26,6 +26,7 @@ Load on demand:
 | `references/known-attacks-linux.md` | OS = Linux - cross-check named campaigns |
 | `references/known-attacks-windows.md` | OS = Windows - cross-check named campaigns |
 | `references/coverage-constraints.md` | Building coverage gap section |
+| `scripts/t2_batch.sh` | T2 interactive run - one-prompt batch of every elevated macOS check |
 
 ---
 
@@ -45,7 +46,8 @@ uname -s && id          # Unix
 - `Windows_NT` → load `windows-checks.md`
 - T1: `uid≠0`, no sudo/wheel/admin group. T2: `uid=0` or privileged group present.
 
-**If T1 detected → ask before proceeding:**
+**If T1 detected → ask before proceeding (interactive sessions only):**
+> Non-interactive/cron runs: do NOT ask - proceed T1-only and mark T2 items SKIP.
 > "You're running as a standard user. Some checks (auth logs, kernel modules, audit policy, etc.) require elevated privileges. Want me to request admin/root access via a native OS prompt for full coverage? If not, I'll run T1-only checks and mark T2 items as SKIP."
 - If yes → elevate interactively per OS (below), then proceed T2.
 - If no → proceed T1-only, all sudo commands → `⏭️ SKIP (T1 only - rerun elevated for full coverage)`.
@@ -83,37 +85,35 @@ Exact commands, IOC patterns, and flag criteria → see OS-specific reference fi
 
 ## Report Format
 
-Checklist output - one bullet per check. No tables. No headers beyond phase name.
+The ENTIRE report is one verdict line + one table. Nothing else - no prose sections, no bullet lists, no headers beyond the verdict line. The 8-phase structure still drives the scan - only the report layout changes.
 
-**Status symbols:**
-- `✅ PASS` - ran clean, no IOCs
-- `❌ FAIL` - confirmed malicious / critical IOC
-- `⚠️ SUSPICIOUS` - anomaly, needs review
-- `⏭️ SKIP` - binary absent (`command -v` fails) OR requires KEXT / SIP bypass / kernel agent. **Never SKIP just because a command needs sudo.**
+**Status symbols (table cells):**
+- `CLEAN` - ran clean, no IOCs (use for phases; FAIL wording below if malicious)
+- `ACT` - FAIL or SUSPICIOUS, needs operator action
+- `FIXED` - previously flagged item, now resolved
+- `BENIGN` - changed but attributed to known-good cause
+- `SKIP` - not checked this run (reason in detail cell)
+- **Never SKIP just because a command needs sudo** - SKIP is for absent binaries or KEXT/SIP/agent-only checks; sudo-gated items are SKIP with "sudo" as the reason.
 
 **Format:**
 ```
-## Phase 1: Process Activity
-- ✅ PASS  Process tree - no orphaned or hollowed processes
-- ⚠️ SUSPICIOUS  /tmp/update [pid 4821] - deleted executable still running
-- ✅ PASS  No processes with injected memory regions
-- ⏭️ SKIP  eBPF syscall trace - requires root + kernel support
+MAC HUNT <date> · <T1|T2> <interactive|unattended> · <CLEAN|NEEDS REVIEW> · X FAIL | X SUSP | X SKIP | X PASS
 
-## Phase 2: Network Activity
-- ✅ PASS  No unexpected listeners
-- ❌ FAIL  192.168.1.5:4444 outbound TCP - matches C2 pattern
-...
-
-## Coverage Gaps
-- ⏭️ SKIP  Kernel rootkit detection - requires eBPF or KEXT
-- ⏭️ SKIP  Memory forensics - requires agent
+| status | item | detail | action |
+|--------|------|--------|--------|
+| ACT | <finding> | <what+why, one clause> | <concrete one-liner command or step> |
+| FIXED | <prev item> | <how it resolved> | - |
+| BENIGN | <change> | <attribution> | - |
+| CLEAN | P1-P8 | procs, net, persist, files, accts, drivers, history, tools - all verified | - |
+| SKIP | <N> checks | <comma list with short reason each> | - |
 ```
 
 **Rules:**
-- One check = one bullet. No sub-bullets.
-- Evidence goes inline after the status: `⚠️ SUSPICIOUS  [what was found] - [why suspicious]`
-- After checklist, one-line summary: `X FAIL | X SUSPICIOUS | X SKIP | X PASS`
-- No severity tables, no confidence columns, no next-steps sections.
+- Verdict line first, table second; zero text outside them (a `FIXED`/`BENIGN`/`NEW` delta row replaces any "since last run" section).
+- One row per finding/phase/check-class; a finding row beats the CLEAN row for that phase (drop the phase from the P1-P8 row text if it has its own row).
+- Every ACT row's action cell must be runnable without rereading the report.
+- Table stays <=8 rows ideally; compress multiple benign deltas into one `BENIGN` row (detail = comma list).
+- The count line `X FAIL | X SUSPICIOUS | X SKIP | X PASS` stays exact.
 
 ---
 
