@@ -25,7 +25,7 @@ Load on demand:
 | `references/known-attacks-macos.md` | OS = macOS - cross-check named campaigns |
 | `references/known-attacks-linux.md` | OS = Linux - cross-check named campaigns |
 | `references/known-attacks-windows.md` | OS = Windows - cross-check named campaigns |
-| `references/coverage-constraints.md` | Building coverage gap section |
+| `references/coverage-constraints.md` | Naming blind spots for the SKIP row |
 | `scripts/t2_batch.sh` | T2 interactive run - one-prompt batch of every elevated macOS check |
 
 ---
@@ -104,8 +104,8 @@ MAC HUNT <date> · <T1|T2> <interactive|unattended> · <CLEAN|NEEDS REVIEW> · X
 | ACT | <finding> | <what+why, one clause> | <concrete one-liner command or step> |
 | FIXED | <prev item> | <how it resolved> | - |
 | BENIGN | <change> | <attribution> | - |
-| CLEAN | P1-P8 | procs, net, persist, files, accts, drivers, history, tools - all verified | - |
-| SKIP | <N> checks | <comma list with short reason each> | - |
+| CLEAN | <phases that ran clean> | <what was checked in them> | - |
+| SKIP | <N> checks | <comma list with short reason each>. Blind spots: <what native checks cannot see here> | - |
 ```
 
 **Rules:**
@@ -114,6 +114,8 @@ MAC HUNT <date> · <T1|T2> <interactive|unattended> · <CLEAN|NEEDS REVIEW> · X
 - Every ACT row's action cell must be runnable without rereading the report.
 - Table stays <=8 rows ideally; compress multiple benign deltas into one `BENIGN` row (detail = comma list).
 - The count line `X FAIL | X SUSPICIOUS | X SKIP | X PASS` stays exact.
+- The SKIP row always ends with `Blind spots:` naming what native checks cannot see on this host, at least kernel-mode rootkits and memory-only malware, plus anything elevated that could not be verified at this tier.
+- CLEAN lists only phases that actually ran clean. A phase with no collected output goes in SKIP. A phase whose output cannot be trusted (hidden PID, `/etc/ld.so.preload` present, a replaced system binary) gets its own `ACT` row reading `output unreliable`.
 
 ---
 
