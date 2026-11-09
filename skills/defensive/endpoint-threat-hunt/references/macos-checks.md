@@ -237,6 +237,10 @@ netstat -an | grep LISTEN
 - Unexpected services on localhost (127.0.0.1) - possible C2 proxy or staging
 - Persistent high-numbered ephemeral ports
 
+**Attribution when `lsof -i :<port>` shows nothing (root/launchd-owned socket):** `netstat -anv | grep <port>` prints the owning process in its trailing columns - `launchd:1` means system launchd (PID 1) holds the socket on behalf of a LaunchDaemon `Sockets` entry. Resolve it with `grep -rl "<port>" /System/Library/LaunchDaemons /Library/LaunchDaemons /Library/LaunchAgents ~/Library/LaunchAgents` then read that plist's `Sockets.Listeners.SockServiceName`. Never report a localhost listener as "unattributed" - this resolves them at T1.
+
+**False+ (verified):** `::1:8021` (a.k.a. `intu-ec-client`) = `com.apple.ftp-proxy` - `/usr/libexec/ftp-proxy`, UserName `_ftp`, Apple-signed, `Disabled=true` in the plist but enabled via socket activation. Stock macOS. A plain `GET /` returns "connection reset by peer" because it is an FTP proxy, not HTTP.
+
 ---
 
 ### 2.3 - DNS Configuration
@@ -571,6 +575,10 @@ sudo log show --predicate 'eventMessage contains "sshd"' --last 24h --style comp
 sudo log show --predicate 'eventMessage contains "failed" AND eventMessage contains "authentication"' --last 24h --style compact 2>/dev/null | head -30
 ```
 
+**Triage (macOS):**
+- `opendirectoryd` `Authentication failed ... ODErrorCredentialsInvalid` entries for local accounts, in short retry bursts, are screen-unlock / GUI password-prompt noise - correlate timestamps with operator-at-keyboard times; an osascript `administrator privileges` prompt generates its own burst of these, so don't misattribute your own elevation dialog as an attack.
+- Zero `process == "sshd"` events in the window = no SSH surface touched; real brute force shows sshd events with remote source IPs.
+
 ---
 
 ## Phase 6: Driver/Module Activity
@@ -674,6 +682,8 @@ sudo log show --predicate 'eventMessage contains "MRT"' --last 24h --style compa
 # Security daemon events
 sudo log show --predicate 'subsystem == "com.apple.securityd"' --last 4h --style compact 2>/dev/null | head -50
 ```
+
+**Triage:** `--info`-level xprotect predicate output is ~99% `duetactivityscheduler`/`XProtectBehaviorService` scan-scheduling noise; syspolicyd `Forwarding detection succeeded!` lines are payload-scan telemetry, NOT detections. Filter: `grep -vE 'duetactivityscheduler|scoring|fast\.scan' | grep -iE 'EPDetection|detected|malware|blocked|quarantine'`.
 
 ---
 

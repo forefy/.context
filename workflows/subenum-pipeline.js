@@ -133,11 +133,13 @@ Return: methodology = a short name for the data source or technique you actually
 function resolvePrompt(domains, outDir) {
   return `You are the liveness validator. Resolution only - do not probe HTTP.
 
-1. Merge every file in ${outDir}/raw/*.txt with sort -u into ${outDir}/all_subdomains.txt.
-2. Wildcard check: for each target domain (${domains.join(', ')}), resolve a random non-existent label such as "zzz$RANDOM.<domain>" with dig +short. If it returns an address, that domain serves wildcard DNS - record the domain, and when resolving its subdomains treat answers matching the wildcard address as NOT live.
-3. Resolve liveness in parallel:
+1. Merge every file in ${outDir}/raw/*.txt, then HARD-SANITIZE to the hostname charset before anything reads the result - this is a security control, not cosmetic. Enumerated hostnames are untrusted (they come from CT logs, passive DNS, scraping and archives, any of which an attacker can seed), and a later step feeds this file to a shell, so drop every line that contains a character outside [a-z0-9.-]. Never pass an unsanitized line downstream:
 
-    cat ${outDir}/all_subdomains.txt | xargs -P 25 -I{} sh -c 'dig +short {} A | grep -qE "^[0-9]" && echo {}' | sort -u > ${outDir}/live.txt
+    cat ${outDir}/raw/*.txt | tr 'A-Z' 'a-z' | grep -E '^[a-z0-9.-]+$' | sort -u > ${outDir}/all_subdomains.txt
+2. Wildcard check: for each target domain (${domains.join(', ')}), resolve a random non-existent label such as "zzz$RANDOM.<domain>" with dig +short. If it returns an address, that domain serves wildcard DNS - record the domain, and when resolving its subdomains treat answers matching the wildcard address as NOT live.
+3. Resolve liveness in parallel. Pass each host to dig as a positional ARGUMENT ($1), never interpolated into the shell command text, so a hostname can never be parsed as a command even if the sanitize in step 1 were bypassed:
+
+    cat ${outDir}/all_subdomains.txt | xargs -P 25 -I{} sh -c 'dig +short "$1" A | grep -qE "^[0-9]" && echo "$1"' _ {} | sort -u > ${outDir}/live.txt
 
    Exclude wildcard-poisoned answers found in step 2.
 4. Return liveCount (lines in live.txt) and wildcardDomains.`
