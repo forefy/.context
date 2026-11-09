@@ -115,6 +115,8 @@ MAC HUNT <date> · <T1|T2> <interactive|unattended> · <CLEAN|NEEDS REVIEW> · X
 - Table stays <=8 rows ideally; compress multiple benign deltas into one `BENIGN` row (detail = comma list).
 - The count line `X FAIL | X SUSPICIOUS | X SKIP | X PASS` stays exact.
 - The SKIP row always ends with `Blind spots:` naming what native checks cannot see on this host, at least kernel-mode rootkits and memory-only malware, plus anything elevated that could not be verified at this tier.
+- The SKIP row names every check that did not run, each with its reason (for example `T1 only - rerun elevated`). Compressing rows never drops a skipped check.
+- Package-verify drift on config files (`dpkg -V` or `rpm -Va` lines marked `c`) is normal and stays out of the table. Only checksum changes on binaries count.
 - CLEAN lists only phases that actually ran clean. A phase with no collected output goes in SKIP. A phase whose output cannot be trusted (hidden PID, `/etc/ld.so.preload` present, a replaced system binary) gets its own `ACT` row reading `output unreliable`.
 
 ---
