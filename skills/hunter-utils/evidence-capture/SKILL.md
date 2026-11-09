@@ -27,7 +27,7 @@ Evidence capture skills assists in the image and/or video evidence that go to pr
 # Dependencies
 - For videos Explicitly use HyperFrames and their studio app locally.
 - A capture source. Any one of:
-  - Burp proxy history over the `reburp` REST API (`http://127.0.0.1:9090`) for the real HTTP request and response behind a step. See the `burp-interaction` usage if present.
   - A browser you can drive and screenshot (Claude in Chrome, or the built-in browser pane) for the UI frames and live network list.
-  - Terminal screenshots for a CLI or a Foundry or `forge test` reproduction, where each step is a command and its real output.
+  - Burp proxy history over the `reburp` REST API (`http://127.0.0.1:9090`) for the real HTTP request and response behind a step. See the `burp-interaction` usage if present.
+  - Terminal screenshots for a CLI or a programming language common default e.g. `forge test` reproduction, where each step is a command and its real output.
   - Github code paths
