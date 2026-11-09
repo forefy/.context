@@ -25,7 +25,7 @@ Evidence capture skills assists in the image and/or video evidence that go to pr
 - **Redact before you capture HTTP.** When a step's payload carries a credential, cookie, token or PII, redact it before it enters any file. Record the original request's hash, not its secrets. The build shows `[redacted]` and the hash, which is what a reader checks.
 
 # Dependencies
-- For videos Explicitly use HyperFrames and their studio app locally.
+- For videos Explicitly use HyperFrames and their studio app locally (https://github.com/heygen-com/hyperframes)
 - A capture source. Any one of:
   - A browser you can drive and screenshot (Claude in Chrome, or the built-in browser pane) for the UI frames and live network list.
   - Burp proxy history over the `reburp` REST API (`http://127.0.0.1:9090`) for the real HTTP request and response behind a step. See the `burp-interaction` usage if present.
