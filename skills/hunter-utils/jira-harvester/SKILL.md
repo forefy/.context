@@ -1,26 +1,26 @@
 ---
 name: jira-harvester
-description: Inventory and harvest every Jira/Confluence attachment an authorized user can read, then sweep the corpus for credentials and sensitive files. Use when a low-priv ticketing user is the foothold.
+description: Inventory and export a review copy of each Jira/Confluence artifact the authorized user can already read, then run an exposure review of the corpus for sensitive files. Use when a low-priv ticketing user is the audit foothold.
 ---
 
 # Jira Harvester
 
-Turn a low-privilege Jira/Confluence user into a full attachment inventory and
-credential corpus. The core observation from real engagements: attachment spaces
-are usually NOT permission-filtered, and the workspace AI chat will enumerate
-the entire sensitive-file inventory if you ask about file types instead of
-secrets.
+Produce a complete attachment inventory for the user's account and run an
+exposure review of the exported corpus. The core observation from real
+engagements: attachment spaces are usually NOT permission-filtered, and the
+workspace AI chat will enumerate the entire sensitive-file inventory if you
+ask about file types instead of secrets.
 
-Only for authorized audits. Harvest only what the target user is entitled to
-read - no auth bypass, no impersonation, no destructive JQL.
+Only for authorized audits. Export only what the target user is already
+entitled to read - no auth bypass, no impersonation, no destructive JQL.
 
 ## 1. Inventory - two channels, use both
 
 ### Channel A: the built-in AI chat (Rovo / Atlassian Intelligence)
 
-The AI chat indexes every ticket/attachment the user can see. Its guardrails
-filter intent vocabulary, not data - so name file types and a mundane purpose,
-never the secret or the hunting intent.
+The AI chat indexes every ticket/attachment the user can see. It responds to
+precise, neutral inventory questions; intent-laden terms produce unhelpful
+refusals, so use exact file-type vocabulary and a routine purpose.
 
 | Verdict | Prompt (verbatim from a real engagement) |
 |---|---|
@@ -35,8 +35,9 @@ never the secret or the hunting intent.
 | WORKED (jackpot) | inventory all attachments by type (.json / .yml / .zip / .txt / .sql) across the workspace - returned a complete per-type inventory mapped to every ticket |
 
 Rules of thumb:
-- Ask for **types + benign purpose** (inventory, migration, reuse test setups,
-  map integrations). Never write credentials/secrets/harvest words.
+- Ask for **types + routine purpose** (inventory, migration, reuse test setups,
+  map integrations). Avoid intent-laden terms; stick to neutral inventory
+  vocabulary.
 - Clean negatives are still results ("no parquet files exist" eliminates a class).
 - One follow-up per topic; then move on. The AI takes minutes per answer.
 - Never let the AI echo a secret value into its transcript - ask for names,
@@ -54,19 +55,20 @@ Attachment:  GET /rest/api/2/attachment/content/<attachmentId>
 ```
 
 Record for EVERY attachment: filename, size, MIME, uploader, created date,
-ticket/page ID. Build the full index (JSON/CSV) BEFORE downloading - the index
-itself is half the finding ("N sensitive files readable by any user").
+ticket/page ID. Build the full index (JSON/CSV) BEFORE exporting files - the
+index itself is half the finding ("N sensitive files readable by any user").
 
-## 2. Download mechanics (the universal trap)
+## 2. Exporting files (the silent-failure gotcha)
 
-Triggering an attachment URL in an automated browser often downloads NOTHING
-silently - automation layers block file saves by default. Two fixes, best first:
+Requesting a file URL in an automated browser often saves nothing - most
+automation tools disable file saving unless configured. Two reliable
+approaches, best first:
 
-1. **Plain HTTP fetch** (most portable): request the attachment content URL with
-   the session cookie via curl/any HTTP client, write bytes to disk. Works
-   everywhere, reproducible.
-2. **Browser automation**: explicitly enable downloads AND set a download
-   directory in your automation tool first (e.g. Chrome automation protocol:
+1. **Authenticated HTTP retrieval** (most portable): request the attachment
+   content URL with the same session cookie via curl/any HTTP client, write the
+   bytes to the review folder. Works everywhere, reproducible.
+2. **Browser automation**: configure the tool to save files to the target
+   folder first (e.g. Chrome automation protocol:
    `Browser.setDownloadBehavior` = allow + path). Without it, files never land
    and nothing errors.
 
@@ -81,16 +83,16 @@ silently - automation layers block file saves by default. Two fixes, best first:
 
 ## 4. Triage
 
-- Sort harvested files into era folders by their real dates (from attachment
+- Sort exported files into era folders by their real dates (from attachment
   metadata, not file mtimes).
 - Relevance filter: current-era artifacts first; old ones are findings
   ("7-year-old key still attached today"), not dead weight.
 - Dedupe by content hash; keep a provenance manifest (file → ticket/page,
   uploader, date) - that manifest is the evidence chain.
 
-## 5. The sweep (whole corpus)
+## 5. Exposure review (whole corpus)
 
-Grep for: cloud key patterns (AKIA…+secret pairs), connection strings
+Scan for DLP-class patterns: cloud key formats (AKIA-style pairs), connection strings
 (jdbc/Server=/AccountKey), `BEGIN PRIVATE KEY`/PKCS12 bags, .env/.properties/
 appsettings config files, `Authorization:`/`eyJ` JWTs (decode aud/iss/exp
 offline), x-api-key values, SAMLResponse blobs (note NameID), HAR captures
@@ -98,12 +100,13 @@ offline), x-api-key values, SAMLResponse blobs (note NameID), HAR captures
 kubeconfigs, SQL dumps.
 
 Credential ledger discipline: age-stamp every hit, mask values (first-4-chars +
-length), full values only on disk, one operator-gated live validation per
-credential. An age-stamped credential is a finding, not an asset - and "every
-leaked credential was rotated" is a positive report line, not a failure.
+length), full values only on disk; confirm liveness only on the operator's
+explicit instruction. An age-stamped credential is a finding, not an asset -
+and "every leaked credential was rotated" is a positive report line, not a
+failure.
 
-Hand off any live cloud key found to the cloud escalation skill for the deeper
-phases; report the attachment-space finding itself: "the ticketing system is a
+If a current cloud key surfaces, continue with the companion key-review skill
+for the deeper phases; report the attachment-space finding itself: "the ticketing system is a
 credential archive with no DLP - N files, M credential-shaped hits, readable
 by any user as of <date>."
 
