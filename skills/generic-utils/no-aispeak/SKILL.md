@@ -22,6 +22,9 @@ description: Generate textual content as the user will normally write without th
 - NEVER use em-dashes or AI-slop-giveaways
 - Refer to https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing#Language_and_grammar to avoid extra heuristics that can indicate AI like grammar tendencies
 
+## POs
+- When describing price offer or work methodologies use high order bullets per scope and sub bullets per what to check, phrased like "Attempting to xyz" "Determining if xxx is prone to..." "Checking if..." etc
+
 ## Strict DON'Ts
 - Always avoid dots and convey points in complete sentences instead of breaking down to a dot too often.
 - Never use too much dots in a paragraph or separations like `;` `,` `:` when not mandatory
