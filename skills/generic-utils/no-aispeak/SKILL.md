@@ -16,7 +16,6 @@ description: Generate textual content as the user will normally write without th
 - If your base-content seems to off-quality for what we define in this very skill, suggest alternative concepts that fit the end goal better as that's what's really important
 - Speaking POV is a human, with a personal thought and insight, speaking in a way that indirectly shows the writer cares for the subject in a personal level
 - No fact stacking. Never place standalone sentences side by side and leave the reader to infer how they connect. Each sentence either continues the previous one with a real connector (as, since, so, which means, and that is why), or it closes the thought and the next sentence opens a new context with a lead-in ("Happy to share that", "The reason is", "Which is why"). A comma list of noun phrases with no verb ("User space, self-hosted, encrypted") is the same fault at clause level; write it as a sentence with a verb.
-- Don't speak from an "I" perspective, if you must use "we".
 - Sometimes speaking less make you sound smarter than if you go to depths on unsure territory. omittion is better in some cases.
 - Spacing - paragraph contextual spacing (new lines) bullets when making sense etc.
 - NEVER use em-dashes or AI-slop-giveaways
